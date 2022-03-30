@@ -1,8 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:pomodoro/pages/timer_page.dart';
-
+import 'package:pomodoro/widgets/pomodoro_timer.dart';
 import 'models/task.dart';
 import 'pages/task_page.dart';
 
@@ -18,8 +17,6 @@ void main() {
           /* dark theme settings */
         ),
         themeMode: ThemeMode.dark,
-
-
 
         initialRoute: '/',
         routes: {
@@ -45,33 +42,6 @@ class MyApp extends StatefulWidget {
         color: 0,
         isCompleted: 0
     ),
-    Task(
-        id: 1,
-        title: "영어",
-        note: "1",
-        date:  DateFormat.yMd().format(DateTime.now()),
-        startTime: DateFormat('hh:mm a').format(DateTime.now()),
-        endTime: DateFormat('hh:mm a').format(DateTime.now().add(Duration(minutes: 15))),
-        color: 0,
-        isCompleted: 0),
-    Task(
-        id: 1,
-        title: "영어",
-        note: "1",
-        date:  DateFormat.yMd().format(DateTime.now()),
-        startTime: DateFormat('hh:mm a').format(DateTime.now()),
-        endTime: DateFormat('hh:mm a').format(DateTime.now().add(Duration(minutes: 15))),
-        color: 0,
-        isCompleted: 0),
-    Task(
-        id: 1,
-        title: "영어",
-        note: "1",
-        date:  DateFormat.yMd().format(DateTime.now()),
-        startTime: DateFormat('hh:mm a').format(DateTime.now()),
-        endTime: DateFormat('hh:mm a').format(DateTime.now().add(Duration(minutes: 15))),
-        color: 0,
-        isCompleted: 0),
     Task(
         id: 1,
         title: "영어",

@@ -6,15 +6,16 @@ import 'package:pomodoro/models/task.dart';
 import 'package:pomodoro/widgets/input_field.dart';
 import '../main.dart';
 
-class AddTaskPage extends StatefulWidget {
-  const AddTaskPage({Key? key}) : super(key: key);
+class TaskDetailPage extends StatefulWidget {
+  const TaskDetailPage({Key? key, required this.task}) : super(key: key);
+
+  final Task task;
 
   @override
-  State<AddTaskPage> createState() => _AddTaskPageState();
+  State<TaskDetailPage> createState() => _TaskDetailPageState();
 }
 
-class _AddTaskPageState extends State<AddTaskPage> {
-
+class _TaskDetailPageState extends State<TaskDetailPage> {
 
   final _formKey = GlobalKey<FormState>();
 
@@ -23,7 +24,6 @@ class _AddTaskPageState extends State<AddTaskPage> {
   final TextEditingController _dateController = TextEditingController();
   final TextEditingController _startTimeController = TextEditingController();
   final TextEditingController _endTimeController = TextEditingController();
-
 
   String _selectedDate = DateFormat.yMd().format(DateTime.now());
   String _startDate = DateFormat('hh:mm a').format(DateTime.now());
@@ -51,7 +51,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        "Add Task",
+                        "Task Detail",
                         style: TextStyle(
                             fontSize: 23,
                             fontWeight: FontWeight.bold),
@@ -63,7 +63,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
                   ),
                   InputField(
                     isEnabled: true,
-                    hint: 'Enter Title',
+                    hint: widget.task.title!,
                     label: 'Title',
                     iconOrdrop: 'icon',
                     controller: _titleController,
@@ -73,7 +73,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
                   ),
                   InputField(
                     isEnabled: true,
-                    hint: 'Enter Note',
+                    hint: widget.task.note!,
                     label: 'Note',
                     iconOrdrop: 'icon',
                     controller: _noteController,
@@ -140,18 +140,16 @@ class _AddTaskPageState extends State<AddTaskPage> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       CupertinoButton(
-                          onPressed: () async {
-                            _submitDate();
-                            _submitStartTime();
-                            _submitEndTime();
-                            if (_formKey.currentState!.validate()) {
-                              final Task task = Task();
-                              _addTaskToDB(task);
-                              MyApp.taskList.add(task);
-                              Navigator.pop(context);
-                            }
-                          },
-                             child: Text('add Task'),)
+                        onPressed: () async {
+                          _submitDate();
+                          _submitStartTime();
+                          _submitEndTime();
+                          if (_formKey.currentState!.validate()) {
+                            _saveTaskToDB(widget.task);
+                            Navigator.pop(context);
+                          }
+                        },
+                        child: Text('save Task'),)
                     ],
                   )
                 ],
@@ -163,7 +161,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
     );
   }
 
-  _addTaskToDB(Task task) {
+  _saveTaskToDB(Task task) {
     task.isCompleted = 0;
     task.color = -_selectedColor;
     task.title = _titleController.text;
