@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:pomodoro/pages/settings/setting_page.dart';
 import 'package:pomodoro/widgets/pomodoro_timer.dart';
 import 'models/task.dart';
 import 'pages/task_page.dart';
@@ -84,6 +85,9 @@ class _MyAppState extends State<MyApp> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Pomodoro'),
+        actions: [IconButton(onPressed: (){
+          Navigator.of(context).push(MaterialPageRoute(builder: (context)=>SettingPage()));
+        }, icon: Icon(Icons.settings))],
       ),
       body: Padding(
         padding: const EdgeInsets.only(top: 32),
