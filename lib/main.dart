@@ -85,9 +85,6 @@ class _MyAppState extends State<MyApp> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Pomodoro'),
-        actions: [IconButton(onPressed: (){
-          Navigator.of(context).push(MaterialPageRoute(builder: (context)=>SettingPage()));
-        }, icon: Icon(Icons.settings))],
       ),
       body: Padding(
         padding: const EdgeInsets.only(top: 32),
@@ -136,11 +133,15 @@ class _MyAppState extends State<MyApp> {
           else if(index == 1){
             Navigator.pushNamed(context, '/schedulePage');
           }
+          else if(index ==2){
+            Navigator.of(context).push(MaterialPageRoute(builder: (context)=>SettingPage()));
+          }
         },
 
         items: [
           BottomNavigationBarItem(icon: Icon(Icons.timer), label: 'Timer',),
           BottomNavigationBarItem(icon: Icon(Icons.menu), label: 'Todo',),
+          BottomNavigationBarItem(icon: Icon(Icons.settings), label: 'Settings',),
         ],
 
       ),
