@@ -116,7 +116,7 @@ class _SettingPageState extends State<SettingPage> {
           leading: Icon(Icons.account_balance_outlined),
           title: Text('License'),
           onPressed: (context) {
-            // Navigator.of(context).push(MaterialPageRoute(builder: (context)=>@@@));
+            Navigator.of(context).push(MaterialPageRoute(builder: (_)=>LicensePage()));
           },
           trailing: Icon(Icons.arrow_forward_ios),
         ),
