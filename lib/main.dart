@@ -32,7 +32,7 @@ void main() {
 
   runApp(
       MaterialApp(
-          theme: ThemeData(
+        theme: ThemeData(
           brightness: Brightness.light,
           /* light theme settings */
         ),
@@ -47,7 +47,7 @@ void main() {
           '/todoListPage' : (context) => TaskPage(taskList: taskList),
           '/settingPage' : (context) => SettingPage(),
         },
-    )
+      )
   );
 }
 
@@ -64,6 +64,7 @@ class _MyAppState extends State<MyApp> {
   int _currentIndex = 0;
   List<Widget> pages = [
 
+  ];
   ];
   @override
   void initState() {
@@ -88,6 +89,9 @@ class _MyAppState extends State<MyApp> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Pomodoro'),
+        actions: [IconButton(onPressed: (){
+          Navigator.of(context).push(MaterialPageRoute(builder: (context)=>SettingPage()));
+        }, icon: Icon(Icons.settings))],
       ),
       body: Padding(
         padding: const EdgeInsets.only(top: 32),
@@ -117,7 +121,7 @@ class _MyAppState extends State<MyApp> {
             children: [
               Icon(Icons.play_arrow,color: Colors.white70,),
               Text('Play',style: TextStyle(color: Colors.white70,fontWeight: FontWeight.w600,
-              fontSize: 12),),
+                  fontSize: 12),),
             ],
           ),
           onPressed: () {
