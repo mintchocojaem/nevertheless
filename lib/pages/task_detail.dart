@@ -8,7 +8,6 @@ import '../main.dart';
 
 class TaskDetailPage extends StatefulWidget {
   const TaskDetailPage({Key? key, required this.task}) : super(key: key);
-
   final Task task;
 
   @override

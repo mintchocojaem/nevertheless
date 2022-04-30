@@ -7,7 +7,9 @@ import 'package:pomodoro/widgets/input_field.dart';
 import '../main.dart';
 
 class AddTaskPage extends StatefulWidget {
-  const AddTaskPage({Key? key}) : super(key: key);
+  AddTaskPage({Key? key, required this.taskList}) : super(key: key);
+
+  final List<Task> taskList;
 
   @override
   State<AddTaskPage> createState() => _AddTaskPageState();
@@ -147,7 +149,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
                             if (_formKey.currentState!.validate()) {
                               final Task task = Task();
                               _addTaskToDB(task);
-                              MyApp.taskList.add(task);
+                              widget.taskList.add(task);
                               Navigator.pop(context);
                             }
                           },

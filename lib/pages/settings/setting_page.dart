@@ -21,9 +21,7 @@ class _SettingPageState extends State<SettingPage> {
         sections: [
           _common(),
           _alarm(),
-
           _aboutApp(),
-
         ],
       ),
     );
