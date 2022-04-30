@@ -14,7 +14,8 @@ import 'add_task_page.dart';
 
 class TaskPage extends StatefulWidget {
 
-  const TaskPage({Key? key}) : super(key: key);
+  const TaskPage({Key? key, required this.taskList}) : super(key: key);
+  final List<Task> taskList;
 
   @override
   State<TaskPage> createState() => _TaskPageState();
@@ -23,22 +24,33 @@ class TaskPage extends StatefulWidget {
 class _TaskPageState extends State<TaskPage> {
 
   DateTime selectDate = DateTime.now();
-
+  List<Task> dateTodoList = [];
   @override
   void initState() {
     // TODO: implement initState
-    super.initState();
     SizeConfig.orientation = Orientation.portrait;
     SizeConfig.screenHeight = 100;
     SizeConfig.screenWidth = 100;
 
+    for(var i in widget.taskList){
+      Task task = i;
+      if (task.repeat == 'Daily' ||
+          task.date == DateFormat.yMd().format(selectDate) ||
+          (task.repeat == 'Weekly' && selectDate.difference(DateFormat.yMd().parse(task.date!)).inDays % 7 == 0)||
+          (task.repeat == 'Monthly' && DateFormat.yMd().parse(task.date!).day == selectDate.day)) {
+        dateTodoList.add(task);
+      }
+    }
+
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       appBar: AppBar(
-        title: Text('Todo'),
+
       ),
       body: Padding(
         padding: const EdgeInsets.only(top: 20),
@@ -47,7 +59,12 @@ class _TaskPageState extends State<TaskPage> {
           child: Column(
             children: [
               _dateBar(),
-              _tasks(),
+              dateTodoList.isNotEmpty ? _tasks() : Container(),
+              dateTodoList.isEmpty ? Expanded(
+                child: Container(
+                  child: _noTasksMessage(),
+                ),
+              ) : Container()
             ],
           ),
         ),
@@ -59,10 +76,11 @@ class _TaskPageState extends State<TaskPage> {
           color: Colors.white,
         ),
         onPressed: () {
-          Navigator.of(context).push(MaterialPageRoute(builder: (context)=> AddTaskPage()))
+          Navigator.of(context).push(MaterialPageRoute(builder: (context)=> AddTaskPage(taskList: widget.taskList,)))
           .then((value) => setState((){}));
         }
       ),
+
     );
   }
 
@@ -75,6 +93,16 @@ class _TaskPageState extends State<TaskPage> {
         onDateChange: (newDate) {
           setState(() {
             selectDate = newDate;
+            dateTodoList= [];
+            for(var i in widget.taskList){
+              Task task = i;
+              if (task.repeat == 'Daily' ||
+                  task.date == DateFormat.yMd().format(selectDate) ||
+                  (task.repeat == 'Weekly' && selectDate.difference(DateFormat.yMd().parse(task.date!)).inDays % 7 == 0)||
+                  (task.repeat == 'Monthly' && DateFormat.yMd().parse(task.date!).day == selectDate.day)) {
+                dateTodoList.add(task);
+              }
+            }
           });
         },
         selectionColor: Colors.deepPurpleAccent,
@@ -95,46 +123,37 @@ class _TaskPageState extends State<TaskPage> {
 
   Widget _tasks() {
     return Expanded(child:
+     AnimationLimiter(
+        child:  ListView.builder(
+            scrollDirection:
+                MediaQuery.of(context).orientation == Orientation.portrait
+                    ? Axis.vertical
+                    : Axis.horizontal,
+            itemCount: dateTodoList.length,
+            itemBuilder: (BuildContext context, int index) {
 
-        AnimationLimiter(
-          child: ListView.builder(
-              scrollDirection:
-                  MediaQuery.of(context).orientation == Orientation.portrait
-                      ? Axis.vertical
-                      : Axis.horizontal,
-              itemCount: MyApp.taskList.length,
-              itemBuilder: (BuildContext context, int index) {
-                Task task = MyApp.taskList[index];
-                if (task.repeat == 'Daily' ||
-                    task.date == DateFormat.yMd().format(selectDate) ||
-                    (task.repeat == 'Weekly' && selectDate.difference(DateFormat.yMd().parse(task.date!)).inDays % 7 == 0)||
-                    (task.repeat == 'Monthly' && DateFormat.yMd().parse(task.date!).day == selectDate.day) ){
-                  return AnimationConfiguration.staggeredList(
-                    position: index,
-                    duration: Duration(milliseconds: 500 + index * 20),
-                    child: SlideAnimation(
-                      horizontalOffset: 400.0,
-                      child: FadeInAnimation(
-                        child: GestureDetector(
-                          onTap: () =>
-                              Navigator.of(context)
-                                  .push(MaterialPageRoute(builder: (context)=> TaskDetailPage(task: task))
-                              ).then((value) {
-                                setState(() {
+                return AnimationConfiguration.staggeredList(
+                  position: index,
+                  duration: Duration(milliseconds: 500 + index * 20),
+                  child: SlideAnimation(
+                    horizontalOffset: 400.0,
+                    child: FadeInAnimation(
+                      child: GestureDetector(
+                        onTap: () =>
+                            Navigator.of(context)
+                                .push(MaterialPageRoute(builder: (context)=> TaskDetailPage(task: dateTodoList[index]))
+                            ).then((value) {
+                              setState(() {
 
-                                });
-                              }),
-                          child: TaskTile(task: task),
-                        ),
+                              });
+                            }),
+                        child: TaskTile(task: dateTodoList[index]),
                       ),
                     ),
-                  );
-                } else {
-                  return SizedBox(
-                    height: 0,
-                  );
-                }
-              }),
+                  ),
+                );
+
+            }),
         )
     );
   }
@@ -153,11 +172,7 @@ class _TaskPageState extends State<TaskPage> {
                 : const SizedBox(
                     height: 50,
                   ),
-            SvgPicture.asset(
-              'images/task.svg',
-              height: 200,
-              semanticsLabel: 'Tasks',
-            ),
+            Icon(Icons.task_rounded),
             const SizedBox(
               height: 20,
             ),
