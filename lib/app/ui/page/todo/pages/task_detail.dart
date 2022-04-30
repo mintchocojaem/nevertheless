@@ -1,10 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:pomodoro/models/task.dart';
-import 'package:pomodoro/widgets/input_field.dart';
-import '../main.dart';
+import 'package:pomodoro/app/data/model/task.dart';
+import 'package:pomodoro/app/ui/page/todo/widgets/input_field.dart';
 
 class TaskDetailPage extends StatefulWidget {
   const TaskDetailPage({Key? key, required this.task}) : super(key: key);

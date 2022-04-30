@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:pomodoro/models/task.dart';
+import 'package:pomodoro/app/data/model/task.dart';
 
 
 

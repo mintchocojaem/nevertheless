@@ -1,0 +1,6 @@
+컨트롤러는 비지니스 로직, 상태 변경에 대한 책임만 있음
+이벤트를 포함하는 Observable(.obs)을 생성하는 곳
+
+뭐... GetxController를 포함하는 폴더
+생성자를 통해 Repository를 불러와서 사용만 하면 된다.
+모든 controller에는 하나의 repository가 필요하다
