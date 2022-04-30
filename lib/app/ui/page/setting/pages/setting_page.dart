@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:settings_ui/settings_ui.dart';
 
 class SettingPage extends StatefulWidget {
@@ -9,9 +10,22 @@ class SettingPage extends StatefulWidget {
   State<SettingPage> createState() => _SettingPageState();
 }
 
+bool isDarkMode = false;
+
+
+
 class _SettingPageState extends State<SettingPage> {
+  late Box _darkMode;
+
   bool isSwitched = false;
   bool _vib = false;
+
+  @override
+  void initState() {
+    _darkMode = Hive.box('darkModeBox');
+    isDarkMode = _darkMode.get('darkMode', defaultValue: true);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -50,10 +64,14 @@ class _SettingPageState extends State<SettingPage> {
           trailing: Icon(Icons.arrow_forward_ios),
         ),
         SettingsTile.switchTile(
-          onToggle: (value) {},
-          initialValue: true,
+          onToggle: (value) {
+            setState(() {
+              changeAppMode(value);
+            });
+          },
+          initialValue: isDarkMode,
           leading: Icon(Icons.format_paint),
-          title: Text('Dark theme'),
+          title: Text('Dark Theme'),
         )
       ],
     );
@@ -65,7 +83,10 @@ class _SettingPageState extends State<SettingPage> {
       tiles: <SettingsTile>[
         SettingsTile.navigation(
           leading: Icon(Icons.list),
-          title: Text('Alarm List',style: TextStyle(),),
+          title: Text(
+            'Alarm List',
+            style: TextStyle(),
+          ),
           onPressed: (context) {
             // Navigator.of(context).push(MaterialPageRoute(builder: (context)=>@@@));
           },
@@ -91,7 +112,6 @@ class _SettingPageState extends State<SettingPage> {
     );
   }
 
-
   SettingsSection _aboutApp() {
     return SettingsSection(
       title: Text('About App'),
@@ -116,11 +136,25 @@ class _SettingPageState extends State<SettingPage> {
           leading: Icon(Icons.account_balance_outlined),
           title: Text('License'),
           onPressed: (context) {
-            Navigator.of(context).push(MaterialPageRoute(builder: (_)=>LicensePage()));
+            Navigator.of(context)
+                .push(MaterialPageRoute(builder: (_) => LicensePage()));
           },
           trailing: Icon(Icons.arrow_forward_ios),
         ),
       ],
     );
+  }
+
+  void changeAppMode(bool isDark) {
+    setState(() {
+      if (isDark == true) {
+        isDarkMode = true;
+        _darkMode.put('darkMode', true);
+      } else {
+        isDarkMode = false;
+        _darkMode.put('darkMode', false);
+      }
+    });
+    print;
   }
 }
