@@ -62,10 +62,7 @@ class _MyAppState extends State<MyApp> {
 
   List<Widget> taskWidgetList = [];
   int _currentIndex = 0;
-  List<Widget> pages = [
 
-  ];
-  ];
   @override
   void initState() {
     // TODO: implement initState
