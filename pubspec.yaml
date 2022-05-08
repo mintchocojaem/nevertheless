@@ -30,7 +30,6 @@ dependencies:
   flutter:
     sdk: flutter
 
-
   cupertino_icons: ^1.0.2
   circular_countdown_timer: ^0.2.0
   get_storage: ^2.0.3

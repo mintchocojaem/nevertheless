@@ -10,19 +10,27 @@ import 'package:pomodoro/app/ui/page/todo/pages/task_page.dart';
 
 
 class IndexScreen extends GetView<BottomNavController> {
+  PageController pageController = PageController(
+    initialPage: 0,
+    keepPage: true,
+  );
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
       child: Obx(() => Scaffold(
         body: Center(
-          child: IndexedStack(
-            index: controller.pageIndex.value,
-            children: [
-              TimerPage(),
-              TaskPage(taskList: []),
-              SettingPage()
-            ],
-          ),
+          child:
+            PageView(
+              controller: pageController,
+              onPageChanged: (index) {
+                //print(index);
+              },
+              children: <Widget>[
+                TimerPage(),
+                TaskPage(taskList: []),
+                SettingPage()
+              ],
+            )
         ),
         bottomNavigationBar: BottomNavigationBar(
           type: BottomNavigationBarType.fixed,
@@ -32,6 +40,7 @@ class IndexScreen extends GetView<BottomNavController> {
           elevation: 0,
           onTap: (value) {
             controller.changeBottomNav(value);
+            pageController.jumpToPage(value);
           },
           items: [
             BottomNavigationBarItem(icon: Icon(Icons.timer), label: 'Timer'),
