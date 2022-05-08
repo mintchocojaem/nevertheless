@@ -6,6 +6,8 @@ import 'package:pomodoro/app/data/model/task.dart';
 import 'package:pomodoro/app/ui/index_screen.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
+import 'app/data/model/task_adapter.dart';
+
 const testBox = 'test';
 
 void main() async {
@@ -26,13 +28,13 @@ void main() async {
         ),
         darkTheme: darkMode
             ? ThemeData(
-                brightness: Brightness.dark,
-                /* dark theme setting */
-              )
+          brightness: Brightness.dark,
+          /* dark theme setting */
+        )
             : ThemeData(
-                brightness: Brightness.light,
-                /* dark theme setting */
-              ),
+          brightness: Brightness.light,
+          /* dark theme setting */
+        ),
         debugShowCheckedModeBanner: false,
         initialBinding: InitBinding(),
         themeMode: ThemeMode.dark,
