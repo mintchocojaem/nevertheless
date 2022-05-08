@@ -1,6 +1,6 @@
 import 'package:hive_flutter/hive_flutter.dart';
 
-part 'task.g.dart';
+//part 'task.g.dart';
 
 // typeId는 절대 중복되면 안된다.
 @HiveType(typeId: 1)
