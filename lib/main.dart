@@ -5,7 +5,6 @@ import 'package:pomodoro/app/binding/init_bindings.dart';
 import 'package:pomodoro/app/data/model/task.dart';
 import 'package:pomodoro/app/ui/index_screen.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-
 import 'app/data/model/task_adapter.dart';
 
 const testBox = 'test';
@@ -38,13 +37,7 @@ void main() async {
         debugShowCheckedModeBanner: false,
         initialBinding: InitBinding(),
         themeMode: ThemeMode.dark,
-        home: IndexScreen(),
-        // initialRoute: '/',
-        routes: {
-          // '/' : (context) => IndexScreen(),
-          // '/todoListPage' : (context) => TaskPage(taskList: taskList),
-          // '/settingPage' : (context) => SettingPage(),
-        },
+        home: IndexScreen()
       );
     },
     valueListenable: Hive.box('darkModeBox').listenable(),
