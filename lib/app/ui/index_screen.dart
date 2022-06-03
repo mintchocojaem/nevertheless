@@ -5,30 +5,30 @@ import 'package:get/get.dart';
 import 'package:pomodoro/app/controller/bottom_nav_controller.dart';
 import 'package:pomodoro/app/ui/common_widgets/message_popup.dart';
 import 'package:pomodoro/app/ui/page/setting/pages/setting_page.dart';
+import 'package:pomodoro/app/ui/page/timechart/pages/time_chart.dart';
 import 'package:pomodoro/app/ui/page/timer/pages/timer_page.dart';
 import 'package:pomodoro/app/ui/page/todo/pages/task_page.dart';
 
 
 class IndexScreen extends GetView<BottomNavController> {
-  PageController pageController = PageController(
-    initialPage: 0,
-    keepPage: true,
-  );
+
+  const IndexScreen({Key? key}) : super(key: key);
+
+  static int position = 0;
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
       child: Obx(() => Scaffold(
         body: Center(
           child:
-            PageView(
-              controller: pageController,
-              onPageChanged: (index) {
-                controller.changeBottomNav(index);
-              },
+            IndexedStack(
+              index: position,
               children: <Widget>[
                 TimerPage(),
                 TaskPage(taskList: []),
-                SettingPage()
+                TimeChartPage(),
+                SettingPage(),
               ],
             )
         ),
@@ -40,11 +40,12 @@ class IndexScreen extends GetView<BottomNavController> {
           elevation: 0,
           onTap: (value) {
             controller.changeBottomNav(value);
-            pageController.jumpToPage(value);
+            position = value;
           },
           items: [
             BottomNavigationBarItem(icon: Icon(Icons.timer), label: 'Timer'),
             BottomNavigationBarItem(icon: Icon(Icons.menu), label: 'Todo'),
+            BottomNavigationBarItem(icon: Icon(Icons.bar_chart), label: 'TimeChart'),
             BottomNavigationBarItem(icon: Icon(Icons.settings), label: 'Settings'),
           ],
         ),

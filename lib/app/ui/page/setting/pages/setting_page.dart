@@ -1,36 +1,31 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:pomodoro/app/controller/bottom_nav_controller.dart';
+import 'package:pomodoro/app/ui/index_screen.dart';
 import 'package:settings_ui/settings_ui.dart';
 
-class SettingPage extends StatefulWidget {
-  const SettingPage({Key? key}) : super(key: key);
 
-  @override
-  State<SettingPage> createState() => _SettingPageState();
-}
+class SettingPage extends GetView<BottomNavController> {
+  SettingPage({Key? key}) : super(key: key);
 
-bool isDarkMode = false;
+  bool isDarkMode = false;
 
-
-
-class _SettingPageState extends State<SettingPage> {
   late Box _darkMode;
 
   bool isSwitched = false;
   bool _vib = false;
 
-  final ScrollController controller = ScrollController();
+  final ScrollController scrollController = ScrollController();
 
-  @override
-  void initState() {
-    _darkMode = Hive.box('darkModeBox');
-    isDarkMode = _darkMode.get('darkMode', defaultValue: true);
-    super.initState();
-  }
+
+
 
   @override
   Widget build(BuildContext context) {
+    _darkMode = Hive.box('darkModeBox');
+    isDarkMode = _darkMode.get('darkMode', defaultValue: true);
     return Scaffold(
       appBar: AppBar(),
       body: SingleChildScrollView(
@@ -44,7 +39,7 @@ class _SettingPageState extends State<SettingPage> {
           physics: NeverScrollableScrollPhysics(),
         ),
         physics: ScrollPhysics(),
-        controller: controller,
+        controller: scrollController,
       ),
     );
   }
@@ -73,9 +68,13 @@ class _SettingPageState extends State<SettingPage> {
         ),
         SettingsTile.switchTile(
           onToggle: (value) {
-            setState(() {
-              changeAppMode(value);
-            });
+            if (value == true) {
+              isDarkMode = true;
+              _darkMode.put('darkMode', true);
+            } else {
+              isDarkMode = false;
+              _darkMode.put('darkMode', false);
+            }
           },
           initialValue: isDarkMode,
           leading: Icon(Icons.format_paint),
@@ -151,18 +150,5 @@ class _SettingPageState extends State<SettingPage> {
         ),
       ],
     );
-  }
-
-  void changeAppMode(bool isDark) {
-    setState(() {
-      if (isDark == true) {
-        isDarkMode = true;
-        _darkMode.put('darkMode', true);
-      } else {
-        isDarkMode = false;
-        _darkMode.put('darkMode', false);
-      }
-    });
-    print;
   }
 }
