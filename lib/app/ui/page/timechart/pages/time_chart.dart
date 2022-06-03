@@ -13,7 +13,7 @@ class TimeChartPage extends StatefulWidget {
   State<TimeChartPage> createState() => _TimeChartPageState();
 }
 
-class _TimeChartPageState extends State<TimeChartPage> {
+class _TimeChartPageState extends State<TimeChartPage> with TickerProviderStateMixin{
 
   final smallDataList = [
     DateTimeRange(
@@ -64,37 +64,39 @@ class _TimeChartPageState extends State<TimeChartPage> {
     return list;
   }
 
-  late final List<DateTimeRange> bigDataList = getRandomSampleDataList();
-
   @override
   Widget build(BuildContext context) {
-    const sizedBox = SizedBox(height: 16);
 
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(title: const Text('Time chart example app')),
-        body: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              children: [
-                const Text('Weekly amount chart'),
-                TimeChart(
-                  data: smallDataList,
-                  chartType: ChartType.amount,
-                  viewMode: ViewMode.weekly,
-                  barColor: Colors.deepPurple,
-                ),
-                sizedBox,
-                const Text('Monthly amount chart'),
-                TimeChart(
-                  data: smallDataList,
-                  chartType: ChartType.amount,
-                  viewMode: ViewMode.monthly,
-                  barColor: Colors.deepPurple,
-                ),
+    return Scaffold(
+      body: DefaultTabController(
+        length: 2,
+        child: Scaffold(
+          appBar: AppBar(
+            title: Text('Tabs Demo'),
+            // TabBar 구현. 각 컨텐트를 호출할 탭들을 등록
+            bottom: TabBar(
+              tabs: [
+                Tab(text: "Weekly",),
+                Tab(text: "Monthly",),
               ],
             ),
+          ),
+          // TabVarView 구현. 각 탭에 해당하는 컨텐트 구성
+          body: TabBarView(
+            children: [
+              TimeChart(
+                data: smallDataList,
+                chartType: ChartType.amount,
+                viewMode: ViewMode.weekly,
+                barColor: Colors.deepPurple,
+              ),
+              TimeChart(
+                data: smallDataList,
+                chartType: ChartType.amount,
+                viewMode: ViewMode.monthly,
+                barColor: Colors.deepPurple,
+              ),
+            ],
           ),
         ),
       ),
