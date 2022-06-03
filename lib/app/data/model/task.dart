@@ -12,31 +12,25 @@ class Task{
   @HiveField(2)
   String? note;
   @HiveField(3)
-  int? isCompleted;
-  @HiveField(4)
   String? date;
-  @HiveField(5)
+  @HiveField(4)
   String? startTime;
-  @HiveField(6)
+  @HiveField(5)
   String? endTime;
-  @HiveField(7)
+  @HiveField(6)
   int? color;
-  @HiveField(8)
-  int? remind;
-  @HiveField(9)
-  String? repeat;
+  @HiveField(7)
+  List<bool>? repeat;
 
   Task({
     this.id,
     this.title,
     this.note,
-    this.isCompleted,
     this.date,
     this.startTime,
     this.endTime,
     this.color,
-    this.remind,
-    this.repeat,
+    this.repeat
   });
 
   Map<String, dynamic> toMap() {
@@ -47,10 +41,8 @@ class Task{
       'date': date,
       'startTime': startTime,
       'endTime': endTime,
-      'remind': remind,
-      'repeat': repeat,
       'color': color,
-      'isCompleted': isCompleted,
+      'repeat' : repeat
     };
   }
 
@@ -61,10 +53,7 @@ class Task{
     date = task['date'];
     startTime = task['startTime'];
     endTime = task['endTime'];
-    remind = task['remind'];
-    repeat = task['repeat'];
     color = task['color'];
-    isCompleted = task['isCompleted'];
-
+    repeat = task['repeat'];
   }
 }

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:pomodoro/app/data/model/task.dart';
 import 'package:pomodoro/app/ui/page/todo/widgets/input_field.dart';
+import 'package:weekday_selector/weekday_selector.dart';
 
 class TaskDetailPage extends StatefulWidget {
   const TaskDetailPage({Key? key, required this.task}) : super(key: key);
@@ -22,7 +23,7 @@ class _TaskDetailPageState extends State<TaskDetailPage> {
   final TextEditingController _startTimeController = TextEditingController();
   final TextEditingController _endTimeController = TextEditingController();
 
-  String _selectedDate = DateFormat.yMd().format(DateTime.now());
+  final String _selectedDate = DateFormat.yMd().format(DateTime.now());
   String _startDate = DateFormat('hh:mm a').format(DateTime.now());
   String _endDate = DateFormat('hh:mm a').format(DateTime.now().add(Duration(minutes: 15)));
 
@@ -30,11 +31,14 @@ class _TaskDetailPageState extends State<TaskDetailPage> {
 
   final int _selectedColor = 0;
 
+  late List<bool> dayValues = widget.task.repeat == null ? List.filled(7, false) : widget.task.repeat!;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-
+        centerTitle: true,
+        title: Text("Detail"),
       ),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -78,18 +82,23 @@ class _TaskDetailPageState extends State<TaskDetailPage> {
                   const SizedBox(
                     height: 20,
                   ),
-                  InputField(
-                    controller: _dateController,
-                    isEnabled: false,
-                    hint: '${_selectedDate.toString()}',
-                    label: 'Date',
-                    iconOrdrop: 'button',
-                    widget: IconButton(
-                      icon: Icon(Icons.date_range),
-                      onPressed: () {
-                        _selectDate(context);
-                      },
-                    ),
+                  WeekdaySelector(
+                    firstDayOfWeek: 0,
+                    onChanged: (int day) {
+                      setState(() {
+                        // Use module % 7 as Sunday's index in the array is 0 and
+                        // DateTime.sunday constant integer value is 7.
+                        final index = day % 7;
+                        // We "flip" the value in this example, but you may also
+                        // perform validation, a DB write, an HTTP call or anything
+                        // else before you actually flip the value,
+                        // it's up to your app's needs.
+                        dayValues[index] = !dayValues[index];
+                      });
+                    },
+                    shortWeekdays: ["Mon","Tue","Wed","Thr","Fri","Sat","Sun"],
+                    values: dayValues,
+
                   ),
                   const SizedBox(
                     height: 20,
@@ -159,32 +168,13 @@ class _TaskDetailPageState extends State<TaskDetailPage> {
   }
 
   _saveTaskToDB(Task task) {
-    task.isCompleted = 0;
     task.color = -_selectedColor;
     task.title = _titleController.text;
     task.note = _noteController.text;
     task.date = _selectedDate.toString();
     task.startTime = _startDate;
     task.endTime = _endDate;
-  }
-
-  _selectDate(BuildContext context) async {
-    final DateTime? selected = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      currentDate: DateTime.now(),
-      firstDate: DateTime.now(),
-      lastDate: DateTime(2025),
-
-    );
-    setState(() {
-      if(selected != null){
-        _selectedDate = DateFormat.yMd().format(selected).toString();
-      }
-      else {
-        _selectedDate = DateFormat.yMd().format(DateTime.now()).toString();
-      }
-    });
+    task.repeat = dayValues;
   }
 
   _submitDate() {

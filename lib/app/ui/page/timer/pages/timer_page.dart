@@ -5,36 +5,13 @@ import 'package:pomodoro/app/data/model/task.dart';
 import 'package:pomodoro/app/ui/page/timer/widgets/pomodoro_timer.dart';
 
 class TimerPage extends StatefulWidget {
-  const TimerPage({Key? key}) : super(key: key);
+  TimerPage({Key? key, required this.taskList}) : super(key: key);
   @override
   State<TimerPage> createState() => _TimerPageState();
+  List<Task> taskList;
 }
 
 class _TimerPageState extends State<TimerPage> {
-
-
-  List<Task> taskList = [
-    Task(
-        id: 0,
-        title: "수학",
-        note: "1",
-        date:  DateFormat.yMd().format(DateTime.now()),
-        startTime: DateFormat('hh:mm a').format(DateTime.now()),
-        endTime: DateFormat('hh:mm a').format(DateTime.now().add(Duration(minutes: 15))),
-        color: 0,
-        isCompleted: 0
-    ),
-    Task(
-        id: 1,
-        title: "영어",
-        note: "1",
-        date:  DateFormat.yMd().format(DateTime.now()),
-        startTime: DateFormat('hh:mm a').format(DateTime.now()),
-        endTime: DateFormat('hh:mm a').format(DateTime.now().add(Duration(minutes: 15))),
-        color: 0,
-        isCompleted: 0),
-  ];
-
 
   List<Widget> taskWidgetList = [];
   List<Widget> pages = [
@@ -43,7 +20,7 @@ class _TimerPageState extends State<TimerPage> {
   @override
   void initState() {
     // TODO: implement initState
-    for( Task i in taskList){
+    for( Task i in widget.taskList){
       taskWidgetList.add(
         Card(
             child: ListTile(
@@ -62,7 +39,7 @@ class _TimerPageState extends State<TimerPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Pomodoro'),
+        title: Text('Timer'),
       ),
       body: Padding(
         padding: const EdgeInsets.only(top: 32),

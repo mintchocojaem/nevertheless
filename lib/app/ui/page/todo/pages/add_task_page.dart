@@ -37,7 +37,8 @@ class _AddTaskPageState extends State<AddTaskPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-
+        centerTitle: true,
+        title: Text("add Todo"),
       ),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -164,7 +165,6 @@ class _AddTaskPageState extends State<AddTaskPage> {
   }
 
   _addTaskToDB(Task task) {
-    task.isCompleted = 0;
     task.color = -_selectedColor;
     task.title = _titleController.text;
     task.note = _noteController.text;

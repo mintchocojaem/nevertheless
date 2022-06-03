@@ -25,19 +25,17 @@ class _TaskPageState extends State<TaskPage> {
 
   DateTime selectDate = DateTime.now();
   List<Task> dateTodoList = [];
+  late int day;
   @override
   void initState() {
     // TODO: implement initState
     SizeConfig.orientation = Orientation.portrait;
     SizeConfig.screenHeight = 100;
     SizeConfig.screenWidth = 100;
-
+    day = selectDate.day;
     for(var i in widget.taskList){
       Task task = i;
-      if (task.repeat == 'Daily' ||
-          task.date == DateFormat.yMd().format(selectDate) ||
-          (task.repeat == 'Weekly' && selectDate.difference(DateFormat.yMd().parse(task.date!)).inDays % 7 == 0)||
-          (task.repeat == 'Monthly' && DateFormat.yMd().parse(task.date!).day == selectDate.day)) {
+      if (task.repeat![selectDate.weekday-1] == true){
         dateTodoList.add(task);
       }
     }
@@ -50,7 +48,8 @@ class _TaskPageState extends State<TaskPage> {
 
     return Scaffold(
       appBar: AppBar(
-
+        centerTitle: true,
+        title: Text("Todo"),
       ),
       body: Padding(
         padding: const EdgeInsets.only(top: 20),
@@ -70,6 +69,7 @@ class _TaskPageState extends State<TaskPage> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
+        heroTag: "btn",
         backgroundColor: Colors.deepPurpleAccent,
         child: const Icon(
           Icons.add,
@@ -96,10 +96,7 @@ class _TaskPageState extends State<TaskPage> {
             dateTodoList= [];
             for(var i in widget.taskList){
               Task task = i;
-              if (task.repeat == 'Daily' ||
-                  task.date == DateFormat.yMd().format(selectDate) ||
-                  (task.repeat == 'Weekly' && selectDate.difference(DateFormat.yMd().parse(task.date!)).inDays % 7 == 0)||
-                  (task.repeat == 'Monthly' && DateFormat.yMd().parse(task.date!).day == selectDate.day)) {
+              if (task.repeat![selectDate.weekday-1] == true){
                 dateTodoList.add(task);
               }
             }

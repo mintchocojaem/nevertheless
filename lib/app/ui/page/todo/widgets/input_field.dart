@@ -58,17 +58,6 @@ class _InputFieldState extends State<InputField> {
             hintText: widget.hint,
             hintStyle:
                 TextStyle(color: Get.isDarkMode ? Colors.white70 : Colors.grey),
-            enabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(
-                    width: 1,
-                    ),
-                borderRadius: BorderRadius.circular(10)),
-            focusedBorder: OutlineInputBorder(
-              borderSide: BorderSide(
-                  width: 1,
-                  ),
-              borderRadius: BorderRadius.circular(10),
-            ),
           ),
         ),
       ],

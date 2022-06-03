@@ -72,7 +72,7 @@ class _TimeChartPageState extends State<TimeChartPage> with TickerProviderStateM
         length: 2,
         child: Scaffold(
           appBar: AppBar(
-            title: Text('Tabs Demo'),
+            title: Text('Time Chart'),
             // TabBar 구현. 각 컨텐트를 호출할 탭들을 등록
             bottom: TabBar(
               tabs: [

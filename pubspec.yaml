@@ -42,6 +42,7 @@ dependencies:
   settings_ui: ^2.0.2
   get: ^4.6.1
   time_chart: ^0.5.2
+  weekday_selector: ^1.1.0
 
   # for using hive
   hive: ^2.0.6

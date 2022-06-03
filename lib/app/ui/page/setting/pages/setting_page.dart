@@ -19,15 +19,15 @@ class SettingPage extends GetView<BottomNavController> {
 
   final ScrollController scrollController = ScrollController();
 
-
-
-
   @override
   Widget build(BuildContext context) {
     _darkMode = Hive.box('darkModeBox');
     isDarkMode = _darkMode.get('darkMode', defaultValue: true);
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        centerTitle: true,
+        title: Text("Settings"),
+      ),
       body: SingleChildScrollView(
         child: SettingsList(
           sections: [
@@ -77,7 +77,7 @@ class SettingPage extends GetView<BottomNavController> {
             }
           },
           initialValue: isDarkMode,
-          leading: Icon(Icons.format_paint),
+          leading: Icon(Icons.dark_mode),
           title: Text('Dark Theme'),
         )
       ],
