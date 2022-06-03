@@ -68,6 +68,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
                     label: 'Title',
                     iconOrdrop: 'icon',
                     controller: _titleController,
+                    emptyText: false,
                   ),
                   const SizedBox(
                     height: 20,
@@ -78,6 +79,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
                     label: 'Note',
                     iconOrdrop: 'icon',
                     controller: _noteController,
+                    emptyText: true,
                   ),
                   const SizedBox(
                     height: 20,
@@ -94,6 +96,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
                         _selectDate(context);
                       },
                     ),
+                    emptyText: false,
                   ),
                   const SizedBox(
                     height: 20,
@@ -115,6 +118,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
                                 _selectStartTime(context);
                               },
                             ),
+                            emptyText: false,
                           )),
                       SizedBox(
                           width: 165,
@@ -130,6 +134,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
                                 _selectEndTime(context);
                               },
                             ),
+                            emptyText: false,
                           )),
                     ],
                   ),

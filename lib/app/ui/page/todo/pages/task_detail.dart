@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:pomodoro/app/data/model/task.dart';
+import 'package:pomodoro/app/ui/index_screen.dart';
 import 'package:pomodoro/app/ui/page/todo/widgets/input_field.dart';
 import 'package:weekday_selector/weekday_selector.dart';
 
@@ -13,28 +14,36 @@ class TaskDetailPage extends StatefulWidget {
   State<TaskDetailPage> createState() => _TaskDetailPageState();
 }
 
-class _TaskDetailPageState extends State<TaskDetailPage> {
+class _TaskDetailPageState extends State<TaskDetailPage>{
 
   final _formKey = GlobalKey<FormState>();
 
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _noteController = TextEditingController();
-  final TextEditingController _dateController = TextEditingController();
   final TextEditingController _startTimeController = TextEditingController();
   final TextEditingController _endTimeController = TextEditingController();
 
-  final String _selectedDate = DateFormat.yMd().format(DateTime.now());
   String _startDate = DateFormat('hh:mm a').format(DateTime.now());
   String _endDate = DateFormat('hh:mm a').format(DateTime.now().add(Duration(minutes: 15)));
 
-  List<int> reminderList = [5, 10, 15, 20];
-
   final int _selectedColor = 0;
 
-  late List<bool> dayValues = widget.task.repeat == null ? List.filled(7, false) : widget.task.repeat!;
+  List<bool> dayValues = List.filled(7, false);
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    for(int i = 0; i < dayValues.length; i++){
+      dayValues[i] = widget.task.repeat![i];
+    }
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
+    _titleController.text = widget.task.title!;
+    _noteController.text = widget.task.note == null ? "" : widget.task.note!;
+
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -68,6 +77,7 @@ class _TaskDetailPageState extends State<TaskDetailPage> {
                     label: 'Title',
                     iconOrdrop: 'icon',
                     controller: _titleController,
+                    emptyText: false,
                   ),
                   const SizedBox(
                     height: 20,
@@ -78,6 +88,7 @@ class _TaskDetailPageState extends State<TaskDetailPage> {
                     label: 'Note',
                     iconOrdrop: 'icon',
                     controller: _noteController,
+                    emptyText: true,
                   ),
                   const SizedBox(
                     height: 20,
@@ -120,6 +131,7 @@ class _TaskDetailPageState extends State<TaskDetailPage> {
                                 _selectStartTime(context);
                               },
                             ),
+                            emptyText: false,
                           )),
                       SizedBox(
                           width: 165,
@@ -135,6 +147,7 @@ class _TaskDetailPageState extends State<TaskDetailPage> {
                                 _selectEndTime(context);
                               },
                             ),
+                            emptyText: false,
                           )),
                     ],
                   ),
@@ -147,7 +160,6 @@ class _TaskDetailPageState extends State<TaskDetailPage> {
                     children: [
                       CupertinoButton(
                         onPressed: () async {
-                          _submitDate();
                           _submitStartTime();
                           _submitEndTime();
                           if (_formKey.currentState!.validate()) {
@@ -171,14 +183,9 @@ class _TaskDetailPageState extends State<TaskDetailPage> {
     task.color = -_selectedColor;
     task.title = _titleController.text;
     task.note = _noteController.text;
-    task.date = _selectedDate.toString();
     task.startTime = _startDate;
     task.endTime = _endDate;
     task.repeat = dayValues;
-  }
-
-  _submitDate() {
-    _dateController.text = _selectedDate;
   }
 
   _selectStartTime(BuildContext context) async {

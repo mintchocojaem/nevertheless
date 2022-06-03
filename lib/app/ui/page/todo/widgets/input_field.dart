@@ -5,13 +5,15 @@ import 'package:get/get.dart';
 class InputField extends StatefulWidget {
   const InputField(
       {Key? key,
-      required this.label,
-      this.controller,
-      this.icondata,
-      required this.hint,
-      this.widget,
-      required this.iconOrdrop,
-      required this.isEnabled})
+        required this.label,
+        this.controller,
+        this.icondata,
+        required this.hint,
+        this.widget,
+        required this.iconOrdrop,
+        required this.isEnabled,
+        required this.emptyText,
+      })
       : super(key: key);
   final String label;
   final TextEditingController? controller;
@@ -20,6 +22,7 @@ class InputField extends StatefulWidget {
   final String iconOrdrop;
   final Widget? widget;
   final bool isEnabled;
+  final bool emptyText;
 
   @override
   _InputFieldState createState() => _InputFieldState();
@@ -44,8 +47,10 @@ class _InputFieldState extends State<InputField> {
           readOnly: !widget.isEnabled,
           controller: widget.controller,
           validator: (value) {
-            if (value.toString().isEmpty) {
-              return 'Please Enter ${widget.label}';
+            if(widget.emptyText == false){
+              if (value.toString().isEmpty) {
+                return 'Please Enter ${widget.label}';
+              }
             }
           },
           decoration: InputDecoration(
