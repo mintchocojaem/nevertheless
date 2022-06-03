@@ -20,6 +20,8 @@ class _SettingPageState extends State<SettingPage> {
   bool isSwitched = false;
   bool _vib = false;
 
+  final ScrollController controller = ScrollController();
+
   @override
   void initState() {
     _darkMode = Hive.box('darkModeBox');
@@ -31,12 +33,18 @@ class _SettingPageState extends State<SettingPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(),
-      body: SettingsList(
-        sections: [
-          _common(),
-          _alarm(),
-          _aboutApp(),
-        ],
+      body: SingleChildScrollView(
+        child: SettingsList(
+          sections: [
+            _common(),
+            _alarm(),
+            _aboutApp(),
+          ],
+          shrinkWrap: true,
+          physics: NeverScrollableScrollPhysics(),
+        ),
+        physics: ScrollPhysics(),
+        controller: controller,
       ),
     );
   }

@@ -23,7 +23,7 @@ class IndexScreen extends GetView<BottomNavController> {
             PageView(
               controller: pageController,
               onPageChanged: (index) {
-                //print(index);
+                controller.changeBottomNav(index);
               },
               children: <Widget>[
                 TimerPage(),
