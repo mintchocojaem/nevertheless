@@ -22,7 +22,9 @@ class Task{
   @HiveField(7)
   List<bool>? repeat;
   @HiveField(8)
-  String? rest;
+  String? restStartTime;
+  @HiveField(8)
+  String? restEndTime;
 
   Task({
     this.id,
@@ -33,7 +35,8 @@ class Task{
     this.endTime,
     this.color,
     this.repeat,
-    this.rest,
+    this.restStartTime,
+    this.restEndTime,
   });
 
   Map<String, dynamic> toMap() {
@@ -46,7 +49,8 @@ class Task{
       'endTime': endTime,
       'color': color,
       'repeat' : repeat,
-      'rest' : rest,
+      'restStartTime' : restStartTime,
+      'restEndTime' : restEndTime,
     };
   }
 
@@ -59,6 +63,7 @@ class Task{
     endTime = task['endTime'];
     color = task['color'];
     repeat = task['repeat'];
-    rest = task['rest'];
+    restStartTime = task['restStartTime'];
+    restEndTime = task['restEndTime'];
   }
 }

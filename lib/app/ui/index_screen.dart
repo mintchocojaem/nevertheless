@@ -19,6 +19,8 @@ List<Task> taskList = [
       date:  DateFormat.yMd().format(DateTime.now()),
       startTime: DateFormat('hh:mm a').format(DateTime.now()),
       endTime: DateFormat('hh:mm a').format(DateTime.now().add(Duration(minutes: 30))),
+      restStartTime: DateFormat('hh:mm a').format(DateTime.now().add(Duration(minutes: 30))),
+      restEndTime: DateFormat('hh:mm a').format(DateTime.now().add(Duration(minutes: 60))),
       color: 0,
       repeat: [true,false,false,false,false,false,false]
   )

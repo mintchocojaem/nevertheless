@@ -26,10 +26,31 @@ class _TimerPageState extends State<TimerPage> {
     for( Task i in widget.taskList){
       taskWidgetList.add(
         Card(
-            child: ListTile(
-                title: Text(i.title!),
-                subtitle: Text(i.note!),
-                trailing: Text(i.startTime! + " ~ " + i.endTime!),
+          child: ListTile(
+              title: Text(i.title!),
+              subtitle: Text(i.note!),
+              trailing: Text(i.startTime! + " ~ " + i.endTime!),
+              onTap: (){
+                Navigator.of(context)
+                    .push(MaterialPageRoute(builder: (context)=> TaskDetailPage(task: i))
+                ).then((value) {
+                  setState(() {
+
+                  });
+                });
+              },
+          )
+        ),
+      );
+      duration += (((stringToTimeOfDay(i.endTime!).hour - stringToTimeOfDay(i.startTime!).hour) * 60) * 60)
+          + ((stringToTimeOfDay(i.endTime!).minute - stringToTimeOfDay(i.startTime!).minute) * 60);
+
+      if(i.restStartTime != null && i.restEndTime != null){
+        taskWidgetList.add(
+          Card(
+              child: ListTile(
+                title: Text("Rest Time"+" ("+ i.title! +")"),
+                trailing: Text(i.restStartTime! + " ~ " + i.restEndTime!),
                 onTap: (){
                   Navigator.of(context)
                       .push(MaterialPageRoute(builder: (context)=> TaskDetailPage(task: i))
@@ -39,11 +60,12 @@ class _TimerPageState extends State<TimerPage> {
                     });
                   });
                 },
-            )
-        ),
-      );
-      duration += (((stringToTimeOfDay(i.endTime!).hour - stringToTimeOfDay(i.startTime!).hour) * 60) * 60)
-          + ((stringToTimeOfDay(i.endTime!).minute - stringToTimeOfDay(i.startTime!).minute) * 60);
+              )
+          ),
+        );
+        duration += (((stringToTimeOfDay(i.restEndTime!).hour - stringToTimeOfDay(i.restStartTime!).hour) * 60) * 60)
+            + ((stringToTimeOfDay(i.restEndTime!).minute - stringToTimeOfDay(i.restStartTime!).minute) * 60);
+      }
     }
     super.initState();
   }

@@ -23,9 +23,10 @@ class _TaskDetailPageState extends State<TaskDetailPage>{
   final TextEditingController _startTimeController = TextEditingController();
   final TextEditingController _endTimeController = TextEditingController();
 
-  String _startDate = DateFormat('hh:mm a').format(DateTime.now());
-  String _endDate = DateFormat('hh:mm a').format(DateTime.now().add(Duration(minutes: 15)));
-
+  String? _startDate = "";
+  String? _endDate = "";
+  String? _restStartDate = "";
+  String? _restEndDate = "";
   final int _selectedColor = 0;
   bool restEnabled = false;
   List<bool> dayValues = List.filled(7, false);
@@ -36,6 +37,11 @@ class _TaskDetailPageState extends State<TaskDetailPage>{
     for(int i = 0; i < dayValues.length; i++){
       dayValues[i] = widget.task.repeat![i];
     }
+    _startDate = widget.task.startTime;
+    _endDate = widget.task.endTime;
+    _restStartDate = widget.task.restStartTime;
+    _restEndDate = widget.task.restEndTime;
+    restEnabled = widget.task.restStartTime != null && widget.task.restEndTime != null;
     super.initState();
   }
 
@@ -72,9 +78,6 @@ class _TaskDetailPageState extends State<TaskDetailPage>{
               key: _formKey,
               child: Column(
                 children: [
-                  const SizedBox(
-                    height: 25,
-                  ),
                   InputField(
                     boldText: true,
                     isEditable: true,
@@ -193,7 +196,7 @@ class _TaskDetailPageState extends State<TaskDetailPage>{
                                 isEditable: false,
                                 label: 'Start Time',
                                 iconOrdrop: 'button',
-                                hint: _startDate.toString(),
+                                hint: _restStartDate.toString(),
                                 widget: IconButton(
                                   icon: Icon(Icons.access_time),
                                   onPressed: () {
@@ -209,7 +212,7 @@ class _TaskDetailPageState extends State<TaskDetailPage>{
                                 isEditable: false,
                                 iconOrdrop: 'button',
                                 label: 'End Time',
-                                hint: _endDate.toString(),
+                                hint: _restEndDate.toString(),
                                 widget: IconButton(
                                   icon: Icon(Icons.access_time),
                                   onPressed: () {
@@ -255,7 +258,7 @@ class _TaskDetailPageState extends State<TaskDetailPage>{
   }
 
   _submitStartTime() {
-    _startTimeController.text = _startDate;
+    _startTimeController.text = _startDate!;
   }
 
   _selectEndTime(BuildContext context) async {
@@ -270,7 +273,7 @@ class _TaskDetailPageState extends State<TaskDetailPage>{
   }
 
   _submitEndTime() {
-    _endTimeController.text = _endDate;
+    _endTimeController.text = _endDate!;
   }
 
 }
