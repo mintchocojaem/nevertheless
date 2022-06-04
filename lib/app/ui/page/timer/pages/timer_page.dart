@@ -2,7 +2,10 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:pomodoro/app/data/model/task.dart';
+import 'package:pomodoro/app/ui/index_screen.dart';
 import 'package:pomodoro/app/ui/page/timer/widgets/pomodoro_timer.dart';
+
+import '../../todo/pages/task_detail.dart';
 
 class TimerPage extends StatefulWidget {
   TimerPage({Key? key, required this.taskList}) : super(key: key);
@@ -14,22 +17,33 @@ class TimerPage extends StatefulWidget {
 class _TimerPageState extends State<TimerPage> {
 
   List<Widget> taskWidgetList = [];
-  List<Widget> pages = [
+  int duration = 0;
 
-  ];
   @override
   void initState() {
+
     // TODO: implement initState
     for( Task i in widget.taskList){
       taskWidgetList.add(
         Card(
             child: ListTile(
-                title: Text("1교시"),
-                subtitle: Text(i.title!),
-                trailing: Text('10%')
+                title: Text(i.title!),
+                subtitle: Text(i.note!),
+                trailing: Text(i.startTime! + " ~ " + i.endTime!),
+                onTap: (){
+                  Navigator.of(context)
+                      .push(MaterialPageRoute(builder: (context)=> TaskDetailPage(task: i))
+                  ).then((value) {
+                    setState(() {
+
+                    });
+                  });
+                },
             )
         ),
       );
+      duration += (((stringToTimeOfDay(i.endTime!).hour - stringToTimeOfDay(i.startTime!).hour) * 60) * 60)
+          + ((stringToTimeOfDay(i.endTime!).minute - stringToTimeOfDay(i.startTime!).minute) * 60);
     }
     super.initState();
   }
@@ -49,7 +63,7 @@ class _TimerPageState extends State<TimerPage> {
           children: [
             Container(
                 child: Center(
-                  child: PomodoroTimer(),
+                  child: PomodoroTimer(duration: duration),
                 )
             ),
             Expanded(
@@ -81,4 +95,8 @@ class _TimerPageState extends State<TimerPage> {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
+}
+TimeOfDay stringToTimeOfDay(String tod) {
+  final format = DateFormat.jm(); //"6:00 AM"
+  return TimeOfDay.fromDateTime(format.parse(tod));
 }

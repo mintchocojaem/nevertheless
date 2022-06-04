@@ -20,7 +20,7 @@ void main() async {
   runApp(ValueListenableBuilder(
     builder: (context, Box box, widget) {
       final darkMode = box.get('darkMode', defaultValue: true);
-      return GetMaterialApp(
+      return GetMaterialApp( 
         theme: ThemeData(
           brightness: Brightness.light,
           /* light theme setting */

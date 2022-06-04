@@ -5,8 +5,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class PomodoroTimer extends StatefulWidget{
-  const PomodoroTimer({Key? key}) : super(key: key);
-
+  const PomodoroTimer({Key? key, required this.duration}) : super(key: key);
+  final duration;
   @override
   State<StatefulWidget> createState() {
     // TODO: implement createState
@@ -16,11 +16,12 @@ class PomodoroTimer extends StatefulWidget{
 }
 
 class _PomodoroTimer extends State<PomodoroTimer>{
+
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
     return  CircularCountDownTimer(
-        duration: 100,
+        duration: widget.duration,
         initialDuration: 0,
         controller: CountDownController(),
         width: MediaQuery.of(context).size.width / 3,

@@ -63,7 +63,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
                     height: 25,
                   ),
                   InputField(
-                    isEnabled: true,
+                    isEditable: true,
                     hint: 'Enter Title',
                     label: 'Title',
                     iconOrdrop: 'icon',
@@ -74,7 +74,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
                     height: 20,
                   ),
                   InputField(
-                    isEnabled: true,
+                    isEditable: true,
                     hint: 'Enter Note',
                     label: 'Note',
                     iconOrdrop: 'icon',
@@ -86,7 +86,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
                   ),
                   InputField(
                     controller: _dateController,
-                    isEnabled: false,
+                    isEditable: false,
                     hint: '${_selectedDate.toString()}',
                     label: 'Date',
                     iconOrdrop: 'button',
@@ -107,7 +107,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
                       SizedBox(
                           width: 165,
                           child: InputField(
-                            isEnabled: false,
+                            isEditable: false,
                             controller: _startTimeController,
                             label: 'Start Time',
                             iconOrdrop: 'button',
@@ -124,7 +124,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
                           width: 165,
                           child: InputField(
                             controller: _endTimeController,
-                            isEnabled: false,
+                            isEditable: false,
                             iconOrdrop: 'button',
                             label: 'End Time',
                             hint: _endDate.toString(),

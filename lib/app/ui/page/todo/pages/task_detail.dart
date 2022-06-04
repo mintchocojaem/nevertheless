@@ -27,7 +27,7 @@ class _TaskDetailPageState extends State<TaskDetailPage>{
   String _endDate = DateFormat('hh:mm a').format(DateTime.now().add(Duration(minutes: 15)));
 
   final int _selectedColor = 0;
-
+  bool restEnabled = false;
   List<bool> dayValues = List.filled(7, false);
 
   @override
@@ -47,7 +47,22 @@ class _TaskDetailPageState extends State<TaskDetailPage>{
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: Text("Detail"),
+        title: Text("Todo Detail"),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 12, left: 12),
+            child: IconButton(
+                onPressed: (){
+                  _submitStartTime();
+                  _submitEndTime();
+                  if (_formKey.currentState!.validate()) {
+                    _saveTaskToDB(widget.task);
+                    Navigator.pop(context);
+                  }
+                },
+                icon: Icon(Icons.check)),
+          )
+        ],
       ),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -57,38 +72,31 @@ class _TaskDetailPageState extends State<TaskDetailPage>{
               key: _formKey,
               child: Column(
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        "Task Detail",
-                        style: TextStyle(
-                            fontSize: 23,
-                            fontWeight: FontWeight.bold),
-                      )
-                    ],
-                  ),
                   const SizedBox(
                     height: 25,
                   ),
                   InputField(
-                    isEnabled: true,
+                    boldText: true,
+                    isEditable: true,
                     hint: widget.task.title!,
                     label: 'Title',
                     iconOrdrop: 'icon',
                     controller: _titleController,
                     emptyText: false,
+                    fontSize: 17,
                   ),
                   const SizedBox(
                     height: 20,
                   ),
                   InputField(
-                    isEnabled: true,
+                    boldText: true,
+                    isEditable: true,
                     hint: widget.task.note!,
                     label: 'Note',
                     iconOrdrop: 'icon',
                     controller: _noteController,
                     emptyText: true,
+                    fontSize: 17,
                   ),
                   const SizedBox(
                     height: 20,
@@ -114,62 +122,109 @@ class _TaskDetailPageState extends State<TaskDetailPage>{
                   const SizedBox(
                     height: 20,
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  Column(
                     children: [
+                      Text("Study",style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17),),
                       SizedBox(
-                          width: 165,
-                          child: InputField(
-                            isEnabled: false,
-                            controller: _startTimeController,
-                            label: 'Start Time',
-                            iconOrdrop: 'button',
-                            hint: _startDate.toString(),
-                            widget: IconButton(
-                              icon: Icon(Icons.access_time),
-                              onPressed: () {
-                                _selectStartTime(context);
-                              },
-                            ),
-                            emptyText: false,
-                          )),
-                      SizedBox(
-                          width: 165,
-                          child: InputField(
-                            controller: _endTimeController,
-                            isEnabled: false,
-                            iconOrdrop: 'button',
-                            label: 'End Time',
-                            hint: _endDate.toString(),
-                            widget: IconButton(
-                              icon: Icon(Icons.access_time),
-                              onPressed: () {
-                                _selectEndTime(context);
-                              },
-                            ),
-                            emptyText: false,
-                          )),
+                        height: 20,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          SizedBox(
+                              width: 165,
+                              child: InputField(
+                                isEditable: false,
+                                controller: _startTimeController,
+                                label: 'Start Time',
+                                iconOrdrop: 'button',
+                                hint: _startDate.toString(),
+                                widget: IconButton(
+                                  icon: Icon(Icons.access_time),
+                                  onPressed: () {
+                                    _selectStartTime(context);
+                                  },
+                                ),
+                                emptyText: false,
+                              )),
+                          SizedBox(
+                              width: 165,
+                              child: InputField(
+                                controller: _endTimeController,
+                                isEditable: false,
+                                iconOrdrop: 'button',
+                                label: 'End Time',
+                                hint: _endDate.toString(),
+                                widget: IconButton(
+                                  icon: Icon(Icons.access_time),
+                                  onPressed: () {
+                                    _selectEndTime(context);
+                                  },
+                                ),
+                                emptyText: false,
+                              )),
+                        ],
+                      ),
                     ],
                   ),
                   const SizedBox(
                     height: 20,
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
+                  Column(
                     children: [
-                      CupertinoButton(
-                        onPressed: () async {
-                          _submitStartTime();
-                          _submitEndTime();
-                          if (_formKey.currentState!.validate()) {
-                            _saveTaskToDB(widget.task);
-                            Navigator.pop(context);
-                          }
-                        },
-                        child: Text('save Task'),)
+                      Text("Rest",style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17),),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Switch(
+                            value: restEnabled,
+                            onChanged: (value){
+                              setState((){
+                                restEnabled = !restEnabled;
+                              });
+                            }),
+                          SizedBox(
+                              width: 165,
+                              child: InputField(
+                                isEnabled: restEnabled,
+                                isEditable: false,
+                                label: 'Start Time',
+                                iconOrdrop: 'button',
+                                hint: _startDate.toString(),
+                                widget: IconButton(
+                                  icon: Icon(Icons.access_time),
+                                  onPressed: () {
+                                    _selectStartTime(context);
+                                  },
+                                ),
+                                emptyText: false,
+                              )),
+                          SizedBox(
+                              width: 165,
+                              child: InputField(
+                                isEnabled: restEnabled,
+                                isEditable: false,
+                                iconOrdrop: 'button',
+                                label: 'End Time',
+                                hint: _endDate.toString(),
+                                widget: IconButton(
+                                  icon: Icon(Icons.access_time),
+                                  onPressed: () {
+                                    _selectEndTime(context);
+                                  },
+                                ),
+                                emptyText: false,
+                              )),
+                        ],
+                      ),
                     ],
-                  )
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
                 ],
               ),
             ),

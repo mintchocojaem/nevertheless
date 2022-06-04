@@ -18,20 +18,10 @@ List<Task> taskList = [
       note: "1",
       date:  DateFormat.yMd().format(DateTime.now()),
       startTime: DateFormat('hh:mm a').format(DateTime.now()),
-      endTime: DateFormat('hh:mm a').format(DateTime.now().add(Duration(minutes: 15))),
+      endTime: DateFormat('hh:mm a').format(DateTime.now().add(Duration(minutes: 30))),
       color: 0,
       repeat: [true,false,false,false,false,false,false]
-  ),
-  Task(
-      id: 1,
-      title: "영어",
-      note: "1",
-      date:  DateFormat.yMd().format(DateTime.now()),
-      startTime: DateFormat('hh:mm a').format(DateTime.now()),
-      endTime: DateFormat('hh:mm a').format(DateTime.now().add(Duration(minutes: 15))),
-      color: 0,
-      repeat: [false,true,false,false,false,false,false]
-  ),
+  )
 ];
 
 

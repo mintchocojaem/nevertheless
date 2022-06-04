@@ -5,7 +5,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 // typeId는 절대 중복되면 안된다.
 @HiveType(typeId: 1)
 class Task{
-  @HiveField(0)       // 등록을 하고나면 절대 숫자를 바꿔주면 안된다.
+  @HiveField(0)  // 등록을 하고나면 절대 숫자를 바꿔주면 안된다.
   int? id;
   @HiveField(1)
   String? title;
@@ -21,6 +21,8 @@ class Task{
   int? color;
   @HiveField(7)
   List<bool>? repeat;
+  @HiveField(8)
+  String? rest;
 
   Task({
     this.id,
@@ -30,7 +32,8 @@ class Task{
     this.startTime,
     this.endTime,
     this.color,
-    this.repeat
+    this.repeat,
+    this.rest,
   });
 
   Map<String, dynamic> toMap() {
@@ -42,7 +45,8 @@ class Task{
       'startTime': startTime,
       'endTime': endTime,
       'color': color,
-      'repeat' : repeat
+      'repeat' : repeat,
+      'rest' : rest,
     };
   }
 
@@ -55,5 +59,6 @@ class Task{
     endTime = task['endTime'];
     color = task['color'];
     repeat = task['repeat'];
+    rest = task['rest'];
   }
 }

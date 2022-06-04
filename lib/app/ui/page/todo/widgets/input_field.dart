@@ -11,8 +11,11 @@ class InputField extends StatefulWidget {
         required this.hint,
         this.widget,
         required this.iconOrdrop,
-        required this.isEnabled,
+        required this.isEditable,
         required this.emptyText,
+        this.isEnabled,
+        this.fontSize,
+        this.boldText,
       })
       : super(key: key);
   final String label;
@@ -21,8 +24,11 @@ class InputField extends StatefulWidget {
   final String hint;
   final String iconOrdrop;
   final Widget? widget;
-  final bool isEnabled;
+  final bool isEditable;
+  final bool? isEnabled;
   final bool emptyText;
+  final double? fontSize;
+  final bool? boldText;
 
   @override
   _InputFieldState createState() => _InputFieldState();
@@ -37,19 +43,20 @@ class _InputFieldState extends State<InputField> {
         Text(
           widget.label,
           style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 17),
+              fontWeight: widget.boldText == true ? FontWeight.bold : null,
+              fontSize: widget.fontSize ?? 14),
         ),
         const SizedBox(
           height: 5,
         ),
         TextFormField(
-          readOnly: !widget.isEnabled,
+          enabled: widget.isEnabled,
+          readOnly: !widget.isEditable,
           controller: widget.controller,
           validator: (value) {
-            if(widget.emptyText == false){
+            if(widget.emptyText == false && widget.isEnabled != false){
               if (value.toString().isEmpty) {
-                return 'Please Enter ${widget.label}';
+                return 'Please Check ${widget.label}';
               }
             }
           },
