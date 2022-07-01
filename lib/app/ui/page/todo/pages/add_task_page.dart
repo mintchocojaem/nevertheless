@@ -48,17 +48,6 @@ class _AddTaskPageState extends State<AddTaskPage> {
               key: _formKey,
               child: Column(
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        "Add Task",
-                        style: TextStyle(
-                            fontSize: 23,
-                            fontWeight: FontWeight.bold),
-                      )
-                    ],
-                  ),
                   const SizedBox(
                     height: 25,
                   ),

@@ -18,11 +18,11 @@ List<Task> taskList = [
       note: "1",
       date:  DateFormat.yMd().format(DateTime.now()),
       startTime: DateFormat('hh:mm a').format(DateTime.now()),
-      endTime: DateFormat('hh:mm a').format(DateTime.now().add(Duration(minutes: 30))),
-      restStartTime: DateFormat('hh:mm a').format(DateTime.now().add(Duration(minutes: 30))),
-      restEndTime: DateFormat('hh:mm a').format(DateTime.now().add(Duration(minutes: 60))),
+      endTime: DateFormat('hh:mm a').format(DateTime.now().add(Duration(minutes: 1))),
+      restStartTime: DateFormat('hh:mm a').format(DateTime.now()),
+      restEndTime: DateFormat('hh:mm a').format(DateTime.now().add(Duration(minutes: 1))),
       color: 0,
-      repeat: [true,false,false,false,false,false,false]
+      repeat: [false,false,false,false,true,false,false],
   )
 ];
 
@@ -44,7 +44,7 @@ class IndexScreen extends GetView<BottomNavController> {
               children: <Widget>[
                 TimerPage(taskList: taskList,),
                 TaskPage(taskList: taskList),
-                TimeChartPage(),
+                TimeChartPage(taskList: taskList,),
                 SettingPage(),
               ],
             )

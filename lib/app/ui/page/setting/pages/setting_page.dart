@@ -49,15 +49,6 @@ class SettingPage extends GetView<BottomNavController> {
       title: Text('Common'),
       tiles: <SettingsTile>[
         SettingsTile.navigation(
-          leading: Icon(Icons.account_box_outlined),
-          title: Text('My Profile'),
-          // value: Text('English'),
-          onPressed: (context) {
-            // Navigator.of(context).push(MaterialPageRoute(builder: (context)=>@@@));
-          },
-          trailing: Icon(Icons.arrow_forward_ios),
-        ),
-        SettingsTile.navigation(
           leading: Icon(Icons.language),
           title: Text('Language'),
           value: Text('English'),

@@ -1,4 +1,5 @@
 
+import 'package:circular_countdown_timer/circular_countdown_timer.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:pomodoro/app/data/model/task.dart';
@@ -17,16 +18,23 @@ class TimerPage extends StatefulWidget {
 class _TimerPageState extends State<TimerPage> {
 
   List<Widget> taskWidgetList = [];
-  int duration = 0;
+  List<String> pomodoroTaskList = [];
+  List<int> durationList = [];
+  int durationCounter = 0;
+  final CountDownController countDownController = CountDownController();
+  int countdownFlag = 0; // 0 start, 1 stop, 2 resume
+  bool floatingVisible =  true;
 
   @override
-  void initState() {
+  Widget build(BuildContext context) {
 
-    // TODO: implement initState
+    taskWidgetList = List.empty(growable: true);
+    durationList = List.empty(growable: true);
     for( Task i in widget.taskList){
+      if(i.repeat![DateTime.now().weekday-1]){
       taskWidgetList.add(
         Card(
-          child: ListTile(
+            child: ListTile(
               title: Text(i.title!),
               subtitle: Text(i.note!),
               trailing: Text(i.startTime! + " ~ " + i.endTime!),
@@ -39,13 +47,17 @@ class _TimerPageState extends State<TimerPage> {
                   });
                 });
               },
-          )
-        ),
+            )
+        ));
+      }
+      durationList.add(
+          (((stringToTimeOfDay(i.endTime!).hour - stringToTimeOfDay(i.startTime!).hour) * 60) * 60)
+          + (((stringToTimeOfDay(i.endTime!).minute - stringToTimeOfDay(i.startTime!).minute) * 60))
       );
-      duration += (((stringToTimeOfDay(i.endTime!).hour - stringToTimeOfDay(i.startTime!).hour) * 60) * 60)
-          + ((stringToTimeOfDay(i.endTime!).minute - stringToTimeOfDay(i.startTime!).minute) * 60);
-
-      if(i.restStartTime != null && i.restEndTime != null){
+      pomodoroTaskList.add(i.title!);
+    }
+    for( Task i in widget.taskList){
+      if(i.restStartTime != null && i.restEndTime != null && i.repeat![DateTime.now().weekday-1]){
         taskWidgetList.add(
           Card(
               child: ListTile(
@@ -63,16 +75,11 @@ class _TimerPageState extends State<TimerPage> {
               )
           ),
         );
-        duration += (((stringToTimeOfDay(i.restEndTime!).hour - stringToTimeOfDay(i.restStartTime!).hour) * 60) * 60)
-            + ((stringToTimeOfDay(i.restEndTime!).minute - stringToTimeOfDay(i.restStartTime!).minute) * 60);
+        durationList.add((((stringToTimeOfDay(i.restEndTime!).hour - stringToTimeOfDay(i.restStartTime!).hour) * 60) * 60)
+            + ((stringToTimeOfDay(i.restEndTime!).minute - stringToTimeOfDay(i.restStartTime!).minute) * 60));
+        pomodoroTaskList.add("Rest Time"+" ("+ i.title! +")");
       }
     }
-    super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: AppBar(
         title: Text('Timer'),
@@ -85,7 +92,7 @@ class _TimerPageState extends State<TimerPage> {
           children: [
             Container(
                 child: Center(
-                  child: PomodoroTimer(duration: duration),
+                  child: PomodoroTimer(taskList: pomodoroTaskList,durationList: durationList,controller: countDownController),
                 )
             ),
             Expanded(
@@ -98,20 +105,42 @@ class _TimerPageState extends State<TimerPage> {
           ],
         ),
       ),
-      floatingActionButton:Transform.scale(
-        scale: 1.5,
-        child: FloatingActionButton(
-          child: Row(
-            children: [
-              Icon(Icons.play_arrow,color: Colors.white70,),
-              Text('Play',style: TextStyle(color: Colors.white70,fontWeight: FontWeight.w600,
-                  fontSize: 12),),
-            ],
+      floatingActionButton: Visibility(
+        visible: floatingVisible,
+        child: Transform.scale(
+          scale: 1.5,
+          child: FloatingActionButton(
+            child: Row(
+              children: [
+                Icon(Icons.play_arrow,color: Colors.white70,),
+                Text('Play',style: TextStyle(color: Colors.white70,fontWeight: FontWeight.w600,
+                    fontSize: 12),),
+              ],
+            ),
+            onPressed: () {
+              if(countdownFlag == 0){
+                countDownController.start();
+                countdownFlag = 1;
+                floatingVisible = false;
+                setState((){});
+              }
+              /*
+              else if(countdownFlag == 1){
+                countDownController.pause();
+                countdownFlag = 2;
+
+              }
+              else{
+                countDownController.resume();
+                countdownFlag = 1;
+              }
+
+               */
+
+            },
+            backgroundColor: Colors.transparent,
+            elevation: 0,
           ),
-          onPressed: () {
-          },
-          backgroundColor: Colors.transparent,
-          elevation: 0,
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,

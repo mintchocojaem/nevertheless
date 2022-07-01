@@ -25,6 +25,10 @@ class Task{
   String? restStartTime;
   @HiveField(8)
   String? restEndTime;
+  @HiveField(9)
+  List<DateTime?>? startTimeLog;
+  @HiveField(10)
+  List<DateTime?>? endTimeLog;
 
   Task({
     this.id,
@@ -37,6 +41,8 @@ class Task{
     this.repeat,
     this.restStartTime,
     this.restEndTime,
+    this.startTimeLog,
+    this.endTimeLog,
   });
 
   Map<String, dynamic> toMap() {
@@ -51,7 +57,10 @@ class Task{
       'repeat' : repeat,
       'restStartTime' : restStartTime,
       'restEndTime' : restEndTime,
-    };
+      'startTimeLog' : startTimeLog,
+      'endTimeLog' : endTimeLog
+
+  };
   }
 
   Task.fromMap(Map<String, dynamic> task){
@@ -65,5 +74,7 @@ class Task{
     repeat = task['repeat'];
     restStartTime = task['restStartTime'];
     restEndTime = task['restEndTime'];
+    startTimeLog = task['startTimeLog'];
+    endTimeLog = task['endTimeLog'];
   }
 }

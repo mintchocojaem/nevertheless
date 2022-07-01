@@ -22,11 +22,13 @@ class _TaskDetailPageState extends State<TaskDetailPage>{
   final TextEditingController _noteController = TextEditingController();
   final TextEditingController _startTimeController = TextEditingController();
   final TextEditingController _endTimeController = TextEditingController();
+  final TextEditingController _startRestTimeController = TextEditingController();
+  final TextEditingController _endRestTimeController = TextEditingController();
 
-  String? _startDate = "";
-  String? _endDate = "";
-  String? _restStartDate = "";
-  String? _restEndDate = "";
+  String? _startDate;
+  String? _endDate;
+  String? _restStartDate ;
+  String? _restEndDate;
   final int _selectedColor = 0;
   bool restEnabled = false;
   List<bool> dayValues = List.filled(7, false);
@@ -123,13 +125,13 @@ class _TaskDetailPageState extends State<TaskDetailPage>{
 
                   ),
                   const SizedBox(
-                    height: 20,
+                    height: 25,
                   ),
                   Column(
                     children: [
                       Text("Study",style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17),),
                       SizedBox(
-                        height: 20,
+                        height: 25,
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -171,13 +173,13 @@ class _TaskDetailPageState extends State<TaskDetailPage>{
                     ],
                   ),
                   const SizedBox(
-                    height: 20,
+                    height: 25,
                   ),
                   Column(
                     children: [
                       Text("Rest",style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17),),
                       SizedBox(
-                        height: 20,
+                        height: 25,
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -187,46 +189,61 @@ class _TaskDetailPageState extends State<TaskDetailPage>{
                             onChanged: (value){
                               setState((){
                                 restEnabled = !restEnabled;
+                                if(!restEnabled){
+                                  _restStartDate = null;
+                                  _restEndDate = null;
+                                }
                               });
                             }),
                           SizedBox(
                               width: 165,
                               child: InputField(
+                                controller: _startRestTimeController,
                                 isEnabled: restEnabled,
                                 isEditable: false,
                                 label: 'Start Time',
                                 iconOrdrop: 'button',
-                                hint: _restStartDate.toString(),
+                                hint: _restStartDate ?? "없음",
                                 widget: IconButton(
                                   icon: Icon(Icons.access_time),
                                   onPressed: () {
-                                    _selectStartTime(context);
+                                    _selectRestStartTime(context);
                                   },
                                 ),
-                                emptyText: false,
+                                emptyText: true,
                               )),
                           SizedBox(
                               width: 165,
                               child: InputField(
+                                controller: _endRestTimeController,
                                 isEnabled: restEnabled,
                                 isEditable: false,
                                 iconOrdrop: 'button',
                                 label: 'End Time',
-                                hint: _restEndDate.toString(),
+                                hint: _restEndDate ?? "없음",
                                 widget: IconButton(
                                   icon: Icon(Icons.access_time),
                                   onPressed: () {
-                                    _selectEndTime(context);
+                                    _selectRestEndTime(context);
                                   },
                                 ),
-                                emptyText: false,
+                                emptyText: true,
                               )),
                         ],
                       ),
+
                     ],
                   ),
                   const SizedBox(
-                    height: 20,
+                    height: 48,
+                  ),
+                  Center(
+                    child: IconButton(icon: Icon(Icons.delete_outline), onPressed: () {
+
+                    },),
+                  ),
+                  const SizedBox(
+                    height: 48,
                   ),
                 ],
               ),
@@ -244,6 +261,13 @@ class _TaskDetailPageState extends State<TaskDetailPage>{
     task.startTime = _startDate;
     task.endTime = _endDate;
     task.repeat = dayValues;
+    if(restEnabled) {
+      task.restStartTime = _restStartDate;
+      task.restEndTime = _restEndDate;
+    } else{
+      task.restStartTime = null;
+      task.restEndTime = null;
+    }
   }
 
   _selectStartTime(BuildContext context) async {
@@ -269,6 +293,27 @@ class _TaskDetailPageState extends State<TaskDetailPage>{
     String formattedTime = selected!.format(context);
     setState(() {
       _endDate = formattedTime;
+    });
+  }
+
+  _selectRestStartTime(BuildContext context) async {
+    final TimeOfDay? selected = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.now(),
+    );
+    String formattedTime = selected!.format(context);
+    setState(() {
+      _restStartDate = formattedTime;
+    });
+  }
+  _selectRestEndTime(BuildContext context) async {
+    final TimeOfDay? selected = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.now(),
+    );
+    String formattedTime = selected!.format(context);
+    setState(() {
+      _restEndDate = formattedTime;
     });
   }
 
