@@ -29,29 +29,30 @@ class _TimerPageState extends State<TimerPage> {
 
     taskWidgetList = List.empty(growable: true);
     durationList = List.empty(growable: true);
+
     for( Task i in widget.taskList){
       if(i.repeat![DateTime.now().weekday-1]){
-      taskWidgetList.add(
-        Card(
-            child: ListTile(
-              title: Text(i.title!),
-              subtitle: Text(i.note!),
-              trailing: Text(i.startTime! + " ~ " + i.endTime!),
-              onTap: (){
-                Navigator.of(context)
-                    .push(MaterialPageRoute(builder: (context)=> TaskDetailPage(task: i))
-                ).then((value) {
-                  setState(() {
+        taskWidgetList.add(
+            Card(
+                child: ListTile(
+                  title: Text(i.title!),
+                  subtitle: Text(i.note!),
+                  trailing: Text(i.startTime! + " ~ " + i.endTime!),
+                  onTap: (){
+                    Navigator.of(context)
+                        .push(MaterialPageRoute(builder: (context)=> TaskDetailPage(task: i))
+                    ).then((value) {
+                      setState(() {
 
-                  });
-                });
-              },
-            )
-        ));
+                      });
+                    });
+                  },
+                )
+            ));
       }
       durationList.add(
           (((stringToTimeOfDay(i.endTime!).hour - stringToTimeOfDay(i.startTime!).hour) * 60) * 60)
-          + (((stringToTimeOfDay(i.endTime!).minute - stringToTimeOfDay(i.startTime!).minute) * 60))
+              + (((stringToTimeOfDay(i.endTime!).minute - stringToTimeOfDay(i.startTime!).minute) * 60))
       );
       pomodoroTaskList.add(i.title!);
     }
@@ -79,6 +80,8 @@ class _TimerPageState extends State<TimerPage> {
         pomodoroTaskList.add("Rest Time"+" ("+ i.title! +")");
       }
     }
+
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Timer'),
@@ -98,7 +101,7 @@ class _TimerPageState extends State<TimerPage> {
               child: ListView(
                   shrinkWrap: true,
                   padding: const EdgeInsets.all(8),
-                  children: taskWidgetList
+                  children: taskWidgetList,
               ),
             )
           ],

@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:nevertheless/app/ui/index_screen.dart';
 import 'package:weekday_selector/weekday_selector.dart';
 
 import '../../../../data/model/task.dart';
@@ -239,7 +240,8 @@ class _TaskDetailPageState extends State<TaskDetailPage>{
                   ),
                   Center(
                     child: IconButton(icon: Icon(Icons.delete_outline), onPressed: () {
-
+                      taskList.remove(widget.task);
+                      Navigator.pop(context);
                     },),
                   ),
                   const SizedBox(

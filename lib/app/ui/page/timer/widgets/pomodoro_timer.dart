@@ -1,5 +1,7 @@
 
 
+import 'dart:async';
+
 import 'package:circular_countdown_timer/circular_countdown_timer.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -24,15 +26,16 @@ class _PomodoroTimer extends State<PomodoroTimer>{
   int durationCounter = 0;
   int taskCounter = 0;
   bool isItRest = false;
+  String text="";
 
   @override
   Widget build(BuildContext context) {
-
     // TODO: implement build
+
     return  Column(
       children: [
         CircularCountDownTimer(
-            duration: widget.durationList[0],
+            duration: widget.durationList.isNotEmpty  ? widget.durationList[0] :  0,
             initialDuration: 0,
             controller: widget.controller,
             width: MediaQuery.of(context).size.width / 3,
@@ -54,6 +57,8 @@ class _PomodoroTimer extends State<PomodoroTimer>{
             autoStart: false,
             onStart: () {
               print('Countdown Started');
+              text = "Now : "+widget.taskList[durationCounter];
+
               if(!isItRest){
                 print("doStudy");
                 if (taskList[taskCounter].startTimeLog == null){
@@ -94,7 +99,7 @@ class _PomodoroTimer extends State<PomodoroTimer>{
               });
             },
           ),
-        Text("Now : "+widget.taskList[durationCounter], style: TextStyle(fontSize: 18, fontWeight: FontWeight.w400),),
+        Text(text, style: TextStyle(fontSize: 18, fontWeight: FontWeight.w400),),
         SizedBox(
           height: 24,
         )

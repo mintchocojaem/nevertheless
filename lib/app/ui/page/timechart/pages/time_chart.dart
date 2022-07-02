@@ -1,4 +1,5 @@
 
+import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -18,7 +19,6 @@ class TimeChartPage extends StatefulWidget {
 
 class _TimeChartPageState extends State<TimeChartPage> with TickerProviderStateMixin{
 
-
   @override
   Widget build(BuildContext context) {
 
@@ -29,6 +29,8 @@ class _TimeChartPageState extends State<TimeChartPage> with TickerProviderStateM
         for(int j = 0; j < i.startTimeLog!.length; j++){
           final startFormat = i.startTimeLog![j]!;
           final endFormat = i.endTimeLog![j]!;
+          print(startFormat);
+          print(endFormat);
           setState((){
             dataList.add(
                 DateTimeRange(
@@ -62,7 +64,7 @@ class _TimeChartPageState extends State<TimeChartPage> with TickerProviderStateM
                 child: Padding(
                   padding: const EdgeInsets.all(16),
                   child: TimeChart(
-                    height: MediaQuery.of(context).size.height /2,
+                    height: MediaQuery.of(context).size.height /1.5,
                     data: dataList,
                     chartType: ChartType.amount,
                     viewMode: ViewMode.weekly,
@@ -74,7 +76,7 @@ class _TimeChartPageState extends State<TimeChartPage> with TickerProviderStateM
                 child: Padding(
                   padding: EdgeInsets.all(16),
                   child: TimeChart(
-                    height: MediaQuery.of(context).size.height /2,
+                    height: MediaQuery.of(context).size.height /1.5,
                     data: dataList,
                     chartType: ChartType.amount,
                     viewMode: ViewMode.monthly,

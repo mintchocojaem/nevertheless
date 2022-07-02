@@ -30,18 +30,19 @@ class _TaskPageState extends State<TaskPage> {
     SizeConfig.screenHeight = 100;
     SizeConfig.screenWidth = 100;
     day = selectDate.day;
-    for(var i in widget.taskList){
-      Task task = i;
-      if (task.repeat![selectDate.weekday-1] == true){
-        dateTodoList.add(task);
-      }
-    }
 
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    dateTodoList = List.empty(growable: true);
+    for(var i in widget.taskList){
+      Task task = i;
+      if (task.repeat![selectDate.weekday-1] == true){
+        dateTodoList.add(task);
+      }
+    }
 
     return Scaffold(
       appBar: AppBar(

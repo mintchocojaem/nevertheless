@@ -10,7 +10,7 @@ class TaskTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: MediaQuery.of(context).orientation == Orientation.portrait ?  MediaQuery.of(context).size.height *0.2:200,
+      height: MediaQuery.of(context).orientation == Orientation.portrait ?  MediaQuery.of(context).size.height *0.16:200,
       width: MediaQuery.of(context).orientation == Orientation.portrait ?  MediaQuery.of(context).size.width :MediaQuery.of(context).size.width *0.7,
       margin: const EdgeInsets.symmetric(vertical: 10,horizontal: 10),
       padding: EdgeInsets.symmetric(horizontal: 10,vertical: MediaQuery.of(context).orientation == Orientation.portrait ? 10 : 0),
@@ -25,7 +25,7 @@ class TaskTile extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  '${task.title}',
+                  '${task.title}',style: TextStyle(overflow: TextOverflow.ellipsis,),
                 ),
                 const SizedBox(
                   height: 10,
@@ -42,7 +42,8 @@ class TaskTile extends StatelessWidget {
                 const SizedBox(
                   height: 20,
                 ),
-                Expanded(child: SingleChildScrollView(child: Text('${task.note}',style: TextStyle(color: Colors.white),)))
+                Expanded(child: SingleChildScrollView(child: Text('${task.note}',style: TextStyle(color: Colors.white),
+                  overflow: TextOverflow.ellipsis,)))
               ],
             ),
           ),
