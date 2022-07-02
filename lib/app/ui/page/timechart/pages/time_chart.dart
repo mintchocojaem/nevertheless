@@ -3,10 +3,10 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:pomodoro/app/data/model/task.dart';
-import 'package:pomodoro/app/ui/index_screen.dart';
-import 'package:pomodoro/app/ui/page/timer/widgets/pomodoro_timer.dart';
 import 'package:time_chart/time_chart.dart';
+
+import '../../../../data/model/task.dart';
+import '../../../index_screen.dart';
 
 class TimeChartPage extends StatefulWidget {
   TimeChartPage({Key? key, required this.taskList}) : super(key: key);

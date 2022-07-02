@@ -3,7 +3,8 @@
 import 'package:circular_countdown_timer/circular_countdown_timer.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:pomodoro/app/ui/index_screen.dart';
+
+import '../../../index_screen.dart';
 
 class PomodoroTimer extends StatefulWidget{
   PomodoroTimer({Key? key, required this.durationList, required this.controller, required this.taskList}) : super(key: key);

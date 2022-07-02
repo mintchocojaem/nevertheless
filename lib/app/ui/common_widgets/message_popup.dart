@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:pomodoro/app/ui/components/app_color.dart';
+
+import '../components/app_color.dart';
 
 
 class MessagePopup extends StatelessWidget {

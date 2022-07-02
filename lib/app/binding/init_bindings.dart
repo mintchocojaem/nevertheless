@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
-import 'package:pomodoro/app/controller/bottom_nav_controller.dart';
+
+import '../controller/bottom_nav_controller.dart';
 
 class InitBinding extends Bindings {
   @override

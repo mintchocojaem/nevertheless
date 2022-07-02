@@ -1,15 +1,12 @@
 import 'package:date_picker_timeline/date_picker_timeline.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:get/get.dart';
-import 'package:intl/intl.dart';
-import 'package:pomodoro/app/data/model/task.dart';
-import 'package:pomodoro/app/ui/page/todo/pages/add_task_page.dart';
-import 'package:pomodoro/app/ui/page/todo/widgets/task_tile.dart';
-import 'package:pomodoro/main.dart';
-import 'package:pomodoro/app/ui/page/todo/pages/task_detail.dart';
-import 'package:pomodoro/app/ui/components/size_config.dart';
+import 'package:nevertheless/app/ui/page/todo/pages/task_detail.dart';
+
+import '../../../../data/model/task.dart';
+import '../../../components/size_config.dart';
+import '../widgets/task_tile.dart';
+import 'add_task_page.dart';
 
 
 class TaskPage extends StatefulWidget {

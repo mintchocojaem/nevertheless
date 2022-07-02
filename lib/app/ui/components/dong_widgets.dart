@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:pomodoro/app/ui/components/dong_constants.dart';
+
+import 'dong_constants.dart';
 
 class BottomSheetBody extends StatelessWidget {
   BottomSheetBody({Key? key, required this.children}) : super(key: key);

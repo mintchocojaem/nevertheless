@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:pomodoro/app/ui/components/dong_colors.dart';
+
+import 'dong_colors.dart';
 
 class DongThemes {
 

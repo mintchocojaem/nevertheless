@@ -1,8 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:pomodoro/app/data/model/task.dart';
-import 'package:pomodoro/app/ui/page/todo/widgets/input_field.dart';
+
+import '../../../../data/model/task.dart';
+import '../widgets/input_field.dart';
+
 
 class AddTaskPage extends StatefulWidget {
   AddTaskPage({Key? key, required this.taskList}) : super(key: key);

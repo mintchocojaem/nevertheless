@@ -1,5 +1,5 @@
 import 'package:hive/hive.dart';
-import 'package:pomodoro/app/data/model/task.dart';
+import 'package:nevertheless/app/data/model/task.dart';
 //part of 'task_model.dart';
 
 class TaskAdapter extends TypeAdapter<Task> {

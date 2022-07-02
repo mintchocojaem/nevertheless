@@ -1,4 +1,4 @@
-package com.jaemsoft.pomodoro
+package com.vanillajaem.nevertheless
 
 import io.flutter.embedding.android.FlutterActivity
 

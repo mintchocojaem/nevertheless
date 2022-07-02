@@ -2,11 +2,10 @@
 import 'package:circular_countdown_timer/circular_countdown_timer.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:pomodoro/app/data/model/task.dart';
-import 'package:pomodoro/app/ui/index_screen.dart';
-import 'package:pomodoro/app/ui/page/timer/widgets/pomodoro_timer.dart';
 
+import '../../../../data/model/task.dart';
 import '../../todo/pages/task_detail.dart';
+import '../widgets/pomodoro_timer.dart';
 
 class TimerPage extends StatefulWidget {
   TimerPage({Key? key, required this.taskList}) : super(key: key);

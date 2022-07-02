@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.jaemsoft.pomodoro">
+    package="com.vanillajaem.nevertheless">
    <application
-        android:label="pomodoro"
+        android:label="nevertheless"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

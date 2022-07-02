@@ -1,11 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
-import 'package:pomodoro/app/binding/init_bindings.dart';
-import 'package:pomodoro/app/data/model/task.dart';
-import 'package:pomodoro/app/ui/index_screen.dart';
+
 import 'package:hive_flutter/hive_flutter.dart';
+import 'app/binding/init_bindings.dart';
+import 'app/data/model/task.dart';
 import 'app/data/model/task_adapter.dart';
+import 'app/ui/index_screen.dart';
 
 const testBox = 'test';
 
@@ -20,7 +22,7 @@ void main() async {
   runApp(ValueListenableBuilder(
     builder: (context, Box box, widget) {
       final darkMode = box.get('darkMode', defaultValue: true);
-      return GetMaterialApp( 
+      return GetMaterialApp(
         theme: ThemeData(
           brightness: Brightness.light,
           /* light theme setting */

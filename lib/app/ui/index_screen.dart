@@ -2,14 +2,14 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:pomodoro/app/controller/bottom_nav_controller.dart';
-import 'package:pomodoro/app/ui/common_widgets/message_popup.dart';
-import 'package:pomodoro/app/ui/page/setting/pages/setting_page.dart';
-import 'package:pomodoro/app/ui/page/timechart/pages/time_chart.dart';
-import 'package:pomodoro/app/ui/page/timer/pages/timer_page.dart';
-import 'package:pomodoro/app/ui/page/todo/pages/task_page.dart';
+import 'package:nevertheless/app/ui/page/setting/pages/setting_page.dart';
+import 'package:nevertheless/app/ui/page/timechart/pages/time_chart.dart';
+import 'package:nevertheless/app/ui/page/timer/pages/timer_page.dart';
+import 'package:nevertheless/app/ui/page/todo/pages/task_page.dart';
 
+import '../controller/bottom_nav_controller.dart';
 import '../data/model/task.dart';
+import 'common_widgets/message_popup.dart';
 
 List<Task> taskList = [
   Task(
@@ -22,7 +22,7 @@ List<Task> taskList = [
       restStartTime: DateFormat('hh:mm a').format(DateTime.now()),
       restEndTime: DateFormat('hh:mm a').format(DateTime.now().add(Duration(minutes: 1))),
       color: 0,
-      repeat: [false,false,false,false,true,false,false],
+      repeat: [false,false,false,false,false,true,false],
   )
 ];
 
