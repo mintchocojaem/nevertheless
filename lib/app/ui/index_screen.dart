@@ -9,6 +9,7 @@ import 'package:nevertheless/app/ui/page/todo/pages/task_page.dart';
 
 import '../controller/bottom_nav_controller.dart';
 import '../data/model/task.dart';
+import '../notification/notification.dart';
 import 'common_widgets/message_popup.dart';
 
 List<Task> taskList = [
@@ -21,8 +22,9 @@ List<Task> taskList = [
       endTime: DateFormat('hh:mm a').format(DateTime.now().add(Duration(minutes: 1))),
       restStartTime: DateFormat('hh:mm a').format(DateTime.now()),
       restEndTime: DateFormat('hh:mm a').format(DateTime.now().add(Duration(minutes: 1))),
-      color: 0,
-      repeat: [false,false,false,false,false,true,false],
+
+    color: 0,
+      repeat: [false,false,false,false,false,false,true],
   )
 ];
 
@@ -32,10 +34,11 @@ class IndexScreen extends GetView<BottomNavController> {
   IndexScreen({Key? key}) : super(key: key);
 
   static int position = 0;
-
   @override
   Widget build(BuildContext context) {
+
     return WillPopScope(
+      onWillPop: willPopAction,
       child: Obx(() => Scaffold(
         body: Center(
           child:
@@ -67,7 +70,6 @@ class IndexScreen extends GetView<BottomNavController> {
           ],
         ),
       )),
-      onWillPop: willPopAction,
     );
   }
   Future<bool> willPopAction() async {

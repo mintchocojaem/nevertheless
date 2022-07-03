@@ -1,30 +1,35 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
-import 'package:hive_flutter/hive_flutter.dart';
+import 'package:get_storage/get_storage.dart';
 
 import 'package:settings_ui/settings_ui.dart';
 
 import '../../../../controller/bottom_nav_controller.dart';
 
+class SwitchX extends GetxController {
+  RxBool on = false.obs; // our observable
+
+  // swap true/false & save it to observable
+  void toggle() => on.value = on.value ? false : true;
+}
 
 class SettingPage extends GetView<BottomNavController> {
   SettingPage({Key? key}) : super(key: key);
 
-  bool isDarkMode = false;
-
-  late Box _darkMode;
-
-  bool isSwitched = false;
-  bool _vib = false;
-
+  final storage = GetStorage();   // instance of getStorage class
+  SwitchX isNotification = Get.put(SwitchX());
   final ScrollController scrollController = ScrollController();
+  final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+
 
   @override
   Widget build(BuildContext context) {
-    _darkMode = Hive.box('darkModeBox');
-    isDarkMode = _darkMode.get('darkMode', defaultValue: true);
-    return Scaffold(
+
+    isNotification.on.value = storage.read('notification') ?? true;
+
+    return Obx(() => Scaffold(
       appBar: AppBar(
         centerTitle: true,
         title: Text("Settings"),
@@ -40,13 +45,13 @@ class SettingPage extends GetView<BottomNavController> {
             physics: NeverScrollableScrollPhysics(),
           ),
       ),
-    );
+    ));
   }
 
   SettingsSection _settingSection() {
     return SettingsSection(
       tiles: <SettingsTile>[
-
+        /*
         SettingsTile.switchTile(
           onToggle: (value) {
             if (value == true) {
@@ -61,16 +66,24 @@ class SettingPage extends GetView<BottomNavController> {
           leading: Icon(Icons.dark_mode),
           title: Text('Dark Theme'),
         ),
-        SettingsTile.navigation(
-          leading: Icon(Icons.list),
-          title: Text(
-            'Alarm List',
-            style: TextStyle(),
-          ),
-          onPressed: (context) {
-            // Navigator.of(context).push(MaterialPageRoute(builder: (context)=>@@@));
+
+         */
+        SettingsTile.switchTile(
+          onToggle: (value) {
+
+            if (value == true) {
+              isNotification.toggle();
+              storage.write('notification', true);
+            } else {
+              isNotification.toggle();
+              print(false);
+              storage.write('notification', false);
+              flutterLocalNotificationsPlugin.cancelAll();
+            }
           },
-          trailing: Icon(Icons.arrow_forward_ios),
+          initialValue: isNotification.on.value,
+          leading: Icon(Icons.notifications),
+          title: Text('Notification'),
         ),
         SettingsTile.navigation(
           leading: Icon(CupertinoIcons.rectangle_stack_person_crop),
@@ -100,4 +113,7 @@ class SettingPage extends GetView<BottomNavController> {
       ],
     );
   }
+
 }
+
+

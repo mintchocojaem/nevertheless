@@ -1,29 +1,54 @@
-import 'package:flutter/material.dart';
+
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:timezone/data/latest.dart' as tz;
+import 'package:timezone/timezone.dart' as tz;
 
-final notifications = FlutterLocalNotificationsPlugin();
+Future taskNotification(int id, String notiTitle, String notiDesc) async {
 
 
-//1. 앱로드시 실행할 기본설정
-initNotification() async {
-
-  //안드로이드용 아이콘파일 이름
-  var androidSetting = AndroidInitializationSettings('app_icon');
-
-  //ios에서 앱 로드시 유저에게 권한요청하려면
-  var iosSetting = IOSInitializationSettings(
-    requestAlertPermission: true,
-    requestBadgePermission: true,
-    requestSoundPermission: true,
+  final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+  final result = await flutterLocalNotificationsPlugin
+      .resolvePlatformSpecificImplementation<
+      IOSFlutterLocalNotificationsPlugin>()
+      ?.requestPermissions(
+    alert: true,
+    badge: true,
+    sound: true,
   );
 
-  var initializationSettings = InitializationSettings(
-      android: androidSetting,
-      iOS: iosSetting
-  );
-  await notifications.initialize(
-    initializationSettings,
-    //알림 누를때 함수실행하고 싶으면
-    //onSelectNotification: 함수명추가
-  );
+  var android = AndroidNotificationDetails("channel", notiTitle,channelDescription:  notiDesc,
+      importance: Importance.max, priority: Priority.max);
+  var ios = IOSNotificationDetails();
+  var detail = NotificationDetails(android: android, iOS: ios);
+
+  if (result != null && result) {
+    await flutterLocalNotificationsPlugin
+        .resolvePlatformSpecificImplementation<
+        AndroidFlutterLocalNotificationsPlugin>()
+        ?.deleteNotificationChannelGroup("channel");
+
+    await flutterLocalNotificationsPlugin.zonedSchedule(
+      id, // id는 unique해야합니다. int값
+      notiTitle,
+      notiDesc,
+      _setNotiTime(),
+      detail,
+      androidAllowWhileIdle: true,
+      uiLocalNotificationDateInterpretation:
+      UILocalNotificationDateInterpretation.absoluteTime,
+      matchDateTimeComponents: DateTimeComponents.time,
+    );
+  }
+
+}
+
+tz.TZDateTime _setNotiTime() {
+  tz.initializeTimeZones();
+  tz.setLocalLocation(tz.getLocation('Asia/Seoul'));
+
+  final now = tz.TZDateTime.now(tz.local);
+  var scheduledDate = tz.TZDateTime(tz.local, now.year, now.month, now.day,
+      now.hour, now.minute, now.second);
+
+  return scheduledDate;
 }

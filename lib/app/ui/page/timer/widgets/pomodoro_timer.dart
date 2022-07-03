@@ -1,14 +1,16 @@
 
 
 import 'dart:async';
-
 import 'package:circular_countdown_timer/circular_countdown_timer.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:get_storage/get_storage.dart';
+import '../../../../notification/notification.dart';
 import '../../../index_screen.dart';
 
 class PomodoroTimer extends StatefulWidget{
+
   PomodoroTimer({Key? key, required this.durationList, required this.controller, required this.taskList}) : super(key: key);
   final List durationList;
   final List taskList;
@@ -27,10 +29,15 @@ class _PomodoroTimer extends State<PomodoroTimer>{
   int taskCounter = 0;
   bool isItRest = false;
   String text="";
+  final storage = GetStorage();   // instance of getStorage class
+
+  bool isNotification = true;
 
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
+
+    isNotification = storage.read('notification') ?? true;
 
     return  Column(
       children: [
@@ -59,21 +66,25 @@ class _PomodoroTimer extends State<PomodoroTimer>{
               print('Countdown Started');
               text = "Now : "+widget.taskList[durationCounter];
 
+
               if(!isItRest){
                 print("doStudy");
                 if (taskList[taskCounter].startTimeLog == null){
                   taskList[taskCounter].startTimeLog = List.empty(growable: true);
-                  taskList[taskCounter].startTimeLog!.add(DateTime.now());
+                  taskList[taskCounter].startTimeLog!.add(DateTime(
+                      DateTime.now().year,DateTime.now().month,DateTime.now().day,DateTime.now().hour,DateTime.now().minute,0
+                  ));
                 }else{
-                  taskList[taskCounter].startTimeLog!.add(DateTime.now());
+                  taskList[taskCounter].startTimeLog!.add(DateTime(
+                      DateTime.now().year,DateTime.now().month,DateTime.now().day,DateTime.now().hour,DateTime.now().minute,0
+                  ));
                 }
 
               }else{
                 print("doRest");
-                isItRest = false;
               }
             },
-            onComplete: () {
+            onComplete: () async {
               print('Countdown Ended');
               setState((){
                 durationCounter++;
@@ -81,13 +92,29 @@ class _PomodoroTimer extends State<PomodoroTimer>{
                   print("didStudy");
                   if (taskList[taskCounter].endTimeLog == null){
                     taskList[taskCounter].endTimeLog = List.empty(growable: true);
-                    taskList[taskCounter].endTimeLog!.add(DateTime.now());
+                    taskList[taskCounter].endTimeLog!.add(DateTime(
+                      DateTime.now().year,DateTime.now().month,DateTime.now().day,DateTime.now().hour,DateTime.now().minute,0
+                    ));
                   }else{
-                    taskList[taskCounter].endTimeLog!.add(DateTime.now());
+                    taskList[taskCounter].endTimeLog!.add(DateTime(
+                        DateTime.now().year,DateTime.now().month,DateTime.now().day,DateTime.now().hour,DateTime.now().minute,0
+                    ));
+                  }
+                  //Notification
+                  if(isNotification){
+                    taskNotification(taskList[taskCounter].id!, "Nevertheless",
+                        "\"${taskList[taskCounter].title!}\" 시간 종료");
                   }
 
                 }else{
+                  isItRest = false;
                   print("didRest");
+                  //Notification
+                  if(isNotification){
+                    taskNotification(taskList[taskCounter].id!, "Nevertheless",
+                        "\"${taskList[taskCounter].title!}\" 휴식시간 종료");
+                  }
+
                 }
                 if(taskList[taskCounter].restStartTime != null && taskList[taskCounter].restEndTime != null){
                   taskCounter -=1;
@@ -95,6 +122,7 @@ class _PomodoroTimer extends State<PomodoroTimer>{
                 }
                 taskCounter++;
                 widget.controller.restart(duration: widget.durationList[durationCounter]);
+
 
               });
             },

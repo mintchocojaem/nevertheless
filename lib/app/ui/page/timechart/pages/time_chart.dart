@@ -25,7 +25,7 @@ class _TimeChartPageState extends State<TimeChartPage> with TickerProviderStateM
     List<DateTimeRange> dataList = [];
 
     for(var i in taskList){
-      if(i.startTimeLog != null){
+      if(i.startTimeLog != null && i.endTimeLog != null){
         for(int j = 0; j < i.startTimeLog!.length; j++){
           final startFormat = i.startTimeLog![j]!;
           final endFormat = i.endTimeLog![j]!;

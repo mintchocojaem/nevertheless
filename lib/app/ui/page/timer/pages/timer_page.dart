@@ -1,9 +1,11 @@
 
 import 'package:circular_countdown_timer/circular_countdown_timer.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../data/model/task.dart';
+import '../../../../notification/notification.dart';
 import '../../todo/pages/task_detail.dart';
 import '../widgets/pomodoro_timer.dart';
 
@@ -120,6 +122,7 @@ class _TimerPageState extends State<TimerPage> {
               ],
             ),
             onPressed: () {
+
               if(countdownFlag == 0){
                 countDownController.start();
                 countdownFlag = 1;

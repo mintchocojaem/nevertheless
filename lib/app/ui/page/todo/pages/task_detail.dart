@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:intl/intl.dart';
 import 'package:nevertheless/app/ui/index_screen.dart';
 import 'package:weekday_selector/weekday_selector.dart';
@@ -240,6 +241,7 @@ class _TaskDetailPageState extends State<TaskDetailPage>{
                   ),
                   Center(
                     child: IconButton(icon: Icon(Icons.delete_outline), onPressed: () {
+                      FlutterLocalNotificationsPlugin().cancel(widget.task.id!);
                       taskList.remove(widget.task);
                       Navigator.pop(context);
                     },),
