@@ -22,9 +22,34 @@ List<Task> taskList = [
       endTime: DateFormat('hh:mm a').format(DateTime.now().add(Duration(minutes: 1))),
       restStartTime: DateFormat('hh:mm a').format(DateTime.now()),
       restEndTime: DateFormat('hh:mm a').format(DateTime.now().add(Duration(minutes: 1))),
-
-    color: 0,
-      repeat: [false,false,false,false,false,false,true],
+      startTimeLog: [
+        DateTime.now(),
+        //DateTime.now().add(Duration(days: 1))
+      ],
+      endTimeLog: [
+        DateTime.now().add(Duration(minutes: 20)),
+        //DateTime.now().add(Duration(days: 1,minutes: 30))
+      ],
+      color: 0xff328938,
+      repeat: [false,true,false,false,false,false,false]
+  ),
+  Task(
+      id: 1,
+      title: "과학",
+      note: "1",
+      date:  DateFormat.yMd().format(DateTime.now()),
+      startTime: DateFormat('hh:mm a').format(DateTime.now().add(Duration(minutes: 2))),
+      endTime: DateFormat('hh:mm a').format(DateTime.now().add(Duration(minutes: 3))),
+      startTimeLog: [
+        DateTime.now().add(Duration(minutes: 30)),
+        DateTime.now().add(Duration(days: 1,minutes: 40))
+      ],
+      endTimeLog: [
+        DateTime.now().add(Duration(minutes: 50)),
+        DateTime.now().add(Duration(days: 1,minutes: 60))
+      ],
+      color: 0xff808080,
+      repeat: [false,true,false,false,false,false,false]
   )
 ];
 

@@ -190,6 +190,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.7.6"
+  equatable:
+    dependency: transitive
+    description:
+      name: equatable
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.3"
   fake_async:
     dependency: transitive
     description:
@@ -218,6 +225,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.1"
+  fl_chart:
+    dependency: "direct main"
+    description:
+      name: fl_chart
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.55.0"
   flutter:
     dependency: "direct main"
     description: flutter
@@ -258,11 +272,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "5.0.0"
-  flutter_localizations:
-    dependency: transitive
-    description: flutter
-    source: sdk
-    version: "0.0.0"
   flutter_staggered_animations:
     dependency: "direct main"
     description:
@@ -401,13 +410,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "4.5.0"
-  linked_scroll_controller:
-    dependency: transitive
-    description:
-      name: linked_scroll_controller
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.2.0"
   lints:
     dependency: transitive
     description:
@@ -665,13 +667,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.4.9"
-  time_chart:
-    dependency: "direct main"
-    description:
-      name: time_chart
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.5.2"
   timezone:
     dependency: transitive
     description:
@@ -686,13 +681,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.0"
-  touchable:
-    dependency: transitive
-    description:
-      name: touchable
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.2"
   typed_data:
     dependency: transitive
     description:

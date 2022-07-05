@@ -33,6 +33,8 @@ class _PomodoroTimer extends State<PomodoroTimer>{
 
   bool isNotification = true;
 
+  late DateTime startTimeLog;
+
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
@@ -69,16 +71,9 @@ class _PomodoroTimer extends State<PomodoroTimer>{
 
               if(!isItRest){
                 print("doStudy");
-                if (taskList[taskCounter].startTimeLog == null){
-                  taskList[taskCounter].startTimeLog = List.empty(growable: true);
-                  taskList[taskCounter].startTimeLog!.add(DateTime(
-                      DateTime.now().year,DateTime.now().month,DateTime.now().day,DateTime.now().hour,DateTime.now().minute,0
-                  ));
-                }else{
-                  taskList[taskCounter].startTimeLog!.add(DateTime(
-                      DateTime.now().year,DateTime.now().month,DateTime.now().day,DateTime.now().hour,DateTime.now().minute,0
-                  ));
-                }
+                startTimeLog = DateTime(
+                    DateTime.now().year,DateTime.now().month,DateTime.now().day,DateTime.now().hour,DateTime.now().minute,0
+                );
 
               }else{
                 print("doRest");
@@ -90,6 +85,14 @@ class _PomodoroTimer extends State<PomodoroTimer>{
                 durationCounter++;
                 if(!isItRest){
                   print("didStudy");
+
+                  if (taskList[taskCounter].startTimeLog == null){
+                    taskList[taskCounter].startTimeLog = List.empty(growable: true);
+                    taskList[taskCounter].startTimeLog!.add(startTimeLog);
+                  }else{
+                    taskList[taskCounter].startTimeLog!.add(startTimeLog);
+                  }
+
                   if (taskList[taskCounter].endTimeLog == null){
                     taskList[taskCounter].endTimeLog = List.empty(growable: true);
                     taskList[taskCounter].endTimeLog!.add(DateTime(
