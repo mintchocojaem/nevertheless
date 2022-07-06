@@ -164,7 +164,6 @@ class _AddTaskPageState extends State<AddTaskPage> {
     task.color = -_selectedColor;
     task.title = _titleController.text;
     task.note = _noteController.text;
-    task.date = _selectedDate.toString();
     task.startTime = _startDate;
     task.endTime = _endDate;
   }

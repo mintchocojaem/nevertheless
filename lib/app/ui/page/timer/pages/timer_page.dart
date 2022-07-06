@@ -26,11 +26,17 @@ class _TimerPageState extends State<TimerPage> {
   int countdownFlag = 0; // 0 start, 1 stop, 2 resume
   bool floatingVisible =  true;
 
+
+
   @override
   Widget build(BuildContext context) {
 
     taskWidgetList = List.empty(growable: true);
     durationList = List.empty(growable: true);
+
+    widget.taskList.sort((a,b) =>
+        DateFormat('hh:mm a').parse(a.startTime!)
+            .compareTo( DateFormat('hh:mm a').parse(b.startTime!)));
 
     for( Task i in widget.taskList){
       if(i.repeat![DateTime.now().weekday-1]){
@@ -57,8 +63,7 @@ class _TimerPageState extends State<TimerPage> {
               + (((stringToTimeOfDay(i.endTime!).minute - stringToTimeOfDay(i.startTime!).minute) * 60))
       );
       pomodoroTaskList.add(i.title!);
-    }
-    for( Task i in widget.taskList){
+
       if(i.restStartTime != null && i.restEndTime != null && i.repeat![DateTime.now().weekday-1]){
         taskWidgetList.add(
           Card(

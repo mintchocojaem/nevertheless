@@ -1,4 +1,7 @@
+import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:intl/intl.dart';
+import 'package:nevertheless/app/ui/index_screen.dart';
 
 //part 'task.g.dart';
 
@@ -12,16 +15,14 @@ class Task{
   @HiveField(2)
   String? note;
   @HiveField(3)
-  String? date;
-  @HiveField(4)
   String? startTime;
-  @HiveField(5)
+  @HiveField(4)
   String? endTime;
-  @HiveField(6)
+  @HiveField(5)
   int? color;
-  @HiveField(7)
+  @HiveField(6)
   List<bool>? repeat;
-  @HiveField(8)
+  @HiveField(7)
   String? restStartTime;
   @HiveField(8)
   String? restEndTime;
@@ -34,7 +35,6 @@ class Task{
     this.id,
     this.title,
     this.note,
-    this.date,
     this.startTime,
     this.endTime,
     this.color,
@@ -50,7 +50,6 @@ class Task{
       'id': id,
       'title': title,
       'note': note,
-      'date': date,
       'startTime': startTime,
       'endTime': endTime,
       'color': color,
@@ -67,7 +66,6 @@ class Task{
     id =  task['id'];
     title = task['title'];
     note = task['note'];
-    date = task['date'];
     startTime = task['startTime'];
     endTime = task['endTime'];
     color = task['color'];
@@ -78,3 +76,43 @@ class Task{
     endTimeLog = task['endTimeLog'];
   }
 }
+
+bool isTimeNested({required Task schedule}){
+
+  TimeOfDay stringToTimeOfDay(String tod) {
+    final format = DateFormat.jm(); //"6:00 AM"
+    return TimeOfDay.fromDateTime(format.parse(tod));
+  }
+
+
+  for(Task i in taskList){
+    for(int j =0; j < 7; j++){
+
+
+      if((i.id != schedule.id) && (schedule.repeat![j] ==true && i.repeat![j] == true)){
+        if((stringToTimeOfDay(schedule.startTime!).hour < stringToTimeOfDay(i.startTime!).hour ||
+            (stringToTimeOfDay(schedule.startTime!).hour == stringToTimeOfDay(i.startTime!).hour
+                && stringToTimeOfDay(schedule.startTime!).minute < stringToTimeOfDay(i.startTime!).minute))
+            &&(stringToTimeOfDay(schedule.restEndTime ?? schedule.endTime!).hour > stringToTimeOfDay(i.startTime!).hour ||
+                (stringToTimeOfDay(schedule.restEndTime ?? schedule.endTime!).hour == stringToTimeOfDay(i.startTime!).hour
+                    && stringToTimeOfDay(schedule.restEndTime ?? schedule.endTime!).minute > stringToTimeOfDay(i.startTime!).minute))){
+          return true;
+        } else if(
+        (stringToTimeOfDay(schedule.startTime!).hour > stringToTimeOfDay(i.startTime!).hour ||
+            (stringToTimeOfDay(schedule.startTime!).hour == stringToTimeOfDay(i.startTime!).hour &&
+                stringToTimeOfDay(schedule.startTime!).minute >= stringToTimeOfDay(i.startTime!).minute))
+            &&(stringToTimeOfDay(schedule.startTime!).hour < stringToTimeOfDay(i.restEndTime ?? i.endTime!).hour ||
+            (stringToTimeOfDay(schedule.startTime!).hour == stringToTimeOfDay(i.restEndTime ?? i.endTime!).hour &&
+                stringToTimeOfDay(schedule.startTime!).minute < stringToTimeOfDay(i.restEndTime ?? i.endTime!).minute))
+        ){
+          return true;
+        }else{
+          return false;
+        }
+      }
+    }
+  }
+
+  return false;
+}
+

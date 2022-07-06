@@ -1,8 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:intl/intl.dart';
 import 'package:nevertheless/app/ui/index_screen.dart';
+import 'package:time_picker_widget/time_picker_widget.dart';
 import 'package:weekday_selector/weekday_selector.dart';
 
 import '../../../../data/model/task.dart';
@@ -24,20 +26,19 @@ class _TaskDetailPageState extends State<TaskDetailPage>{
   final TextEditingController _noteController = TextEditingController();
   final TextEditingController _startTimeController = TextEditingController();
   final TextEditingController _endTimeController = TextEditingController();
-  final TextEditingController _startRestTimeController = TextEditingController();
-  final TextEditingController _endRestTimeController = TextEditingController();
+  final TextEditingController _restTimeController = TextEditingController();
 
   String? _startDate;
   String? _endDate;
   String? _restStartDate ;
   String? _restEndDate;
   final int _selectedColor = 0;
-  bool restEnabled = false;
   List<bool> dayValues = List.filled(7, false);
 
   @override
   void initState() {
     // TODO: implement initState
+
     for(int i = 0; i < dayValues.length; i++){
       dayValues[i] = widget.task.repeat![i];
     }
@@ -45,14 +46,32 @@ class _TaskDetailPageState extends State<TaskDetailPage>{
     _endDate = widget.task.endTime;
     _restStartDate = widget.task.restStartTime;
     _restEndDate = widget.task.restEndTime;
-    restEnabled = widget.task.restStartTime != null && widget.task.restEndTime != null;
+
+    if(_restStartDate !=null && _restEndDate != null){
+      _restTimeController.text = (DateFormat('hh:mm a').parse(_restEndDate!)
+          .subtract(Duration(hours: DateFormat('hh:mm a').parse(_restStartDate!).hour,
+          minutes: DateFormat('hh:mm a').parse(_restStartDate!).minute)).minute
+          + (DateFormat('hh:mm a').parse(_restEndDate!)
+              .subtract(Duration(hours: DateFormat('hh:mm a').parse(_restStartDate!).hour,
+          minutes: DateFormat('hh:mm a').parse(_restStartDate!).minute)).hour *60)
+      ).toString();
+    }else{
+      _restTimeController.text = "0";
+    }
+
+
+
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+
     _titleController.text = widget.task.title!;
     _noteController.text = widget.task.note == null ? "" : widget.task.note!;
+
+    _startTimeController.text = _startDate!;
+    _endTimeController.text = _endDate!;
 
     return Scaffold(
       appBar: AppBar(
@@ -63,11 +82,9 @@ class _TaskDetailPageState extends State<TaskDetailPage>{
             padding: const EdgeInsets.only(right: 12, left: 12),
             child: IconButton(
                 onPressed: (){
-                  _submitStartTime();
-                  _submitEndTime();
+
                   if (_formKey.currentState!.validate()) {
                     _saveTaskToDB(widget.task);
-                    Navigator.pop(context);
                   }
                 },
                 icon: Icon(Icons.check)),
@@ -148,8 +165,8 @@ class _TaskDetailPageState extends State<TaskDetailPage>{
                                 hint: _startDate.toString(),
                                 widget: IconButton(
                                   icon: Icon(Icons.access_time),
-                                  onPressed: () {
-                                    _selectStartTime(context);
+                                  onPressed: () async{
+                                    await _selectStartTime(context);
                                   },
                                 ),
                                 emptyText: false,
@@ -164,8 +181,8 @@ class _TaskDetailPageState extends State<TaskDetailPage>{
                                 hint: _endDate.toString(),
                                 widget: IconButton(
                                   icon: Icon(Icons.access_time),
-                                  onPressed: () {
-                                    _selectEndTime(context);
+                                  onPressed: () async{
+                                    await _selectEndTime(context);
                                   },
                                 ),
                                 emptyText: false,
@@ -184,53 +201,48 @@ class _TaskDetailPageState extends State<TaskDetailPage>{
                         height: 25,
                       ),
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
-                          Switch(
-                            value: restEnabled,
-                            onChanged: (value){
-                              setState((){
-                                restEnabled = !restEnabled;
-                                if(!restEnabled){
-                                  _restStartDate = null;
-                                  _restEndDate = null;
+                          SizedBox(
+                              width: 165,
+                              child: TextFormField(
+                                controller: _restTimeController,
+                                keyboardType: TextInputType.number,
+                                inputFormatters: <TextInputFormatter>[
+                                  // for below version 2 use this
+                                  FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+                                  FilteringTextInputFormatter.digitsOnly
+                                ],
+                                decoration: InputDecoration(
+                                    labelText: "Rest Minute",
+                                    hintText: "10m ~ 60m",
+                                ),
+                              validator: (value){
+                                if(value == null) {
+                                  return null;
+                                }else{
+                                  if(int.parse(value) > 60) {
+                                    return 'Rest minute can\'t be bigger than 60';
+                                  }
+                                  if(int.parse(value) < 0) {
+                                    return 'Rest minute can\'t be lower than 0';
+                                  }else if(int.parse(value) == 0){
+                                    _restTimeController.text = value;
+                                    _restStartDate = null;
+                                    _restEndDate = null;
+                                  }else{
+                                    _restTimeController.text = value;
+                                    _restStartDate = _endDate;
+                                    _restEndDate = TimeOfDay(hour:  DateFormat('hh:mm a').parse(_endDate!)
+                                        .add(Duration(minutes: int.parse(_restTimeController.text))).hour,
+                                        minute:  DateFormat('hh:mm a').parse(_endDate!)
+                                            .add(Duration(minutes: int.parse(_restTimeController.text))).minute).format(context);
+                                  }
                                 }
-                              });
-                            }),
-                          SizedBox(
-                              width: 165,
-                              child: InputField(
-                                controller: _startRestTimeController,
-                                isEnabled: restEnabled,
-                                isEditable: false,
-                                label: 'Start Time',
-                                iconOrdrop: 'button',
-                                hint: _restStartDate ?? "없음",
-                                widget: IconButton(
-                                  icon: Icon(Icons.access_time),
-                                  onPressed: () {
-                                    _selectRestStartTime(context);
-                                  },
-                                ),
-                                emptyText: true,
-                              )),
-                          SizedBox(
-                              width: 165,
-                              child: InputField(
-                                controller: _endRestTimeController,
-                                isEnabled: restEnabled,
-                                isEditable: false,
-                                iconOrdrop: 'button',
-                                label: 'End Time',
-                                hint: _restEndDate ?? "없음",
-                                widget: IconButton(
-                                  icon: Icon(Icons.access_time),
-                                  onPressed: () {
-                                    _selectRestEndTime(context);
-                                  },
-                                ),
-                                emptyText: true,
-                              )),
+
+                                },
+                              ),
+                          )
                         ],
                       ),
 
@@ -259,25 +271,52 @@ class _TaskDetailPageState extends State<TaskDetailPage>{
   }
 
   _saveTaskToDB(Task task) {
-    task.color = -_selectedColor;
-    task.title = _titleController.text;
-    task.note = _noteController.text;
-    task.startTime = _startDate;
-    task.endTime = _endDate;
-    task.repeat = dayValues;
-    if(restEnabled) {
-      task.restStartTime = _restStartDate;
-      task.restEndTime = _restEndDate;
-    } else{
-      task.restStartTime = null;
-      task.restEndTime = null;
+
+    Task temp = Task(
+      id: task.id,
+      color: task.color,
+      title: _titleController.text,
+      note: _noteController.text,
+      startTime: _startDate,
+      endTime:  _endDate,
+      repeat: dayValues,
+      restStartTime:  _restStartDate,
+      restEndTime: _restEndDate,
+      startTimeLog: task.startTimeLog,
+      endTimeLog:  task.endTimeLog,
+    );
+
+    if(!isTimeNested(schedule: temp)){
+
+      task.id = temp.id;
+      task.color = temp.color;
+      task.title = temp.title;
+      task.note = temp.note;
+      task.startTime = temp.startTime;
+      task.endTime = temp.endTime;
+      task.repeat = temp.repeat;
+      task.restStartTime = temp.restStartTime;
+      task.restEndTime = temp.restEndTime;
+      task.startTimeLog = temp.startTimeLog;
+      task.endTimeLog = temp.endTimeLog;
+
+      Navigator.pop(context);
+    }else{
+      ScaffoldMessenger.of(context)
+          .showSnackBar(
+          SnackBar(
+              backgroundColor: ThemeData.dark().backgroundColor,
+              content: Text("해당 시간에 다른 일정이 존재합니다",
+                textAlign: TextAlign.center,
+                style: TextStyle(color: Colors.red),)));
     }
+
   }
 
   _selectStartTime(BuildContext context) async {
     final TimeOfDay? selected = await showTimePicker(
       context: context,
-      initialTime: TimeOfDay.now(),
+      initialTime: stringToTimeOfDay(_startDate!),
     );
     String formattedTime = selected!.format(context);
     setState(() {
@@ -285,14 +324,11 @@ class _TaskDetailPageState extends State<TaskDetailPage>{
     });
   }
 
-  _submitStartTime() {
-    _startTimeController.text = _startDate!;
-  }
 
   _selectEndTime(BuildContext context) async {
     final TimeOfDay? selected = await showTimePicker(
       context: context,
-      initialTime: TimeOfDay.now(),
+      initialTime: stringToTimeOfDay(_endDate!),
     );
     String formattedTime = selected!.format(context);
     setState(() {
@@ -300,29 +336,8 @@ class _TaskDetailPageState extends State<TaskDetailPage>{
     });
   }
 
-  _selectRestStartTime(BuildContext context) async {
-    final TimeOfDay? selected = await showTimePicker(
-      context: context,
-      initialTime: TimeOfDay.now(),
-    );
-    String formattedTime = selected!.format(context);
-    setState(() {
-      _restStartDate = formattedTime;
-    });
-  }
-  _selectRestEndTime(BuildContext context) async {
-    final TimeOfDay? selected = await showTimePicker(
-      context: context,
-      initialTime: TimeOfDay.now(),
-    );
-    String formattedTime = selected!.format(context);
-    setState(() {
-      _restEndDate = formattedTime;
-    });
-  }
-
-  _submitEndTime() {
-    _endTimeController.text = _endDate!;
-  }
-
+}
+TimeOfDay stringToTimeOfDay(String tod) {
+  final format = DateFormat.jm(); //"6:00 AM"
+  return TimeOfDay.fromDateTime(format.parse(tod));
 }

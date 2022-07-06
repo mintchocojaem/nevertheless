@@ -84,7 +84,7 @@ class _TimeChartPageState extends State<TimeChartPage> with TickerProviderStateM
 
   Widget bottomTitles(double value, TitleMeta meta) {
     const style = TextStyle(
-      color: Color(0xff787694),
+      color: Color(0xffffffff),
       fontSize: 10,
     );
     String text;
@@ -152,6 +152,8 @@ class _TimeChartPageState extends State<TimeChartPage> with TickerProviderStateM
         Legend(i.title!, Color(i.color!)),
       );
     }
+
+    print(durationList);
 
     return Scaffold(
       appBar: AppBar(
