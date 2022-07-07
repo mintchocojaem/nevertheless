@@ -153,8 +153,6 @@ class _TimeChartPageState extends State<TimeChartPage> with TickerProviderStateM
       );
     }
 
-    print(durationList);
-
     return Scaffold(
       appBar: AppBar(
         title: Text("Time Chart"),

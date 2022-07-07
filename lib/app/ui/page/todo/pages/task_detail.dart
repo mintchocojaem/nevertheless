@@ -9,6 +9,7 @@ import 'package:weekday_selector/weekday_selector.dart';
 
 import '../../../../data/model/task.dart';
 import '../widgets/input_field.dart';
+import 'CustomColorPicker.dart';
 
 class TaskDetailPage extends StatefulWidget {
   const TaskDetailPage({Key? key, required this.task}) : super(key: key);
@@ -32,7 +33,14 @@ class _TaskDetailPageState extends State<TaskDetailPage>{
   String? _endDate;
   String? _restStartDate ;
   String? _restEndDate;
-  final int _selectedColor = 0;
+  late Color pickerColor;
+  List<Color> colors = [
+    Color(0xFFF9D1DE),
+    Color(0xFFEBD6EE),
+    Color(0xFFC2B7F3),
+    Color(0xFF9ED0A0),
+    Color(0xFF7CACF7),
+  ];
   List<bool> dayValues = List.filled(7, false);
 
   @override
@@ -59,7 +67,7 @@ class _TaskDetailPageState extends State<TaskDetailPage>{
       _restTimeController.text = "0";
     }
 
-
+    pickerColor = Color(widget.task.color!);
 
     super.initState();
   }
@@ -104,26 +112,24 @@ class _TaskDetailPageState extends State<TaskDetailPage>{
                     isEditable: true,
                     hint: widget.task.title!,
                     label: 'Title',
-                    iconOrdrop: 'icon',
                     controller: _titleController,
                     emptyText: false,
                     fontSize: 17,
                   ),
                   const SizedBox(
-                    height: 20,
+                    height: 30,
                   ),
                   InputField(
                     boldText: true,
                     isEditable: true,
                     hint: widget.task.note!,
                     label: 'Note',
-                    iconOrdrop: 'icon',
                     controller: _noteController,
                     emptyText: true,
                     fontSize: 17,
                   ),
                   const SizedBox(
-                    height: 20,
+                    height: 30,
                   ),
                   WeekdaySelector(
                     firstDayOfWeek: 0,
@@ -144,109 +150,149 @@ class _TaskDetailPageState extends State<TaskDetailPage>{
 
                   ),
                   const SizedBox(
-                    height: 25,
+                    height: 30,
                   ),
-                  Column(
+                  Stack(
+                    alignment: Alignment.bottomLeft,
                     children: [
-                      Text("Study",style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17),),
-                      SizedBox(
-                        height: 25,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          SizedBox(
-                              width: 165,
-                              child: InputField(
-                                isEditable: false,
-                                controller: _startTimeController,
-                                label: 'Start Time',
-                                iconOrdrop: 'button',
-                                hint: _startDate.toString(),
-                                widget: IconButton(
-                                  icon: Icon(Icons.access_time),
-                                  onPressed: () async{
-                                    await _selectStartTime(context);
-                                  },
-                                ),
-                                emptyText: false,
-                              )),
-                          SizedBox(
-                              width: 165,
-                              child: InputField(
-                                controller: _endTimeController,
-                                isEditable: false,
-                                iconOrdrop: 'button',
-                                label: 'End Time',
-                                hint: _endDate.toString(),
-                                widget: IconButton(
-                                  icon: Icon(Icons.access_time),
-                                  onPressed: () async{
-                                    await _selectEndTime(context);
-                                  },
-                                ),
-                                emptyText: false,
-                              )),
-                        ],
+                      Icon(Icons.alarm,size: 30,),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 30),
+                        child: Align(
+                          alignment: Alignment.center,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              Center(
+                                child: SizedBox(
+                                    width: 100,
+                                      child: InputField(
+                                        onTap: () async{
+                                          await _selectStartTime(context);
+                                        },
+                                        isEditable: false,
+                                        controller: _startTimeController,
+                                        label: 'Start Time',
+                                        hint: _startDate.toString(),
+                                        widget: IconButton(
+                                          icon: Icon(Icons.access_time),
+                                          onPressed: () async{
+                                            await _selectStartTime(context);
+                                          },
+                                        ),
+                                        emptyText: false,
+                                      ),
+                                    ),
+                              ),
+                              SizedBox(
+                                  width: 100,
+                                  child: InputField(
+                                    onTap: () async{
+                                      await _selectStartTime(context);
+                                    },
+                                    controller: _endTimeController,
+                                    isEditable: false,
+                                    label: 'End Time',
+                                    hint: _endDate.toString(),
+
+                                    emptyText: false,
+                                  )),
+                            ],
+                          ),
+                        ),
                       ),
                     ],
                   ),
                   const SizedBox(
-                    height: 25,
+                    height: 30,
                   ),
-                  Column(
+                  Stack(
+                    alignment: Alignment.bottomLeft,
                     children: [
-                      Text("Rest",style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17),),
-                      SizedBox(
-                        height: 25,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          SizedBox(
-                              width: 165,
-                              child: TextFormField(
-                                controller: _restTimeController,
-                                keyboardType: TextInputType.number,
-                                inputFormatters: <TextInputFormatter>[
-                                  // for below version 2 use this
-                                  FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
-                                  FilteringTextInputFormatter.digitsOnly
-                                ],
-                                decoration: InputDecoration(
-                                    labelText: "Rest Minute",
-                                    hintText: "10m ~ 60m",
-                                ),
-                              validator: (value){
-                                if(value == null) {
-                                  return null;
-                                }else{
-                                  if(int.parse(value) > 60) {
-                                    return 'Rest minute can\'t be bigger than 60';
-                                  }
-                                  if(int.parse(value) < 0) {
-                                    return 'Rest minute can\'t be lower than 0';
-                                  }else if(int.parse(value) == 0){
-                                    _restTimeController.text = value;
-                                    _restStartDate = null;
-                                    _restEndDate = null;
-                                  }else{
-                                    _restTimeController.text = value;
-                                    _restStartDate = _endDate;
-                                    _restEndDate = TimeOfDay(hour:  DateFormat('hh:mm a').parse(_endDate!)
-                                        .add(Duration(minutes: int.parse(_restTimeController.text))).hour,
-                                        minute:  DateFormat('hh:mm a').parse(_endDate!)
-                                            .add(Duration(minutes: int.parse(_restTimeController.text))).minute).format(context);
-                                  }
+                      Icon(Icons.bed,size: 30,),
+                      Align(
+                        alignment: Alignment.center,
+                        child:  SizedBox(
+                          width: 100,
+                          child: TextFormField(
+                            controller: _restTimeController,
+                            keyboardType: TextInputType.number,
+                            inputFormatters: <TextInputFormatter>[
+                              // for below version 2 use this
+                              FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+                              FilteringTextInputFormatter.digitsOnly
+                            ],
+                            decoration: InputDecoration(
+                              labelStyle: TextStyle(height:0.1),
+                              labelText: "Rest Minute",
+                              hintText: "10m ~ 60m",
+                            ),
+                            validator: (value){
+                              if(value == null) {
+                                return null;
+                              }else{
+                                if(int.parse(value) > 60) {
+                                  return 'Rest minute can\'t be bigger than 60';
                                 }
+                                if(int.parse(value) < 0) {
+                                  return 'Rest minute can\'t be lower than 0';
+                                }else if(int.parse(value) == 0){
+                                  _restTimeController.text = value;
+                                  _restStartDate = null;
+                                  _restEndDate = null;
+                                }else{
+                                  _restTimeController.text = value;
+                                  _restStartDate = _endDate;
+                                  _restEndDate = TimeOfDay(hour:  DateFormat('hh:mm a').parse(_endDate!)
+                                      .add(Duration(minutes: int.parse(_restTimeController.text))).hour,
+                                      minute:  DateFormat('hh:mm a').parse(_endDate!)
+                                          .add(Duration(minutes: int.parse(_restTimeController.text))).minute).format(context);
+                                }
+                              }
 
-                                },
-                              ),
-                          )
-                        ],
+                            },
+                          ),
+                        ),
+
                       ),
 
                     ],
+                  ),
+                  const SizedBox(
+                    height: 30,
+                  ),
+                  SizedBox(
+                    height: 80,
+                    child: Stack(
+                      children: [
+                        Align(
+                          child: Icon(Icons.color_lens_rounded,size: 30,),
+                          alignment: Alignment.centerLeft,
+                        ),
+                        Align(
+                          alignment: Alignment.center,
+                          child: MaterialButton(
+                              height: 32,
+                              color: pickerColor,
+                              shape: CircleBorder(),
+                              onPressed: (){
+                                showDialog(context: context,
+                                    builder: (BuildContext context) =>
+                                        CustomColorPicker(
+                                            backgroundColor: ThemeData.dark().primaryColor,
+                                            colors: colors,
+                                            pickerColor: pickerColor,
+                                            textColor: ThemeData.dark().textTheme.bodyText1!.color,
+                                            onColorSelected: (color) {
+                                              setState(() {
+                                                pickerColor = color;
+                                              });
+                                            })
+                                );
+                              }),
+                        ),
+                      ],
+                    ),
                   ),
                   const SizedBox(
                     height: 48,
@@ -274,7 +320,7 @@ class _TaskDetailPageState extends State<TaskDetailPage>{
 
     Task temp = Task(
       id: task.id,
-      color: task.color,
+      color: pickerColor.value,
       title: _titleController.text,
       note: _noteController.text,
       startTime: _startDate,
@@ -286,29 +332,40 @@ class _TaskDetailPageState extends State<TaskDetailPage>{
       endTimeLog:  task.endTimeLog,
     );
 
-    if(!isTimeNested(schedule: temp)){
 
-      task.id = temp.id;
-      task.color = temp.color;
-      task.title = temp.title;
-      task.note = temp.note;
-      task.startTime = temp.startTime;
-      task.endTime = temp.endTime;
-      task.repeat = temp.repeat;
-      task.restStartTime = temp.restStartTime;
-      task.restEndTime = temp.restEndTime;
-      task.startTimeLog = temp.startTimeLog;
-      task.endTimeLog = temp.endTimeLog;
-
-      Navigator.pop(context);
-    }else{
+    if(DateFormat('hh:mm a').parse(temp.endTime!).compareTo(DateFormat('hh:mm a').parse(temp.startTime!)) <= 0 ){
       ScaffoldMessenger.of(context)
           .showSnackBar(
           SnackBar(
               backgroundColor: ThemeData.dark().backgroundColor,
-              content: Text("해당 시간에 다른 일정이 존재합니다",
+              content: Text("종료시각이 시작시각보다 작거나 같습니다",
                 textAlign: TextAlign.center,
                 style: TextStyle(color: Colors.red),)));
+    }else{
+      if(!isTimeNested(schedule: temp)){
+
+        task.id = temp.id;
+        task.color = temp.color;
+        task.title = temp.title;
+        task.note = temp.note;
+        task.startTime = temp.startTime;
+        task.endTime = temp.endTime;
+        task.repeat = temp.repeat;
+        task.restStartTime = temp.restStartTime;
+        task.restEndTime = temp.restEndTime;
+        task.startTimeLog = temp.startTimeLog;
+        task.endTimeLog = temp.endTimeLog;
+
+        Navigator.pop(context);
+      }else{
+        ScaffoldMessenger.of(context)
+            .showSnackBar(
+            SnackBar(
+                backgroundColor: ThemeData.dark().backgroundColor,
+                content: Text("해당 시간에 다른 일정이 존재합니다",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: Colors.red),)));
+      }
     }
 
   }
@@ -318,10 +375,12 @@ class _TaskDetailPageState extends State<TaskDetailPage>{
       context: context,
       initialTime: stringToTimeOfDay(_startDate!),
     );
-    String formattedTime = selected!.format(context);
-    setState(() {
-      _startDate = formattedTime;
-    });
+    if(selected != null){
+      String formattedTime = selected.format(context);
+      setState(() {
+        _startDate = formattedTime;
+      });
+    }
   }
 
 
@@ -330,10 +389,13 @@ class _TaskDetailPageState extends State<TaskDetailPage>{
       context: context,
       initialTime: stringToTimeOfDay(_endDate!),
     );
-    String formattedTime = selected!.format(context);
-    setState(() {
-      _endDate = formattedTime;
-    });
+    if(selected != null){
+      String formattedTime = selected.format(context);
+      setState(() {
+        _endDate = formattedTime;
+      });
+    }
+
   }
 
 }

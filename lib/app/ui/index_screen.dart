@@ -59,6 +59,7 @@ class IndexScreen extends GetView<BottomNavController> {
   @override
   Widget build(BuildContext context) {
 
+
     return WillPopScope(
       onWillPop: willPopAction,
       child: Obx(() => Scaffold(

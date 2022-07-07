@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:intl/intl.dart';
@@ -116,3 +117,20 @@ bool isTimeNested({required Task schedule}){
   return false;
 }
 
+int generateID(List<Task> taskList){
+
+  int id = 0;
+  List<int> idList = List.empty(growable: true);
+
+  for(Task i in taskList){
+    idList.add(i.id!);
+  }
+  for(int j = 0; j < 128; j++){
+    if(!idList.contains(j)){
+      id = j;
+      break;
+    }
+  }
+
+  return id;
+}

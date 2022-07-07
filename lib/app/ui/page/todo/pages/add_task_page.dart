@@ -57,7 +57,6 @@ class _AddTaskPageState extends State<AddTaskPage> {
                     isEditable: true,
                     hint: 'Enter Title',
                     label: 'Title',
-                    iconOrdrop: 'icon',
                     controller: _titleController,
                     emptyText: false,
                   ),
@@ -68,7 +67,6 @@ class _AddTaskPageState extends State<AddTaskPage> {
                     isEditable: true,
                     hint: 'Enter Note',
                     label: 'Note',
-                    iconOrdrop: 'icon',
                     controller: _noteController,
                     emptyText: true,
                   ),
@@ -80,7 +78,6 @@ class _AddTaskPageState extends State<AddTaskPage> {
                     isEditable: false,
                     hint: '${_selectedDate.toString()}',
                     label: 'Date',
-                    iconOrdrop: 'button',
                     widget: IconButton(
                       icon: Icon(Icons.date_range),
                       onPressed: () {
@@ -101,7 +98,6 @@ class _AddTaskPageState extends State<AddTaskPage> {
                             isEditable: false,
                             controller: _startTimeController,
                             label: 'Start Time',
-                            iconOrdrop: 'button',
                             hint: _startDate.toString(),
                             widget: IconButton(
                               icon: Icon(Icons.access_time),
@@ -116,7 +112,6 @@ class _AddTaskPageState extends State<AddTaskPage> {
                           child: InputField(
                             controller: _endTimeController,
                             isEditable: false,
-                            iconOrdrop: 'button',
                             label: 'End Time',
                             hint: _endDate.toString(),
                             widget: IconButton(
