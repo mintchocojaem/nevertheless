@@ -9,9 +9,9 @@ class CustomColorPicker extends AlertDialog{
   final pickerColor;
   final backgroundColor;
   final textColor;
-  final List<Color> colors;
+  final List<Color>? colors;
   final OnColorSelected onColorSelected;
-  CustomColorPicker({this.backgroundColor, this.textColor, required this.colors,
+  CustomColorPicker({this.backgroundColor, this.textColor, this.colors,
     required this.onColorSelected, required this.pickerColor });
 
   @override

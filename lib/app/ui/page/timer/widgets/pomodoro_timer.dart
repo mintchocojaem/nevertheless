@@ -5,7 +5,9 @@ import 'package:circular_countdown_timer/circular_countdown_timer.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import '../../../../data/model/task.dart';
 import '../../../../notification/notification.dart';
 import '../../../index_screen.dart';
 
@@ -13,7 +15,7 @@ class PomodoroTimer extends StatefulWidget{
 
   PomodoroTimer({Key? key, required this.durationList, required this.controller, required this.taskList}) : super(key: key);
   final List durationList;
-  final List taskList;
+  final List<String> taskList;
   final CountDownController controller;
   @override
   State<StatefulWidget> createState() {
@@ -26,6 +28,7 @@ class PomodoroTimer extends StatefulWidget{
 class _PomodoroTimer extends State<PomodoroTimer>{
 
   int durationCounter = 0;
+  int taskID = 0;
   int taskCounter = 0;
   bool isItRest = false;
   String text="";
@@ -40,6 +43,9 @@ class _PomodoroTimer extends State<PomodoroTimer>{
     // TODO: implement build
 
     isNotification = storage.read('notification') ?? true;
+
+    taskID = taskList[0].id!;
+
 
     return  Column(
       children: [
@@ -68,7 +74,6 @@ class _PomodoroTimer extends State<PomodoroTimer>{
               print('Countdown Started');
               text = "Now : "+widget.taskList[durationCounter];
 
-
               if(!isItRest){
                 print("doStudy");
                 startTimeLog = DateTime(
@@ -86,27 +91,27 @@ class _PomodoroTimer extends State<PomodoroTimer>{
                 if(!isItRest){
                   print("didStudy");
 
-                  if (taskList[taskCounter].startTimeLog == null){
-                    taskList[taskCounter].startTimeLog = List.empty(growable: true);
-                    taskList[taskCounter].startTimeLog!.add(startTimeLog);
+                  if (taskList[taskID].startTimeLog == null){
+                    taskList[taskID].startTimeLog = List.empty(growable: true);
+                    taskList[taskID].startTimeLog!.add(startTimeLog);
                   }else{
-                    taskList[taskCounter].startTimeLog!.add(startTimeLog);
+                    taskList[taskID].startTimeLog!.add(startTimeLog);
                   }
 
-                  if (taskList[taskCounter].endTimeLog == null){
-                    taskList[taskCounter].endTimeLog = List.empty(growable: true);
-                    taskList[taskCounter].endTimeLog!.add(DateTime(
+                  if (taskList[taskID].endTimeLog == null){
+                    taskList[taskID].endTimeLog = List.empty(growable: true);
+                    taskList[taskID].endTimeLog!.add(DateTime(
                       DateTime.now().year,DateTime.now().month,DateTime.now().day,DateTime.now().hour,DateTime.now().minute,0
                     ));
                   }else{
-                    taskList[taskCounter].endTimeLog!.add(DateTime(
+                    taskList[taskID].endTimeLog!.add(DateTime(
                         DateTime.now().year,DateTime.now().month,DateTime.now().day,DateTime.now().hour,DateTime.now().minute,0
                     ));
                   }
                   //Notification
                   if(isNotification){
-                    taskNotification(taskList[taskCounter].id!, "Nevertheless",
-                        "\"${taskList[taskCounter].title!}\" 시간 종료");
+                    taskNotification(taskList[taskID].id!, "Nevertheless",
+                        "\"${taskList[taskID].title!}\" 시간 종료 (타임차트 기록)");
                   }
 
                 }else{
@@ -114,18 +119,22 @@ class _PomodoroTimer extends State<PomodoroTimer>{
                   print("didRest");
                   //Notification
                   if(isNotification){
-                    taskNotification(taskList[taskCounter].id!, "Nevertheless",
-                        "\"${taskList[taskCounter].title!}\" 휴식시간 종료");
+                    taskNotification(taskList[taskID].id!, "Nevertheless",
+                        "\"${taskList[taskID].title!}\" 휴식시간 종료");
                   }
 
                 }
-                if(taskList[taskCounter].restStartTime != null && taskList[taskCounter].restEndTime != null){
-                  taskCounter -=1;
+                if(taskList[taskID].restStartTime != null && taskList[taskID].restEndTime != null){
+                  taskID -=1;
                   isItRest = true;
                 }
-                taskCounter++;
-                widget.controller.restart(duration: widget.durationList[durationCounter]);
 
+                taskCounter++;
+                taskID = taskList[taskCounter].id!;
+
+                if(widget.durationList.lastIndexOf(widget.durationList.last) > durationCounter-1){
+                  widget.controller.restart(duration: widget.durationList[durationCounter]);
+                }
 
               });
             },

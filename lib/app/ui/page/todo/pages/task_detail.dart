@@ -2,11 +2,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:nevertheless/app/ui/index_screen.dart';
+import 'package:nevertheless/app/ui/page/timer/pages/timer_page.dart';
+import 'package:nevertheless/app/ui/page/todo/pages/task_page.dart';
 import 'package:time_picker_widget/time_picker_widget.dart';
 import 'package:weekday_selector/weekday_selector.dart';
-
 import '../../../../data/model/task.dart';
 import '../widgets/input_field.dart';
 import 'CustomColorPicker.dart';
@@ -34,13 +36,7 @@ class _TaskDetailPageState extends State<TaskDetailPage>{
   String? _restStartDate ;
   String? _restEndDate;
   late Color pickerColor;
-  List<Color> colors = [
-    Color(0xFFF9D1DE),
-    Color(0xFFEBD6EE),
-    Color(0xFFC2B7F3),
-    Color(0xFF9ED0A0),
-    Color(0xFF7CACF7),
-  ];
+
   List<bool> dayValues = List.filled(7, false);
 
   @override
@@ -174,12 +170,6 @@ class _TaskDetailPageState extends State<TaskDetailPage>{
                                         controller: _startTimeController,
                                         label: 'Start Time',
                                         hint: _startDate.toString(),
-                                        widget: IconButton(
-                                          icon: Icon(Icons.access_time),
-                                          onPressed: () async{
-                                            await _selectStartTime(context);
-                                          },
-                                        ),
                                         emptyText: false,
                                       ),
                                     ),
@@ -188,13 +178,12 @@ class _TaskDetailPageState extends State<TaskDetailPage>{
                                   width: 100,
                                   child: InputField(
                                     onTap: () async{
-                                      await _selectStartTime(context);
+                                      await _selectEndTime(context);
                                     },
                                     controller: _endTimeController,
                                     isEditable: false,
                                     label: 'End Time',
                                     hint: _endDate.toString(),
-
                                     emptyText: false,
                                   )),
                             ],
@@ -280,7 +269,6 @@ class _TaskDetailPageState extends State<TaskDetailPage>{
                                     builder: (BuildContext context) =>
                                         CustomColorPicker(
                                             backgroundColor: ThemeData.dark().primaryColor,
-                                            colors: colors,
                                             pickerColor: pickerColor,
                                             textColor: ThemeData.dark().textTheme.bodyText1!.color,
                                             onColorSelected: (color) {
@@ -301,7 +289,8 @@ class _TaskDetailPageState extends State<TaskDetailPage>{
                     child: IconButton(icon: Icon(Icons.delete_outline), onPressed: () {
                       FlutterLocalNotificationsPlugin().cancel(widget.task.id!);
                       taskList.remove(widget.task);
-                      Navigator.pop(context);
+                      Navigator.of(context).push(new MaterialPageRoute(builder: (_)=>IndexScreen()),)
+                          .then((val)=> setState((){}));
                     },),
                   ),
                   const SizedBox(
@@ -338,7 +327,7 @@ class _TaskDetailPageState extends State<TaskDetailPage>{
           .showSnackBar(
           SnackBar(
               backgroundColor: ThemeData.dark().backgroundColor,
-              content: Text("종료시각이 시작시각보다 작거나 같습니다",
+              content: Text("종료시각이 시작시각과 같거나 작습니다",
                 textAlign: TextAlign.center,
                 style: TextStyle(color: Colors.red),)));
     }else{
@@ -398,8 +387,9 @@ class _TaskDetailPageState extends State<TaskDetailPage>{
 
   }
 
-}
-TimeOfDay stringToTimeOfDay(String tod) {
-  final format = DateFormat.jm(); //"6:00 AM"
-  return TimeOfDay.fromDateTime(format.parse(tod));
+  TimeOfDay stringToTimeOfDay(String tod) {
+    final format = DateFormat.jm(); //"6:00 AM"
+    return TimeOfDay.fromDateTime(format.parse(tod));
+  }
+
 }

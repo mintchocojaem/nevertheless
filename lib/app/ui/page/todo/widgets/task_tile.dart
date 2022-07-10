@@ -15,7 +15,7 @@ class TaskTile extends StatelessWidget {
       margin: const EdgeInsets.symmetric(vertical: 10,horizontal: 10),
       padding: EdgeInsets.symmetric(horizontal: 10,vertical: MediaQuery.of(context).orientation == Orientation.portrait ? 10 : 0),
       decoration: BoxDecoration(
-          color: Colors.deepPurpleAccent,
+          color: Color(task.color!),
           borderRadius: BorderRadius.circular(10)),
       child: Row(
         children: [

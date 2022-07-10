@@ -9,8 +9,10 @@ import '../../../../notification/notification.dart';
 import '../../todo/pages/task_detail.dart';
 import '../widgets/pomodoro_timer.dart';
 
+typedef Refresh = void Function();
+
 class TimerPage extends StatefulWidget {
-  TimerPage({Key? key, required this.taskList}) : super(key: key);
+  TimerPage({Key? key, required this.taskList }) : super(key: key);
   @override
   State<TimerPage> createState() => _TimerPageState();
   List<Task> taskList;
@@ -27,12 +29,13 @@ class _TimerPageState extends State<TimerPage> {
   bool floatingVisible =  true;
 
 
-
   @override
   Widget build(BuildContext context) {
 
+
     taskWidgetList = List.empty(growable: true);
     durationList = List.empty(growable: true);
+    pomodoroTaskList = List.empty(growable: true);
 
     widget.taskList.sort((a,b) =>
         DateFormat('hh:mm a').parse(a.startTime!)
@@ -57,12 +60,13 @@ class _TimerPageState extends State<TimerPage> {
                   },
                 )
             ));
+
+        durationList.add(
+            (((stringToTimeOfDay(i.endTime!).hour - stringToTimeOfDay(i.startTime!).hour) * 60) * 60)
+                + (((stringToTimeOfDay(i.endTime!).minute - stringToTimeOfDay(i.startTime!).minute) * 60))
+        );
+        pomodoroTaskList.add(i.title!);
       }
-      durationList.add(
-          (((stringToTimeOfDay(i.endTime!).hour - stringToTimeOfDay(i.startTime!).hour) * 60) * 60)
-              + (((stringToTimeOfDay(i.endTime!).minute - stringToTimeOfDay(i.startTime!).minute) * 60))
-      );
-      pomodoroTaskList.add(i.title!);
 
       if(i.restStartTime != null && i.restEndTime != null && i.repeat![DateTime.now().weekday-1]){
         taskWidgetList.add(
@@ -88,6 +92,8 @@ class _TimerPageState extends State<TimerPage> {
       }
     }
 
+    print(durationList);
+    print(pomodoroTaskList);
 
     return Scaffold(
       appBar: AppBar(
@@ -104,13 +110,15 @@ class _TimerPageState extends State<TimerPage> {
                   child: PomodoroTimer(taskList: pomodoroTaskList,durationList: durationList,controller: countDownController),
                 )
             ),
-            Expanded(
+            pomodoroTaskList.isNotEmpty ? Expanded(
               child: ListView(
                   shrinkWrap: true,
                   padding: const EdgeInsets.all(8),
                   children: taskWidgetList,
               ),
-            )
+            ) :  Container(
+              child: Text("오늘 일정이 없습니다", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),),
+            ),
           ],
         ),
       ),
@@ -118,7 +126,7 @@ class _TimerPageState extends State<TimerPage> {
         visible: floatingVisible,
         child: Transform.scale(
           scale: 1.5,
-          child: FloatingActionButton(
+          child: pomodoroTaskList.isNotEmpty ? FloatingActionButton(
             child: Row(
               children: [
                 Icon(Icons.play_arrow,color: Colors.white70,),
@@ -150,7 +158,7 @@ class _TimerPageState extends State<TimerPage> {
             },
             backgroundColor: Colors.transparent,
             elevation: 0,
-          ),
+          ) : null,
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,

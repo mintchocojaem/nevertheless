@@ -19,36 +19,37 @@ class TimeChartPage extends StatefulWidget {
 class _TimeChartPageState extends State<TimeChartPage> with TickerProviderStateMixin{
 
   List<Map> durationList = List.empty(growable: true);
-
   List<double> yList = List.empty(growable: true);
-
   List<Legend> legendList = List.empty(growable: true);
 
   List<BarChartRodData> addItem(int x, List<Map> list){
 
     List<BarChartRodData> result = List.empty(growable: true);
     double sumY = 0;
+    if(list.isNotEmpty){
 
-    for(Map i in list){
+      for(Map i in list){
 
-      for(DateTime j in i['duration']){
+        for(DateTime j in i['duration']){
 
-        if(j.weekday-1 == x){
-          result.add(
-              BarChartRodData(
-                  fromY: sumY,
-                  toY: ((j.hour * 60) + j.minute).toDouble() + sumY,
-                  width: 8,
-                  color: Color(i['color'])
-              )
-          );
-          sumY += ((j.hour * 60) + j.minute).toDouble();
 
+          if(j.weekday-1 == x){
+            result.add(
+                BarChartRodData(
+                    fromY: sumY,
+                    toY: ((j.hour * 60) + j.minute).toDouble() + sumY,
+                    width: 8,
+                    color: Color(i['color'])
+                )
+            );
+            sumY += ((j.hour * 60) + j.minute).toDouble();
+
+          }
         }
-
       }
-      yList.add(sumY);
     }
+    yList.add(sumY);
+
     return result;
   }
 
@@ -67,7 +68,7 @@ class _TimeChartPageState extends State<TimeChartPage> with TickerProviderStateM
     if (value == 0) {
       text = '0';
     } else {
-      text = '${value.toInt()/60} hours';
+      text = '${value.toInt()~/60} hours';
     }
     return SideTitleWidget(
       angle: 0,
@@ -123,44 +124,48 @@ class _TimeChartPageState extends State<TimeChartPage> with TickerProviderStateM
   Widget build(BuildContext context) {
 
     yList = List.empty(growable: true);
+
     durationList = List.empty(growable: true);
     legendList = List.empty(growable: true);
 
     for(Task? i in widget.taskList){
 
-      Map<String,dynamic> durationMap = {
-        'title' : "",
-        'color' : 0,
-        'duration' : [],
-      };
+      if(i?.startTimeLog != null && i?.endTimeLog != null){
+        Map<String,dynamic> durationMap = {
+          'title' : "",
+          'color' : 0,
+          'duration' : [],
+        };
 
-      List<DateTime> timeLog = List.empty(growable: true);
+        List<DateTime> timeLog = List.empty(growable: true);
 
-      for(int j =0; j < i!.startTimeLog!.length; j++){
-        timeLog.add(
-          i.endTimeLog![j]!.subtract(Duration(hours: i.startTimeLog![j]!.hour,minutes: i.startTimeLog![j]!.minute ))
+        for(int j =0; j < i!.startTimeLog!.length; j++){
+          timeLog.add(
+              i.endTimeLog![j]!.subtract(Duration(hours: i.startTimeLog![j]!.hour,minutes: i.startTimeLog![j]!.minute ))
+          );
+        }
+        durationMap['id'] = i.id;
+        durationMap['title'] = i.title;
+        durationMap['color'] = i.color;
+        durationMap['duration'] = timeLog;
+
+        durationList.add(durationMap);
+
+        legendList.add(
+          Legend(i.title!, Color(i.color!)),
         );
+
       }
-      durationMap['id'] = i.id;
-      durationMap['title'] = i.title;
-      durationMap['color'] = i.color;
-      durationMap['duration'] = timeLog;
 
-      durationList.add(durationMap);
-
-      legendList.add(
-        Legend(i.title!, Color(i.color!)),
-      );
     }
+
 
     return Scaffold(
       appBar: AppBar(
         title: Text("Time Chart"),
       ),
       body: Center(
-        child: Card(
-          elevation: 4,
-          child: Padding(
+        child: Padding(
             padding: const EdgeInsets.all(24),
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -178,49 +183,48 @@ class _TimeChartPageState extends State<TimeChartPage> with TickerProviderStateM
                   legends: legendList
                 ),
                 const SizedBox(height: 14),
-                AspectRatio(
-                  aspectRatio: 1,
-                  child: BarChart(
-                    BarChartData(
-                      alignment: BarChartAlignment.spaceBetween,
-                      titlesData: FlTitlesData(
-                        leftTitles: AxisTitles(),
-                        rightTitles: AxisTitles(
-                          sideTitles: SideTitles(
-                            showTitles: true,
-                            interval: 60,
-                            getTitlesWidget: rightTitles,
-                            reservedSize: 32
-                          )
-                        ),
-                        topTitles: AxisTitles(),
-                        bottomTitles: AxisTitles(
-                          sideTitles: SideTitles(
-                            showTitles: true,
-                            getTitlesWidget: bottomTitles,
+               Expanded(
+                 child: BarChart(
+                      BarChartData(
+                        alignment: BarChartAlignment.spaceAround,
+                        titlesData: FlTitlesData(
+                          leftTitles: AxisTitles(
+                          ),
+                          rightTitles: AxisTitles(
+                            sideTitles: SideTitles(
+                              showTitles: true,
+                              interval: 60,
+                              getTitlesWidget: rightTitles,
+                              reservedSize: 32
+                            )
+                          ),
+                          topTitles: AxisTitles(),
+                          bottomTitles: AxisTitles(
+                            sideTitles: SideTitles(
+                              showTitles: true,
+                              getTitlesWidget: bottomTitles,
+                            ),
                           ),
                         ),
+                        barTouchData: BarTouchData(enabled: false),
+                        borderData: FlBorderData(show: false),
+                        gridData: FlGridData(show: false),
+                        barGroups: [
+                          generateGroupData(0, durationList),
+                          generateGroupData(1, durationList),
+                          generateGroupData(2, durationList),
+                          generateGroupData(3, durationList),
+                          generateGroupData(4, durationList),
+                          generateGroupData(5, durationList),
+                          generateGroupData(6, durationList),
+                        ],
+                        maxY: ((yList.reduce(max)~/60 * 60) +60).toDouble(),
                       ),
-                      barTouchData: BarTouchData(enabled: false),
-                      borderData: FlBorderData(show: false),
-                      gridData: FlGridData(show: false),
-                      barGroups: [
-                        generateGroupData(0, durationList),
-                        generateGroupData(1, durationList),
-                        generateGroupData(2, durationList),
-                        generateGroupData(3, durationList),
-                        generateGroupData(4, durationList),
-                        generateGroupData(5, durationList),
-                        generateGroupData(6, durationList),
-                      ],
-                      maxY: (60 ~/ yList.reduce(max)) * 60,
                     ),
-                  ),
-                ),
+               ),
               ],
             ),
           ),
-        ),
       ),
     );
   }
