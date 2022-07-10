@@ -29,12 +29,10 @@ class _TaskDetailPageState extends State<TaskDetailPage>{
   final TextEditingController _noteController = TextEditingController();
   final TextEditingController _startTimeController = TextEditingController();
   final TextEditingController _endTimeController = TextEditingController();
-  final TextEditingController _restTimeController = TextEditingController();
 
   String? _startDate;
   String? _endDate;
-  String? _restStartDate ;
-  String? _restEndDate;
+
   late Color pickerColor;
 
   List<bool> dayValues = List.filled(7, false);
@@ -48,20 +46,6 @@ class _TaskDetailPageState extends State<TaskDetailPage>{
     }
     _startDate = widget.task.startTime;
     _endDate = widget.task.endTime;
-    _restStartDate = widget.task.restStartTime;
-    _restEndDate = widget.task.restEndTime;
-
-    if(_restStartDate !=null && _restEndDate != null){
-      _restTimeController.text = (DateFormat('hh:mm a').parse(_restEndDate!)
-          .subtract(Duration(hours: DateFormat('hh:mm a').parse(_restStartDate!).hour,
-          minutes: DateFormat('hh:mm a').parse(_restStartDate!).minute)).minute
-          + (DateFormat('hh:mm a').parse(_restEndDate!)
-              .subtract(Duration(hours: DateFormat('hh:mm a').parse(_restStartDate!).hour,
-          minutes: DateFormat('hh:mm a').parse(_restStartDate!).minute)).hour *60)
-      ).toString();
-    }else{
-      _restTimeController.text = "0";
-    }
 
     pickerColor = Color(widget.task.color!);
 
@@ -195,61 +179,6 @@ class _TaskDetailPageState extends State<TaskDetailPage>{
                   const SizedBox(
                     height: 30,
                   ),
-                  Stack(
-                    alignment: Alignment.bottomLeft,
-                    children: [
-                      Icon(Icons.bed,size: 30,),
-                      Align(
-                        alignment: Alignment.center,
-                        child:  SizedBox(
-                          width: 100,
-                          child: TextFormField(
-                            controller: _restTimeController,
-                            keyboardType: TextInputType.number,
-                            inputFormatters: <TextInputFormatter>[
-                              // for below version 2 use this
-                              FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
-                              FilteringTextInputFormatter.digitsOnly
-                            ],
-                            decoration: InputDecoration(
-                              labelStyle: TextStyle(height:0.1),
-                              labelText: "Rest Minute",
-                              hintText: "10m ~ 60m",
-                            ),
-                            validator: (value){
-                              if(value == null) {
-                                return null;
-                              }else{
-                                if(int.parse(value) > 60) {
-                                  return 'Rest minute can\'t be bigger than 60';
-                                }
-                                if(int.parse(value) < 0) {
-                                  return 'Rest minute can\'t be lower than 0';
-                                }else if(int.parse(value) == 0){
-                                  _restTimeController.text = value;
-                                  _restStartDate = null;
-                                  _restEndDate = null;
-                                }else{
-                                  _restTimeController.text = value;
-                                  _restStartDate = _endDate;
-                                  _restEndDate = TimeOfDay(hour:  DateFormat('hh:mm a').parse(_endDate!)
-                                      .add(Duration(minutes: int.parse(_restTimeController.text))).hour,
-                                      minute:  DateFormat('hh:mm a').parse(_endDate!)
-                                          .add(Duration(minutes: int.parse(_restTimeController.text))).minute).format(context);
-                                }
-                              }
-
-                            },
-                          ),
-                        ),
-
-                      ),
-
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 30,
-                  ),
                   SizedBox(
                     height: 80,
                     child: Stack(
@@ -315,8 +244,7 @@ class _TaskDetailPageState extends State<TaskDetailPage>{
       startTime: _startDate,
       endTime:  _endDate,
       repeat: dayValues,
-      restStartTime:  _restStartDate,
-      restEndTime: _restEndDate,
+
       startTimeLog: task.startTimeLog,
       endTimeLog:  task.endTimeLog,
     );
@@ -340,12 +268,11 @@ class _TaskDetailPageState extends State<TaskDetailPage>{
         task.startTime = temp.startTime;
         task.endTime = temp.endTime;
         task.repeat = temp.repeat;
-        task.restStartTime = temp.restStartTime;
-        task.restEndTime = temp.restEndTime;
         task.startTimeLog = temp.startTimeLog;
         task.endTimeLog = temp.endTimeLog;
 
-        Navigator.pop(context);
+        Navigator.of(context).push(new MaterialPageRoute(builder: (_)=>IndexScreen()),)
+            .then((val)=> setState((){}));
       }else{
         ScaffoldMessenger.of(context)
             .showSnackBar(

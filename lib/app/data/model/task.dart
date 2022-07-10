@@ -23,10 +23,6 @@ class Task{
   int? color;
   @HiveField(6)
   List<bool>? repeat;
-  @HiveField(7)
-  String? restStartTime;
-  @HiveField(8)
-  String? restEndTime;
   @HiveField(9)
   List<DateTime?>? startTimeLog;
   @HiveField(10)
@@ -40,8 +36,6 @@ class Task{
     this.endTime,
     this.color,
     this.repeat,
-    this.restStartTime,
-    this.restEndTime,
     this.startTimeLog,
     this.endTimeLog,
   });
@@ -55,11 +49,8 @@ class Task{
       'endTime': endTime,
       'color': color,
       'repeat' : repeat,
-      'restStartTime' : restStartTime,
-      'restEndTime' : restEndTime,
       'startTimeLog' : startTimeLog,
       'endTimeLog' : endTimeLog
-
   };
   }
 
@@ -71,8 +62,6 @@ class Task{
     endTime = task['endTime'];
     color = task['color'];
     repeat = task['repeat'];
-    restStartTime = task['restStartTime'];
-    restEndTime = task['restEndTime'];
     startTimeLog = task['startTimeLog'];
     endTimeLog = task['endTimeLog'];
   }
@@ -94,17 +83,17 @@ bool isTimeNested({required Task schedule}){
         if((stringToTimeOfDay(schedule.startTime!).hour < stringToTimeOfDay(i.startTime!).hour ||
             (stringToTimeOfDay(schedule.startTime!).hour == stringToTimeOfDay(i.startTime!).hour
                 && stringToTimeOfDay(schedule.startTime!).minute < stringToTimeOfDay(i.startTime!).minute))
-            &&(stringToTimeOfDay(schedule.restEndTime ?? schedule.endTime!).hour > stringToTimeOfDay(i.startTime!).hour ||
-                (stringToTimeOfDay(schedule.restEndTime ?? schedule.endTime!).hour == stringToTimeOfDay(i.startTime!).hour
-                    && stringToTimeOfDay(schedule.restEndTime ?? schedule.endTime!).minute > stringToTimeOfDay(i.startTime!).minute))){
+            &&(stringToTimeOfDay(schedule.endTime!).hour > stringToTimeOfDay(i.startTime!).hour ||
+                (stringToTimeOfDay(schedule.endTime!).hour == stringToTimeOfDay(i.startTime!).hour
+                    && stringToTimeOfDay(schedule.endTime!).minute > stringToTimeOfDay(i.startTime!).minute))){
           return true;
         } else if(
         (stringToTimeOfDay(schedule.startTime!).hour > stringToTimeOfDay(i.startTime!).hour ||
             (stringToTimeOfDay(schedule.startTime!).hour == stringToTimeOfDay(i.startTime!).hour &&
                 stringToTimeOfDay(schedule.startTime!).minute >= stringToTimeOfDay(i.startTime!).minute))
-            &&(stringToTimeOfDay(schedule.startTime!).hour < stringToTimeOfDay(i.restEndTime ?? i.endTime!).hour ||
-            (stringToTimeOfDay(schedule.startTime!).hour == stringToTimeOfDay(i.restEndTime ?? i.endTime!).hour &&
-                stringToTimeOfDay(schedule.startTime!).minute < stringToTimeOfDay(i.restEndTime ?? i.endTime!).minute))
+            &&(stringToTimeOfDay(schedule.startTime!).hour < stringToTimeOfDay(i.endTime!).hour ||
+            (stringToTimeOfDay(schedule.startTime!).hour == stringToTimeOfDay(i.endTime!).hour &&
+                stringToTimeOfDay(schedule.startTime!).minute < stringToTimeOfDay(i.endTime!).minute))
         ){
           return true;
         }else{

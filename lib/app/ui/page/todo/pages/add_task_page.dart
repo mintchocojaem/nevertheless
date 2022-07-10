@@ -32,8 +32,6 @@ class _AddTaskPageState extends State<AddTaskPage> {
 
   String? _startDate;
   String? _endDate;
-  String? _restStartDate ;
-  String? _restEndDate;
   late Color pickerColor;
 
   List<bool> dayValues = List.filled(7, false);
@@ -44,7 +42,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
     // TODO: implement initState
 
     _startDate = DateFormat('hh:mm a').format(DateTime.now());
-    _endDate =  DateFormat('hh:mm a').format(DateTime.now().add(Duration(hours: 1)));
+    _endDate =  DateFormat('hh:mm a').format(DateTime.now().add(Duration(minutes: 30)));
 
     _restTimeController.text = "0";
 
@@ -180,61 +178,6 @@ class _AddTaskPageState extends State<AddTaskPage> {
                  const SizedBox(
                    height: 30,
                  ),
-                 Stack(
-                   alignment: Alignment.bottomLeft,
-                   children: [
-                     Icon(Icons.bed,size: 30,),
-                     Align(
-                       alignment: Alignment.center,
-                       child:  SizedBox(
-                         width: 100,
-                         child: TextFormField(
-                           controller: _restTimeController,
-                           keyboardType: TextInputType.number,
-                           inputFormatters: <TextInputFormatter>[
-                             // for below version 2 use this
-                             FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
-                             FilteringTextInputFormatter.digitsOnly
-                           ],
-                           decoration: InputDecoration(
-                             labelStyle: TextStyle(height:0.1),
-                             labelText: "Rest Minute",
-                             hintText: "10m ~ 60m",
-                           ),
-                           validator: (value){
-                             if(value == null) {
-                               return null;
-                             }else{
-                               if(int.parse(value) > 60) {
-                                 return 'Rest minute can\'t be bigger than 60';
-                               }
-                               if(int.parse(value) < 0) {
-                                 return 'Rest minute can\'t be lower than 0';
-                               }else if(int.parse(value) == 0){
-                                 _restTimeController.text = value;
-                                 _restStartDate = null;
-                                 _restEndDate = null;
-                               }else{
-                                 _restTimeController.text = value;
-                                 _restStartDate = _endDate;
-                                 _restEndDate = TimeOfDay(hour:  DateFormat('hh:mm a').parse(_endDate!)
-                                     .add(Duration(minutes: int.parse(_restTimeController.text))).hour,
-                                     minute:  DateFormat('hh:mm a').parse(_endDate!)
-                                         .add(Duration(minutes: int.parse(_restTimeController.text))).minute).format(context);
-                               }
-                             }
-
-                           },
-                         ),
-                       ),
-
-                     ),
-
-                   ],
-                 ),
-                 const SizedBox(
-                   height: 30,
-                 ),
                  SizedBox(
                    height: 80,
                    child: Stack(
@@ -291,8 +234,6 @@ class _AddTaskPageState extends State<AddTaskPage> {
       startTime: _startDate,
       endTime:  _endDate,
       repeat: dayValues,
-      restStartTime:  _restStartDate,
-      restEndTime: _restEndDate,
     );
 
     if(!dayValues.contains(true)){
@@ -322,8 +263,6 @@ class _AddTaskPageState extends State<AddTaskPage> {
           task.startTime = temp.startTime;
           task.endTime = temp.endTime;
           task.repeat = temp.repeat;
-          task.restStartTime = temp.restStartTime;
-          task.restEndTime = temp.restEndTime;
           task.startTimeLog = temp.startTimeLog;
           task.endTimeLog = temp.endTimeLog;
 
