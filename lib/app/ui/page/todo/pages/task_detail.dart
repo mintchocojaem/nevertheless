@@ -273,6 +273,8 @@ class _TaskDetailPageState extends State<TaskDetailPage>{
 
         Navigator.of(context).push(new MaterialPageRoute(builder: (_)=>IndexScreen()),)
             .then((val)=> setState((){}));
+
+
       }else{
         ScaffoldMessenger.of(context)
             .showSnackBar(

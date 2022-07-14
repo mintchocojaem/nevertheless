@@ -18,23 +18,40 @@ List<Task> taskList = [
       title: "수학",
       note: "1",
       startTime: DateFormat('hh:mm a').format(DateTime.now().add(Duration(minutes: 1))),
-      endTime: DateFormat('hh:mm a').format(DateTime.now().add(Duration(minutes: 3))),
+      endTime: DateFormat('hh:mm a').format(DateTime.now().add(Duration(minutes: 2))),
       startTimeLog: [
-        DateTime.now().add(Duration(minutes: 1)),
+        //DateTime.now().add(Duration(minutes: 1)),
         //DateTime.now().add(Duration(days: 1,minutes: 40))
       ],
       endTimeLog: [
-        DateTime.now().add(Duration(minutes: 60)),
+        //DateTime.now().add(Duration(minutes: 60)),
         //DateTime.now().add(Duration(days: 1,minutes: 60))
       ],
       color: 0xff328938,
-      repeat: [false,false,true,false,false,true,false]
+      repeat: [true,true,true,true,false,true,false]
   ),
   Task(
       id: 1,
       title: "과학",
       note: "1",
-      startTime: DateFormat('hh:mm a').format(DateTime.now()),
+      startTime: DateFormat('hh:mm a').format(DateTime.now().add(Duration(minutes: 2))),
+      endTime: DateFormat('hh:mm a').format(DateTime.now().add(Duration(minutes: 3))),
+      startTimeLog: [
+        //DateTime.now(),
+        //DateTime.now().add(Duration(days: 1))
+      ],
+      endTimeLog: [
+        //DateTime.now().add(Duration(minutes: 20)),
+        //DateTime.now().add(Duration(days: 1,minutes: 30))
+      ],
+      color: 0xff808080,
+      repeat: [true,true,true,true,false,true,false]
+  ),
+  Task(
+      id: 2,
+      title: "영어",
+      note: "1",
+      startTime: DateFormat('hh:mm a').format(DateTime.now().add(Duration(minutes: -1))),
       endTime: DateFormat('hh:mm a').format(DateTime.now().add(Duration(minutes: 1))),
       startTimeLog: [
         //DateTime.now(),
@@ -45,7 +62,7 @@ List<Task> taskList = [
         //DateTime.now().add(Duration(days: 1,minutes: 30))
       ],
       color: 0xff808080,
-      repeat: [false,false,true,true,false,true,false]
+      repeat: [true,true,true,true,false,true,false]
   )
 ];
 

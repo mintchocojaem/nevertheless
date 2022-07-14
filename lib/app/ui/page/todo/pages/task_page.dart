@@ -1,6 +1,7 @@
 import 'package:date_picker_timeline/date_picker_timeline.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:intl/intl.dart';
 import 'package:nevertheless/app/ui/page/todo/pages/task_detail.dart';
 
 import '../../../../data/model/task.dart';
@@ -36,6 +37,7 @@ class _TaskPageState extends State<TaskPage> {
 
   @override
   Widget build(BuildContext context) {
+
     dateTodoList = List.empty(growable: true);
     for(var i in widget.taskList){
       Task task = i;

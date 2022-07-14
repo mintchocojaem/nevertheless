@@ -32,7 +32,6 @@ class _TimeChartPageState extends State<TimeChartPage> with TickerProviderStateM
 
         for(DateTime j in i['duration']){
 
-
           if(j.weekday-1 == x){
             result.add(
                 BarChartRodData(

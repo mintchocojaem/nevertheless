@@ -39,7 +39,7 @@ class _TimerPageState extends State<TimerPage> {
             .compareTo( DateFormat('hh:mm a').parse(b.startTime!)));
 
       for( Task i in widget.taskList) {
-        if (i.repeat![DateTime.now().weekday - 1]) {
+        if (i.repeat![DateTime.now().weekday - 1] ) {
           taskWidgetList.add(
               Card(
                   child: ListTile(
@@ -91,46 +91,6 @@ class _TimerPageState extends State<TimerPage> {
             ],
           ),
         ),
-        floatingActionButton: Visibility(
-          visible: floatingVisible,
-          child: Transform.scale(
-            scale: 1.5,
-            child: taskWidgetList.isNotEmpty ? FloatingActionButton(
-              child: Row(
-                children: [
-                  Icon(Icons.play_arrow, color: Colors.white70,),
-                  Text('Play', style: TextStyle(
-                      color: Colors.white70, fontWeight: FontWeight.w600,
-                      fontSize: 12),),
-                ],
-              ),
-              onPressed: () {
-                if (countdownFlag == 0) {
-                  countDownController.start();
-                  countdownFlag = 1;
-                  floatingVisible = false;
-                  setState(() {});
-                }
-                /*
-              else if(countdownFlag == 1){
-                countDownController.pause();
-                countdownFlag = 2;
-
-              }
-              else{
-                countDownController.resume();
-                countdownFlag = 1;
-              }
-
-               */
-
-              },
-              backgroundColor: Colors.transparent,
-              elevation: 0,
-            ) : null,
-          ),
-        ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       );
   }
 }
@@ -138,3 +98,4 @@ TimeOfDay stringToTimeOfDay(String tod) {
   final format = DateFormat.jm(); //"6:00 AM"
   return TimeOfDay.fromDateTime(format.parse(tod));
 }
+
