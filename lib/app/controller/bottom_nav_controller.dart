@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
 
-enum PageName{HOME, List, Chat, Setting,}
+enum PageName{HOME, List, Chat,}
 
 class BottomNavController extends GetxController {
 
@@ -12,11 +12,9 @@ class BottomNavController extends GetxController {
       case PageName.HOME:
       case PageName.List:
       case PageName.Chat:
-      case PageName.Setting:
         _changePage(value);
         break;
     };
-    print("페이지 변경");
   }
 
   void _changePage(int value) {

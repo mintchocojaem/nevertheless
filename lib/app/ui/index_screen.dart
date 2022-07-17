@@ -1,17 +1,14 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 import 'package:nevertheless/app/ui/page/timechart/pages/time_chart.dart';
 import 'package:nevertheless/app/ui/page/timer/pages/timer_page.dart';
 import 'package:nevertheless/app/ui/page/todo/pages/task_page.dart';
-
 import '../controller/bottom_nav_controller.dart';
 import '../data/model/task.dart';
-import '../notification/notification.dart';
-import 'common_widgets/message_popup.dart';
 
 List<Task> taskList = [
+  /*
   Task(
       id: 0,
       title: "수학",
@@ -40,6 +37,8 @@ List<Task> taskList = [
       color: 0xff808080,
       repeat: [true,true,true,true,false,true,true]
   ),
+
+   */
 ];
 
 
@@ -52,9 +51,7 @@ class IndexScreen extends GetView<BottomNavController> {
   @override
   Widget build(BuildContext context) {
 
-    return WillPopScope(
-      onWillPop: willPopAction,
-      child: Obx(() => Scaffold(
+    return Obx(() => Scaffold(
         body: Center(
           child:
             IndexedStack(
@@ -82,21 +79,9 @@ class IndexScreen extends GetView<BottomNavController> {
             BottomNavigationBarItem(icon: Icon(Icons.bar_chart), label: 'TimeChart'),
           ],
         ),
-      )),
+      ),
     );
   }
-  Future<bool> willPopAction() async {
-    showDialog(
-        context: Get.context!,
-        builder: (context) => MessagePopup(
-          title: 'Pomodoro',
-          message: '정말 종료하시겠습니까?',
-          okCallback: () {
-            exit(0);
-          },
-          cancelCallback: Get.back,
-        ));
-    return true;
-  }
+
 
 }

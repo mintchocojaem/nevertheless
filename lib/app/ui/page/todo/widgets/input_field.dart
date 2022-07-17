@@ -52,7 +52,7 @@ class _InputFieldState extends State<InputField> {
         }
       },
       decoration: InputDecoration(
-        labelStyle: TextStyle(height:0.1),
+        labelStyle: TextStyle(height:0.1,fontSize: 20),
         labelText: widget.label,
         hintText: widget.hint,
         hintStyle:

@@ -48,6 +48,7 @@ class _TaskPageState extends State<TaskPage> {
 
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         centerTitle: true,
         title: Text("Todo"),
       ),
@@ -169,11 +170,11 @@ class _TaskPageState extends State<TaskPage> {
                 : const SizedBox(
                     height: 50,
                   ),
-            Icon(Icons.task_rounded),
+            Icon(Icons.task_alt),
             const SizedBox(
               height: 20,
             ),
-            Text("There Is No Tasks"),
+            Text("일정을 추가해주세요!"),
           ],
         ),
       ),

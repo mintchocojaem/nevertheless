@@ -72,6 +72,7 @@ class _TimerPageState extends State<TimerPage> {
 
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: Text('Timer'),
         actions: [
           Padding(

@@ -91,7 +91,7 @@ class _TaskDetailPageState extends State<TaskDetailPage>{
                     boldText: true,
                     isEditable: true,
                     hint: widget.task.title!,
-                    label: 'Title',
+                    label: '제목',
                     controller: _titleController,
                     emptyText: false,
                     fontSize: 17,
@@ -103,7 +103,7 @@ class _TaskDetailPageState extends State<TaskDetailPage>{
                     boldText: true,
                     isEditable: true,
                     hint: widget.task.note!,
-                    label: 'Note',
+                    label: '메모',
                     controller: _noteController,
                     emptyText: true,
                     fontSize: 17,
@@ -152,7 +152,7 @@ class _TaskDetailPageState extends State<TaskDetailPage>{
                                         },
                                         isEditable: false,
                                         controller: _startTimeController,
-                                        label: 'Start Time',
+                                        label: '시작 시각',
                                         hint: _startDate.toString(),
                                         emptyText: false,
                                       ),
@@ -166,7 +166,7 @@ class _TaskDetailPageState extends State<TaskDetailPage>{
                                     },
                                     controller: _endTimeController,
                                     isEditable: false,
-                                    label: 'End Time',
+                                    label: '종료 시각',
                                     hint: _endDate.toString(),
                                     emptyText: false,
                                   )),
@@ -262,18 +262,34 @@ class _TaskDetailPageState extends State<TaskDetailPage>{
     );
 
 
-    if(DateFormat('hh:mm a').parse(temp.endTime!).compareTo(DateFormat('hh:mm a').parse(temp.startTime!)) <= 0 ){
+    if(DateFormat('hh:mm a').parse(temp.endTime!).compareTo(DateFormat('hh:mm a').parse(temp.startTime!)) == 0 ){
       ScaffoldMessenger.of(context)
           .showSnackBar(
           SnackBar(
               backgroundColor: ThemeData.dark().backgroundColor,
-              content: Text("종료시각이 시작시각과 같거나 작습니다",
+              content: Text("종료 시각이 시작 시각과 같습니다",
                 textAlign: TextAlign.center,
                 style: TextStyle(color: Colors.red),)));
 
-    }else{
-      if(!isTimeNested(schedule: temp)){
+    }else if(DateFormat('hh:mm a').parse(temp.endTime!).compareTo(DateFormat('hh:mm a').parse(temp.startTime!)) < 0){
+      ScaffoldMessenger.of(context)
+          .showSnackBar(
+          SnackBar(
+              backgroundColor: ThemeData.dark().backgroundColor,
+              content: Text("종료 시각이 시작 시각보다 작습니다",
+                textAlign: TextAlign.center,
+                style: TextStyle(color: Colors.red),)));
+    }else if(!dayValues.contains(true)){
+      ScaffoldMessenger.of(context)
+          .showSnackBar(
+          SnackBar(
+              backgroundColor: ThemeData.dark().backgroundColor,
+              content: Text("요일을 선택해주세요",
+                textAlign: TextAlign.center,
+                style: TextStyle(color: Colors.red),)));
+    } else{
 
+      if(!isTimeNested(schedule: temp)){
         task.id = temp.id;
         task.color = temp.color;
         task.title = temp.title;

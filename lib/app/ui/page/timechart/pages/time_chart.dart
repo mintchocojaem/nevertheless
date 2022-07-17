@@ -175,6 +175,7 @@ class _TimeChartPageState extends State<TimeChartPage> with TickerProviderStateM
 
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: Text("Time Chart"),
       ),
       body: Center(

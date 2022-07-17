@@ -26,7 +26,6 @@ class Task{
   @HiveField(9)
   List<int?>? timeLog;
 
-
   Task({
     this.id,
     this.title,
@@ -48,7 +47,7 @@ class Task{
       'color': color,
       'repeat' : repeat,
       'timeLog' : timeLog
-  };
+    };
   }
 
   Task.fromMap(Map<String, dynamic> task){

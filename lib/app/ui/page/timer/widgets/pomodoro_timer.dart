@@ -29,7 +29,7 @@ class PomodoroTimer extends StatefulWidget{
 class _PomodoroTimer extends State<PomodoroTimer>{
   int durationCounter = 0;
   bool isItRest = false;
-  late String text;
+  String? text;
   final storage = GetStorage();   // instance of getStorage class
   int initDuration = 0;
   bool isNotification = true;
@@ -45,71 +45,72 @@ class _PomodoroTimer extends State<PomodoroTimer>{
 
   @override
   initState(){
-    DateTime now = DateTime.now();
 
+    DateTime now = DateTime.now();
     durationList = List.empty(growable: true);
 
-
-    if(now.compareTo(stringToDateTime(widget.todayTaskList.first.startTime!)) == -1){
-      durationList.add(
-          {"task" : null,
-            "startTime" : now,
-            "endTime" : stringToDateTime(widget.todayTaskList.first.startTime!)
-          }
-      );
-    }
-
-
-    for (int i = 0; i < widget.todayTaskList.length; i++) {
-
-      if(now.compareTo(stringToDateTime(widget.todayTaskList[i].startTime!)) >= 0 &&
-          now.compareTo(stringToDateTime(widget.todayTaskList[i].endTime!))  == -1){
-
-        durationList.add(
-            {"task" : widget.todayTaskList[i],
-              "startTime" : stringToDateTime(widget.todayTaskList[i].startTime!)
-                  .add(Duration(hours: now.hour - stringToDateTime(widget.todayTaskList[i].startTime!).hour,
-                  minutes: now.minute - stringToDateTime(widget.todayTaskList[i].startTime!).minute,
-                  seconds: now.second)),
-              "endTime" : stringToDateTime(widget.todayTaskList[i].endTime!),
-            }
-        );
-        //print("12");
-
-      }else{
-        if(now.compareTo(stringToDateTime(widget.todayTaskList[i].startTime!)) >= 0 &&
-            now.compareTo(stringToDateTime(widget.todayTaskList[i].endTime!))  >= 0){
-          durationCounter++;
-        }
-
-        durationList.add(
-            {"task" : widget.todayTaskList[i],
-              "startTime" : stringToDateTime(widget.todayTaskList[i].startTime!),
-              "endTime" : stringToDateTime(widget.todayTaskList[i].endTime!)
-            }
-        );
-      }
-
-      if((widget.todayTaskList[i] != widget.todayTaskList.last)
-          && subtractDateTimeToInt(stringToDateTime(widget.todayTaskList[i].endTime!),
-              stringToDateTime(widget.todayTaskList[i+1].startTime!)) > 0){
+    if(widget.todayTaskList.isNotEmpty){
+      if(now.compareTo(stringToDateTime(widget.todayTaskList.first.startTime!)) == -1){
         durationList.add(
             {"task" : null,
-              "startTime" : now.compareTo(stringToDateTime(widget.todayTaskList[i].endTime!)) == -1
-                  ? stringToDateTime(widget.todayTaskList[i].endTime!)
-                  : now,
-              "endTime" : stringToDateTime(widget.todayTaskList[i+1].startTime!)
+              "startTime" : now,
+              "endTime" : stringToDateTime(widget.todayTaskList.first.startTime!)
             }
         );
-        //print("13");
       }
+
+
+      for (int i = 0; i < widget.todayTaskList.length; i++) {
+
+        if(now.compareTo(stringToDateTime(widget.todayTaskList[i].startTime!)) >= 0 &&
+            now.compareTo(stringToDateTime(widget.todayTaskList[i].endTime!))  == -1){
+
+          durationList.add(
+              {"task" : widget.todayTaskList[i],
+                "startTime" : stringToDateTime(widget.todayTaskList[i].startTime!)
+                    .add(Duration(hours: now.hour - stringToDateTime(widget.todayTaskList[i].startTime!).hour,
+                    minutes: now.minute - stringToDateTime(widget.todayTaskList[i].startTime!).minute,
+                    seconds: now.second)),
+                "endTime" : stringToDateTime(widget.todayTaskList[i].endTime!),
+              }
+          );
+          //print("12");
+
+        }else{
+          if(now.compareTo(stringToDateTime(widget.todayTaskList[i].startTime!)) >= 0 &&
+              now.compareTo(stringToDateTime(widget.todayTaskList[i].endTime!))  >= 0){
+            durationCounter++;
+          }
+
+          durationList.add(
+              {"task" : widget.todayTaskList[i],
+                "startTime" : stringToDateTime(widget.todayTaskList[i].startTime!),
+                "endTime" : stringToDateTime(widget.todayTaskList[i].endTime!)
+              }
+          );
+        }
+
+        if((widget.todayTaskList[i] != widget.todayTaskList.last)
+            && subtractDateTimeToInt(stringToDateTime(widget.todayTaskList[i].endTime!),
+                stringToDateTime(widget.todayTaskList[i+1].startTime!)) > 0){
+          durationList.add(
+              {"task" : null,
+                "startTime" : now.compareTo(stringToDateTime(widget.todayTaskList[i].endTime!)) == -1
+                    ? stringToDateTime(widget.todayTaskList[i].endTime!)
+                    : now,
+                "endTime" : stringToDateTime(widget.todayTaskList[i+1].startTime!)
+              }
+          );
+          //print("13");
+        }
+      }
+
+      initDuration =  durationList.isNotEmpty && DateTime.now().compareTo(durationList.last["endTime"]) == -1
+          ? subtractDateTimeToInt(durationList[durationCounter]["startTime"],
+          durationList[durationCounter]["endTime"])
+          : 1;
+
     }
-
-    initDuration =  durationList.isNotEmpty && DateTime.now().compareTo(durationList.last["endTime"]) == -1
-        ? subtractDateTimeToInt(durationList[durationCounter]["startTime"],
-        durationList[durationCounter]["endTime"])
-        : 1;
-
 
     super.initState();
   }
@@ -148,61 +149,64 @@ class _PomodoroTimer extends State<PomodoroTimer>{
                 autoStart: true,
                 onStart: () {
 
-                  DateTime now = DateTime.now();
+                  if(widget.todayTaskList.isNotEmpty){
+                    DateTime now = DateTime.now();
 
-                  if(initDuration != 1){
-                    task = durationList[durationCounter]["task"];
-                    isItRest = durationList[durationCounter]["task"] != null ? false: true;
+                    if(initDuration != 1){
+                      task = durationList[durationCounter]["task"];
+                      isItRest = durationList[durationCounter]["task"] != null ? false: true;
 
-                    text = durationList[durationCounter]["task"] != null
-                        ? "진행중 : ${durationList[durationCounter]["task"].title}"
-                        : durationList[durationCounter+1]["task"] != null ?
-                    "대기중 : ${durationList[durationCounter+1]["task"].title}" : "모든 일정 종료";
-                  }else{
-                    text = "진행 가능한 일정 없음";
+                      text = durationList[durationCounter]["task"] != null
+                          ? "진행중 : ${durationList[durationCounter]["task"].title}"
+                          : durationList[durationCounter+1]["task"] != null ?
+                      "대기중 : ${durationList[durationCounter+1]["task"].title}" : "모든 일정 종료";
+                    }else{
+                      text = "진행 가능한 일정 없음";
 
-                  }
+                    }
 
-                  if (!isItRest) {
-                    print("doStudy");
+                    if (!isItRest) {
+                      print("doStudy");
 
-                    startTimeLog = DateTime(
-                        now.year, now.month, now
-                        .day, now.hour, now.minute, 0
-                    );
-                  } else {
-                    print("doRest");
+                      startTimeLog = DateTime(
+                          now.year, now.month, now
+                          .day, now.hour, now.minute, 0
+                      );
+                    } else {
+                      print("doRest");
+                    }
                   }
 
                 },
                 onComplete: () {
 
-                  DateTime now = DateTime.now();
-                  setState(() {
+                  if(widget.todayTaskList.isNotEmpty){
+                    DateTime now = DateTime.now();
+                    setState(() {
 
-                    if (!isItRest) {
-                      print("didStudy");
+                      if (!isItRest) {
+                        print("didStudy");
 
-                      if(task!.timeLog == null){
-                        task!.timeLog = [0,0,0,0,0,0,0];
+                        if(task!.timeLog == null){
+                          task!.timeLog = [0,0,0,0,0,0,0];
+                        }
+
+                        task!.timeLog![now.weekday-1] = task!.timeLog![now.weekday-1]! + subtractDateTimeToInt(startTimeLog, now)~/60;
+
+                        //Notification
+                        if (isNotification) {
+                          taskNotification(task!.id!, "Nevertheless",
+                              "\"${task!.title!}\" 시간 종료 (타임차트 기록)");
+
+                        }
+                      } else {
+                        isItRest = false;
+                        print("didRest");
+                        //Notification
+                        if (isNotification) {
+                          taskNotification(999, "Nevertheless", "휴식시간 종료");
+                        }
                       }
-
-                      task!.timeLog![now.weekday-1] = task!.timeLog![now.weekday-1]! + subtractDateTimeToInt(startTimeLog, now)~/60;
-
-                      //Notification
-                      if (isNotification) {
-                        taskNotification(task!.id!, "Nevertheless",
-                            "\"${task!.title!}\" 시간 종료 (타임차트 기록)");
-
-                      }
-                    } else {
-                      isItRest = false;
-                      print("didRest");
-                      //Notification
-                      if (isNotification) {
-                        taskNotification(999, "Nevertheless", "휴식시간 종료");
-                      }
-                    }
 
                       if (initDuration!=1 && task?.id != widget.todayTaskList.last.id) {
 
@@ -218,12 +222,14 @@ class _PomodoroTimer extends State<PomodoroTimer>{
 
                     });
 
+                  }
+
                   }),
             FutureBuilder(
               builder: (BuildContext context, AsyncSnapshot snapshot) {
-                return Text(
-                    text,
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w400));
+                return widget.todayTaskList.isNotEmpty ? Text(
+                    text ?? "",
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w400)) : Container();
               }),
             SizedBox(
               height: 24,
