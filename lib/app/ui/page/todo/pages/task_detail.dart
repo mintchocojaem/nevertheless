@@ -216,10 +216,24 @@ class _TaskDetailPageState extends State<TaskDetailPage>{
                   ),
                   Center(
                     child: IconButton(icon: Icon(Icons.delete_outline), onPressed: () {
-                      FlutterLocalNotificationsPlugin().cancel(widget.task.id!);
-                      taskList.remove(widget.task);
-                      Navigator.of(context).push(new MaterialPageRoute(builder: (_)=>IndexScreen()),)
-                          .then((val)=> setState((){}));
+                      showCupertinoDialog(context: context, builder: (context) {
+                        return CupertinoAlertDialog(
+                          title: Text("일정 삭제"),
+                          content: Text("\"${_titleController.text}\" 일정을 삭제하시겠습니까?"),
+                          actions: [
+                            CupertinoDialogAction(isDefaultAction: true, child: Text("확인"), onPressed: () {
+                              FlutterLocalNotificationsPlugin().cancel(widget.task.id!);
+                              taskList.remove(widget.task);
+                              Navigator.of(context).push(new MaterialPageRoute(builder: (_)=>IndexScreen()),)
+                                  .then((val)=> setState((){}));
+                            }),
+                            CupertinoDialogAction(isDefaultAction: false, child: Text("취소"), onPressed: () {
+                              Navigator.pop(context);
+                            })
+                          ],
+                        );
+                      });
+
                     },),
                   ),
                   const SizedBox(
@@ -244,9 +258,7 @@ class _TaskDetailPageState extends State<TaskDetailPage>{
       startTime: _startDate,
       endTime:  _endDate,
       repeat: dayValues,
-
-      startTimeLog: task.startTimeLog,
-      endTimeLog:  task.endTimeLog,
+      timeLog: task.timeLog
     );
 
 
@@ -258,6 +270,7 @@ class _TaskDetailPageState extends State<TaskDetailPage>{
               content: Text("종료시각이 시작시각과 같거나 작습니다",
                 textAlign: TextAlign.center,
                 style: TextStyle(color: Colors.red),)));
+
     }else{
       if(!isTimeNested(schedule: temp)){
 
@@ -268,12 +281,9 @@ class _TaskDetailPageState extends State<TaskDetailPage>{
         task.startTime = temp.startTime;
         task.endTime = temp.endTime;
         task.repeat = temp.repeat;
-        task.startTimeLog = temp.startTimeLog;
-        task.endTimeLog = temp.endTimeLog;
-
+        task.timeLog = temp.timeLog;
         Navigator.of(context).push(new MaterialPageRoute(builder: (_)=>IndexScreen()),)
             .then((val)=> setState((){}));
-
 
       }else{
         ScaffoldMessenger.of(context)

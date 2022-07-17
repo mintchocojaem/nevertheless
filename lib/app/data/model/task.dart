@@ -24,9 +24,8 @@ class Task{
   @HiveField(6)
   List<bool>? repeat;
   @HiveField(9)
-  List<DateTime?>? startTimeLog;
-  @HiveField(10)
-  List<DateTime?>? endTimeLog;
+  List<int?>? timeLog;
+
 
   Task({
     this.id,
@@ -36,8 +35,7 @@ class Task{
     this.endTime,
     this.color,
     this.repeat,
-    this.startTimeLog,
-    this.endTimeLog,
+    this.timeLog
   });
 
   Map<String, dynamic> toMap() {
@@ -49,8 +47,7 @@ class Task{
       'endTime': endTime,
       'color': color,
       'repeat' : repeat,
-      'startTimeLog' : startTimeLog,
-      'endTimeLog' : endTimeLog
+      'timeLog' : timeLog
   };
   }
 
@@ -62,8 +59,7 @@ class Task{
     endTime = task['endTime'];
     color = task['color'];
     repeat = task['repeat'];
-    startTimeLog = task['startTimeLog'];
-    endTimeLog = task['endTimeLog'];
+    timeLog = task['timeLog'];
   }
 }
 
@@ -74,11 +70,8 @@ bool isTimeNested({required Task schedule}){
     return TimeOfDay.fromDateTime(format.parse(tod));
   }
 
-
   for(Task i in taskList){
     for(int j =0; j < 7; j++){
-
-
       if((i.id != schedule.id) && (schedule.repeat![j] ==true && i.repeat![j] == true)){
         if((stringToTimeOfDay(schedule.startTime!).hour < stringToTimeOfDay(i.startTime!).hour ||
             (stringToTimeOfDay(schedule.startTime!).hour == stringToTimeOfDay(i.startTime!).hour

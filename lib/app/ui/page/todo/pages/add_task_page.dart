@@ -263,8 +263,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
           task.startTime = temp.startTime;
           task.endTime = temp.endTime;
           task.repeat = temp.repeat;
-          task.startTimeLog = temp.startTimeLog;
-          task.endTimeLog = temp.endTimeLog;
+          task.timeLog = temp.timeLog;
 
           widget.taskList.add(task);
 

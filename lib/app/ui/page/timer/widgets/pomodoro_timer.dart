@@ -29,7 +29,7 @@ class PomodoroTimer extends StatefulWidget{
 class _PomodoroTimer extends State<PomodoroTimer>{
   int durationCounter = 0;
   bool isItRest = false;
-  String text="";
+  late String text;
   final storage = GetStorage();   // instance of getStorage class
   int initDuration = 0;
   bool isNotification = true;
@@ -110,6 +110,7 @@ class _PomodoroTimer extends State<PomodoroTimer>{
         durationList[durationCounter]["endTime"])
         : 1;
 
+
     super.initState();
   }
 
@@ -119,8 +120,6 @@ class _PomodoroTimer extends State<PomodoroTimer>{
     // TODO: implement build
 
     isNotification = storage.read('notification') ?? true;
-      print(durationList);
-
 
       return Column(
           children: [
@@ -150,19 +149,20 @@ class _PomodoroTimer extends State<PomodoroTimer>{
                 onStart: () {
 
                   DateTime now = DateTime.now();
-                  print(durationCounter);
+
                   if(initDuration != 1){
                     task = durationList[durationCounter]["task"];
                     isItRest = durationList[durationCounter]["task"] != null ? false: true;
 
                     text = durationList[durationCounter]["task"] != null
-                        ? "진행중 : ${task?.title!}" : durationList[durationCounter+1]["task"] != null ?
+                        ? "진행중 : ${durationList[durationCounter]["task"].title}"
+                        : durationList[durationCounter+1]["task"] != null ?
                     "대기중 : ${durationList[durationCounter+1]["task"].title}" : "모든 일정 종료";
-                  } else{
+                  }else{
                     text = "진행 가능한 일정 없음";
+
                   }
 
-                  /*
                   if (!isItRest) {
                     print("doStudy");
 
@@ -174,39 +174,23 @@ class _PomodoroTimer extends State<PomodoroTimer>{
                     print("doRest");
                   }
 
-                   */
-
                 },
                 onComplete: () {
 
                   DateTime now = DateTime.now();
                   setState(() {
-                    /*
+
                     if (!isItRest) {
                       print("didStudy");
 
-                      if (task?.startTimeLog == null) {
-                        task?.startTimeLog = List.empty(growable: true);
-                        task?.startTimeLog!.add(startTimeLog);
-                      } else {
-                        task?.startTimeLog!.add(startTimeLog);
+                      if(task!.timeLog == null){
+                        task!.timeLog = [0,0,0,0,0,0,0];
                       }
 
-                      if (task?.endTimeLog == null) {
-                        task?.endTimeLog = List.empty(growable: true);
-                        task?.endTimeLog!.add(DateTime(
-                            now.year, now.month, now.day, now
-                            .hour, now.minute, 0
-                        ));
-                      } else {
-                        task?.endTimeLog!.add(DateTime(
-                            now.year, now.month,now.day,
-                            now.hour, now.minute, 0
-                        ));
-                      }
+                      task!.timeLog![now.weekday-1] = task!.timeLog![now.weekday-1]! + subtractDateTimeToInt(startTimeLog, now)~/60;
+
                       //Notification
                       if (isNotification) {
-
                         taskNotification(task!.id!, "Nevertheless",
                             "\"${task!.title!}\" 시간 종료 (타임차트 기록)");
 
@@ -218,11 +202,10 @@ class _PomodoroTimer extends State<PomodoroTimer>{
                       if (isNotification) {
                         taskNotification(999, "Nevertheless", "휴식시간 종료");
                       }
-                    }*/
+                    }
 
                       if (initDuration!=1 && task?.id != widget.todayTaskList.last.id) {
 
-                        print(durationList.map((e) => e.values));
                         durationCounter++;
 
                         widget.controller.restart(
@@ -236,8 +219,12 @@ class _PomodoroTimer extends State<PomodoroTimer>{
                     });
 
                   }),
-            Text(
-              text, style: TextStyle(fontSize: 18, fontWeight: FontWeight.w400),),
+            FutureBuilder(
+              builder: (BuildContext context, AsyncSnapshot snapshot) {
+                return Text(
+                    text,
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w400));
+              }),
             SizedBox(
               height: 24,
             )
@@ -270,9 +257,6 @@ int subtractDateTimeToInt(DateTime startTime, DateTime endTime){
   startTime.compareTo(endTime) <= -1 ?
   result = ((time.hour * 60 * 60) + (time.minute * 60) + time.second)
       : result = - ((time.hour * 60 * 60) + (time.minute * 60) + time.second);
-  //print(startTime);
-  //print(endTime);
-  //print(time);
-  //print(result);
+
   return result;
 }

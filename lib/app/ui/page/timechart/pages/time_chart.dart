@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:intl/intl.dart';
 import 'package:nevertheless/app/ui/index_screen.dart';
 import '../../../../data/model/task.dart';
@@ -30,18 +31,18 @@ class _TimeChartPageState extends State<TimeChartPage> with TickerProviderStateM
 
       for(Map i in list){
 
-        for(DateTime j in i['duration']){
+        for(int j =0; j < 7; j++){
 
-          if(j.weekday-1 == x){
+          if(j == x){
             result.add(
                 BarChartRodData(
                     fromY: sumY,
-                    toY: ((j.hour * 60) + j.minute).toDouble() + sumY,
+                    toY: (i['duration'][j]).toDouble() + sumY,
                     width: 8,
                     color: Color(i['color'])
                 )
             );
-            sumY += ((j.hour * 60) + j.minute).toDouble();
+            sumY += (i['duration'][j]).toDouble();
 
           }
         }
@@ -122,6 +123,18 @@ class _TimeChartPageState extends State<TimeChartPage> with TickerProviderStateM
   @override
   Widget build(BuildContext context) {
 
+    final storage = GetStorage();
+    DateTime now = DateTime.now();
+    bool init = storage.read('init') ?? false;
+    if(now.weekday == 7 && !init){
+      for(Task i in taskList){
+        i.timeLog = [0,0,0,0,0,0,0];
+      }
+      storage.write('init', true);
+    }else if (now.weekday != 7){
+      storage.write('init', false);
+    }
+
     yList = List.empty(growable: true);
 
     durationList = List.empty(growable: true);
@@ -129,20 +142,21 @@ class _TimeChartPageState extends State<TimeChartPage> with TickerProviderStateM
 
     for(Task? i in widget.taskList){
 
-      if(i?.startTimeLog != null && i?.endTimeLog != null){
+      if(i?.timeLog != null){
         Map<String,dynamic> durationMap = {
           'title' : "",
           'color' : 0,
           'duration' : [],
         };
 
-        List<DateTime> timeLog = List.empty(growable: true);
+        List<int> timeLog = List.empty(growable: true);
 
-        for(int j =0; j < i!.startTimeLog!.length; j++){
+        for(int j =0; j < i!.timeLog!.length; j++){
           timeLog.add(
-              i.endTimeLog![j]!.subtract(Duration(hours: i.startTimeLog![j]!.hour,minutes: i.startTimeLog![j]!.minute ))
+              i.timeLog![j]!
           );
         }
+
         durationMap['id'] = i.id;
         durationMap['title'] = i.title;
         durationMap['color'] = i.color;
@@ -170,12 +184,23 @@ class _TimeChartPageState extends State<TimeChartPage> with TickerProviderStateM
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  'Activity',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
+                Row(
+                  children: [
+                    Text(
+                      '주별 기록 ',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Text(
+                      '(${now.weekday > 1 ? 8 - now.weekday: 7}일 후 갱신)',
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
                 ),
                 const SizedBox(height: 8),
                 LegendsListWidget(
