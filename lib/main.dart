@@ -2,16 +2,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
+import 'package:nevertheless/ui/index_screen.dart';
+import 'binding/init_bindings.dart';
 
-import 'app/binding/init_bindings.dart';
-import 'app/data/model/task.dart';
-import 'app/data/model/task_adapter.dart';
-import 'app/notification/notification.dart';
-import 'app/ui/index_screen.dart';
+void main() async{
 
-
-void main() {
-
+  await GetStorage.init();
   WidgetsFlutterBinding.ensureInitialized();
   _initNotiSetting();
 
@@ -32,6 +29,7 @@ void main() {
       )
   );
 }
+
 void _initNotiSetting() async {
   final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
   final initSettingsAndroid = AndroidInitializationSettings('@mipmap/ic_launcher');
