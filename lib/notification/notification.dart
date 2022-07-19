@@ -18,7 +18,7 @@ Future taskNotification(int id, String notiTitle, String notiDesc) async {
 
   var android = AndroidNotificationDetails("channel", notiTitle,channelDescription:  notiDesc,
       importance: Importance.max, priority: Priority.max);
-  var ios = IOSNotificationDetails();
+  var ios = const IOSNotificationDetails();
   var detail = NotificationDetails(android: android, iOS: ios);
 
   if (result != null && result) {

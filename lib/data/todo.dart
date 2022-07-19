@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:intl/intl.dart';
-import '../ui/index_screen.dart';
+import '../ui/index_page.dart';
 
-class Task{
+class Todo{
 
   int? id;
   String? title;
@@ -14,7 +14,7 @@ class Task{
   List? repeat;
   List? timeLog;
 
-  Task({
+  Todo({
     this.id,
     this.title,
     this.note,
@@ -38,14 +38,14 @@ class Task{
     };
   }
 
-  bool isTimeNested({required Task schedule}){
+  bool isTimeNested({required Todo schedule}){
 
     TimeOfDay stringToTimeOfDay(String tod) {
       final format = DateFormat.jm(); //"6:00 AM"
       return TimeOfDay.fromDateTime(format.parse(tod));
     }
 
-    for(Task i in taskList){
+    for(Todo i in todoList){
       for(int j =0; j < 7; j++){
         if((i.id != schedule.id) && (schedule.repeat![j] ==true && i.repeat![j] == true)){
           if((stringToTimeOfDay(schedule.startTime!).hour < stringToTimeOfDay(i.startTime!).hour ||
@@ -74,12 +74,12 @@ class Task{
     return false;
   }
 
-  int generateID(List<Task> taskList){
+  int generateID(List<Todo> taskList){
 
     int id = 0;
     List<int> idList = List.empty(growable: true);
 
-    for(Task i in taskList){
+    for(Todo i in taskList){
       idList.add(i.id!);
     }
     for(int j = 0; j < 128; j++){
@@ -92,34 +92,5 @@ class Task{
     return id;
   }
 
-}
-
-Future<List> loadTaskList() async{
-
-  final storage = GetStorage();
-  List list = await storage.read("taskList");
-  taskList = [];
-  for(var i in list){
-    taskList.add(Task(
-      id :  i['id'],
-      title : i['title'],
-      note : i['note'],
-      startTime : i['startTime'],
-      endTime : i['endTime'],
-      color : i['color'],
-      repeat : i['repeat'],
-      timeLog : i['timeLog'],
-    ));
-  }
-  return list;
-}
-
-void saveTask() async{
-  final storage = GetStorage();
-  List list = List.empty(growable: true);
-  for(Task i in taskList){
-    list.add(i.toMap());
-  }
-  await storage.write("taskList", list);
 }
 

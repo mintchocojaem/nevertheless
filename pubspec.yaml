@@ -42,15 +42,16 @@ dependencies:
   flutter_staggered_animations: ^1.0.0
   flutter_svg: ^1.1.0
   flutter_launcher_icons: ^0.9.3
-  settings_ui: ^2.0.2
   get: ^4.6.1
   flutter_colorpicker: ^1.0.3
   fl_chart: ^0.55.0
   time_picker_widget: ^1.0.0+10
-
   weekday_selector: ^1.1.0
   flutter_local_notifications: ^9.6.1
-
+  firebase_core: ^1.19.2
+  firebase_crashlytics: ^2.8.5
+  firebase_performance: ^0.8.2
+  firebase_analytics: ^9.2.0
 
 dev_dependencies:
   flutter_test:

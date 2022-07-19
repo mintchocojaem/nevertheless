@@ -6,12 +6,12 @@ import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:intl/intl.dart';
 
-import '../../../data/task.dart';
+import '../../../data/todo.dart';
 import '../../../notification/notification.dart';
 class PomodoroTimer extends StatefulWidget{
 
-  PomodoroTimer({Key? key, required this.controller, required this.todayTaskList}) : super(key: key);
-  final List<Task> todayTaskList;
+  PomodoroTimer({Key? key, required this.controller, required this.todayTodoList}) : super(key: key);
+  final List<Todo> todayTodoList;
   final CountDownController controller;
   @override
   State<StatefulWidget> createState() {
@@ -25,18 +25,17 @@ class _PomodoroTimer extends State<PomodoroTimer>{
   int durationCounter = 0;
   bool isItRest = false;
   String? text;
-  final storage = GetStorage();   // instance of getStorage class
   int initDuration = 0;
   bool isNotification = true;
-
   late DateTime startTimeLog;
-
-  Task? task;
+  Todo? todo;
   List<Map<String,dynamic>> durationList = [{
-    "task" : null,
+    "todo" : null,
     "startTime" : null,
     "endTime" : null,
   }];
+
+  final storage = GetStorage();   // instance of getStorage class
 
   @override
   initState(){
@@ -44,56 +43,55 @@ class _PomodoroTimer extends State<PomodoroTimer>{
     DateTime now = DateTime.now();
     durationList = List.empty(growable: true);
 
-    if(widget.todayTaskList.isNotEmpty){
-      if(now.compareTo(stringToDateTime(widget.todayTaskList.first.startTime!)) == -1){
+    if(widget.todayTodoList.isNotEmpty){
+      if(now.compareTo(stringToDateTime(widget.todayTodoList.first.startTime!)) == -1){
         durationList.add(
-            {"task" : null,
+            {"todo" : null,
               "startTime" : now,
-              "endTime" : stringToDateTime(widget.todayTaskList.first.startTime!)
+              "endTime" : stringToDateTime(widget.todayTodoList.first.startTime!)
             }
         );
       }
 
+      for (int i = 0; i < widget.todayTodoList.length; i++) {
 
-      for (int i = 0; i < widget.todayTaskList.length; i++) {
-
-        if(now.compareTo(stringToDateTime(widget.todayTaskList[i].startTime!)) >= 0 &&
-            now.compareTo(stringToDateTime(widget.todayTaskList[i].endTime!))  == -1){
+        if(now.compareTo(stringToDateTime(widget.todayTodoList[i].startTime!)) >= 0 &&
+            now.compareTo(stringToDateTime(widget.todayTodoList[i].endTime!))  == -1){
 
           durationList.add(
-              {"task" : widget.todayTaskList[i],
-                "startTime" : stringToDateTime(widget.todayTaskList[i].startTime!)
-                    .add(Duration(hours: now.hour - stringToDateTime(widget.todayTaskList[i].startTime!).hour,
-                    minutes: now.minute - stringToDateTime(widget.todayTaskList[i].startTime!).minute,
+              {"todo" : widget.todayTodoList[i],
+                "startTime" : stringToDateTime(widget.todayTodoList[i].startTime!)
+                    .add(Duration(hours: now.hour - stringToDateTime(widget.todayTodoList[i].startTime!).hour,
+                    minutes: now.minute - stringToDateTime(widget.todayTodoList[i].startTime!).minute,
                     seconds: now.second)),
-                "endTime" : stringToDateTime(widget.todayTaskList[i].endTime!),
+                "endTime" : stringToDateTime(widget.todayTodoList[i].endTime!),
               }
           );
           //print("12");
 
         }else{
-          if(now.compareTo(stringToDateTime(widget.todayTaskList[i].startTime!)) >= 0 &&
-              now.compareTo(stringToDateTime(widget.todayTaskList[i].endTime!))  >= 0){
+          if(now.compareTo(stringToDateTime(widget.todayTodoList[i].startTime!)) >= 0 &&
+              now.compareTo(stringToDateTime(widget.todayTodoList[i].endTime!))  >= 0){
             durationCounter++;
           }
 
           durationList.add(
-              {"task" : widget.todayTaskList[i],
-                "startTime" : stringToDateTime(widget.todayTaskList[i].startTime!),
-                "endTime" : stringToDateTime(widget.todayTaskList[i].endTime!)
+              {"todo" : widget.todayTodoList[i],
+                "startTime" : stringToDateTime(widget.todayTodoList[i].startTime!),
+                "endTime" : stringToDateTime(widget.todayTodoList[i].endTime!)
               }
           );
         }
 
-        if((widget.todayTaskList[i] != widget.todayTaskList.last)
-            && subtractDateTimeToInt(stringToDateTime(widget.todayTaskList[i].endTime!),
-                stringToDateTime(widget.todayTaskList[i+1].startTime!)) > 0){
+        if((widget.todayTodoList[i] != widget.todayTodoList.last)
+            && subtractDateTimeToInt(stringToDateTime(widget.todayTodoList[i].endTime!),
+                stringToDateTime(widget.todayTodoList[i+1].startTime!)) > 0){
           durationList.add(
-              {"task" : null,
-                "startTime" : now.compareTo(stringToDateTime(widget.todayTaskList[i].endTime!)) == -1
-                    ? stringToDateTime(widget.todayTaskList[i].endTime!)
+              {"todo" : null,
+                "startTime" : now.compareTo(stringToDateTime(widget.todayTodoList[i].endTime!)) == -1
+                    ? stringToDateTime(widget.todayTodoList[i].endTime!)
                     : now,
-                "endTime" : stringToDateTime(widget.todayTaskList[i+1].startTime!)
+                "endTime" : stringToDateTime(widget.todayTodoList[i+1].startTime!)
               }
           );
           //print("13");
@@ -102,14 +100,11 @@ class _PomodoroTimer extends State<PomodoroTimer>{
 
       initDuration =  durationList.isNotEmpty && DateTime.now().compareTo(durationList.last["endTime"]) == -1
           ? subtractDateTimeToInt(durationList[durationCounter]["startTime"],
-          durationList[durationCounter]["endTime"])
-          : 1;
-
+          durationList[durationCounter]["endTime"]) : 1;
     }
 
     super.initState();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -133,10 +128,7 @@ class _PomodoroTimer extends State<PomodoroTimer>{
                 backgroundGradient: null,
                 strokeWidth: 5.0,
                 strokeCap: StrokeCap.round,
-                textStyle: TextStyle(
-                    fontSize: 24.0,
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold),
+                textStyle: const TextStyle(fontSize: 24.0, color: Colors.white, fontWeight: FontWeight.bold),
                 textFormat: CountdownTextFormat.HH_MM_SS,
                 isReverse: true,
                 isReverseAnimation: false,
@@ -144,25 +136,21 @@ class _PomodoroTimer extends State<PomodoroTimer>{
                 autoStart: true,
                 onStart: () {
 
-                  if(widget.todayTaskList.isNotEmpty){
+                  if(widget.todayTodoList.isNotEmpty){
+
                     DateTime now = DateTime.now();
-
                     if(initDuration != 1){
-                      task = durationList[durationCounter]["task"];
-                      isItRest = durationList[durationCounter]["task"] != null ? false: true;
-
-                      text = durationList[durationCounter]["task"] != null
-                          ? "진행중 : ${durationList[durationCounter]["task"].title}"
-                          : durationList[durationCounter+1]["task"] != null ?
-                      "대기중 : ${durationList[durationCounter+1]["task"].title}" : "모든 일정 종료";
+                      todo = durationList[durationCounter]["todo"];
+                      isItRest = durationList[durationCounter]["todo"] != null ? false: true;
+                      text = durationList[durationCounter]["todo"] != null
+                          ? "진행중 : ${durationList[durationCounter]["todo"].title}"
+                          : durationList[durationCounter+1]["todo"] != null ?
+                      "대기중 : ${durationList[durationCounter+1]["todo"].title}" : "모든 일정 종료";
                     }else{
                       text = "진행 가능한 일정 없음";
-
                     }
-
                     if (!isItRest) {
                       print("doStudy");
-
                       startTimeLog = DateTime(
                           now.year, now.month, now
                           .day, now.hour, now.minute, 0
@@ -175,24 +163,23 @@ class _PomodoroTimer extends State<PomodoroTimer>{
                 },
                 onComplete: () {
 
-                  if(widget.todayTaskList.isNotEmpty){
+                  if(widget.todayTodoList.isNotEmpty){
+
                     DateTime now = DateTime.now();
+
                     setState(() {
 
-                      if (!isItRest) {
+                      if (!isItRest && todo != null) {
                         print("didStudy");
-
-                        if(task!.timeLog == null){
-                          task!.timeLog = [0,0,0,0,0,0,0];
+                        if(todo!.timeLog == null){
+                          todo!.timeLog = [0,0,0,0,0,0,0];
                         }
-
-                        task!.timeLog![now.weekday-1] = task!.timeLog![now.weekday-1]! + subtractDateTimeToInt(startTimeLog, now)~/60;
-
+                        todo!.timeLog![now.weekday-1] = todo!.timeLog![now.weekday-1]!
+                            + subtractDateTimeToInt(startTimeLog, now)~/60;
                         //Notification
                         if (isNotification) {
-                          taskNotification(task!.id!, "Nevertheless",
-                              "\"${task!.title!}\" 시간 종료 (타임차트 기록)");
-
+                          taskNotification(todo!.id!, "Nevertheless",
+                              "\"${todo!.title!}\" 시간 종료 (타임차트 기록)");
                         }
                       } else {
                         isItRest = false;
@@ -203,30 +190,25 @@ class _PomodoroTimer extends State<PomodoroTimer>{
                         }
                       }
 
-                      if (initDuration!=1 && task?.id != widget.todayTaskList.last.id) {
-
+                      if (initDuration!=1 && todo?.id != widget.todayTodoList.last.id) {
                         durationCounter++;
-
                         widget.controller.restart(
                             duration: subtractDateTimeToInt( durationList[durationCounter]["startTime"],
                                 durationList[durationCounter]["endTime"]));
-
-                      }else if(initDuration!=1 && task?.id == widget.todayTaskList.last.id){
+                      }else if(initDuration!=1 && todo?.id == widget.todayTodoList.last.id){
                         text = "모든 일정 종료";
                       }
 
                     });
-
                   }
-
-                  }),
+                }),
             FutureBuilder(
               builder: (BuildContext context, AsyncSnapshot snapshot) {
-                return widget.todayTaskList.isNotEmpty ? Text(
+                return widget.todayTodoList.isNotEmpty ? Text(
                     text ?? "",
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w400)) : Container();
+                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w400)) : Container();
               }),
-            SizedBox(
+            const SizedBox(
               height: 24,
             )
           ],

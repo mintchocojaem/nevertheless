@@ -4,20 +4,20 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:weekday_selector/weekday_selector.dart';
-import '../../../data/task.dart';
-import '../../index_screen.dart';
+import '../../../data/todo.dart';
+import '../../index_page.dart';
 import '../widgets/input_field.dart';
 import '../widgets/CustomColorPicker.dart';
 
-class TaskDetailPage extends StatefulWidget {
-  const TaskDetailPage({Key? key, required this.task}) : super(key: key);
-  final Task task;
+class TodoDetailPage extends StatefulWidget {
+  const TodoDetailPage({Key? key, required this.todo}) : super(key: key);
+  final Todo todo;
 
   @override
-  State<TaskDetailPage> createState() => _TaskDetailPageState();
+  State<TodoDetailPage> createState() => _TodoDetailPageState();
 }
 
-class _TaskDetailPageState extends State<TaskDetailPage>{
+class _TodoDetailPageState extends State<TodoDetailPage>{
 
   final _formKey = GlobalKey<FormState>();
 
@@ -38,12 +38,12 @@ class _TaskDetailPageState extends State<TaskDetailPage>{
     // TODO: implement initState
 
     for(int i = 0; i < dayValues.length; i++){
-      dayValues[i] = widget.task.repeat![i];
+      dayValues[i] = widget.todo.repeat![i];
     }
-    _startDate = widget.task.startTime;
-    _endDate = widget.task.endTime;
+    _startDate = widget.todo.startTime;
+    _endDate = widget.todo.endTime;
 
-    pickerColor = Color(widget.task.color!);
+    pickerColor = Color(widget.todo.color!);
 
     super.initState();
   }
@@ -51,8 +51,8 @@ class _TaskDetailPageState extends State<TaskDetailPage>{
   @override
   Widget build(BuildContext context) {
 
-    _titleController.text = widget.task.title!;
-    _noteController.text = widget.task.note == null ? "" : widget.task.note!;
+    _titleController.text = widget.todo.title!;
+    _noteController.text = widget.todo.note == null ? "" : widget.todo.note!;
 
     _startTimeController.text = _startDate!;
     _endTimeController.text = _endDate!;
@@ -60,7 +60,7 @@ class _TaskDetailPageState extends State<TaskDetailPage>{
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: Text("Todo Detail"),
+        title: Text("Todo 정보"),
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 12, left: 12),
@@ -68,7 +68,7 @@ class _TaskDetailPageState extends State<TaskDetailPage>{
                 onPressed: (){
 
                   if (_formKey.currentState!.validate()) {
-                    _saveTaskToDB(widget.task);
+                    _saveTodo(widget.todo);
                   }
                 },
                 icon: Icon(Icons.check)),
@@ -78,7 +78,7 @@ class _TaskDetailPageState extends State<TaskDetailPage>{
       body: SafeArea(
         child: SingleChildScrollView(
           child: Container(
-            margin: EdgeInsets.only(top: 15, left: 20, right: 20),
+            margin: const EdgeInsets.only(top: 15, left: 20, right: 20),
             child: Form(
               key: _formKey,
               child: Column(
@@ -86,7 +86,7 @@ class _TaskDetailPageState extends State<TaskDetailPage>{
                   InputField(
                     boldText: true,
                     isEditable: true,
-                    hint: widget.task.title!,
+                    hint: widget.todo.title!,
                     label: '제목',
                     controller: _titleController,
                     emptyText: false,
@@ -98,7 +98,7 @@ class _TaskDetailPageState extends State<TaskDetailPage>{
                   InputField(
                     boldText: true,
                     isEditable: true,
-                    hint: widget.task.note!,
+                    hint: widget.todo.note!,
                     label: '메모',
                     controller: _noteController,
                     emptyText: true,
@@ -121,9 +121,8 @@ class _TaskDetailPageState extends State<TaskDetailPage>{
                         dayValues[index] = !dayValues[index];
                       });
                     },
-                    shortWeekdays: ["Mon","Tue","Wed","Thr","Fri","Sat","Sun"],
+                    shortWeekdays: const ["Mon","Tue","Wed","Thr","Fri","Sat","Sun"],
                     values: dayValues,
-
                   ),
                   const SizedBox(
                     height: 30,
@@ -131,7 +130,7 @@ class _TaskDetailPageState extends State<TaskDetailPage>{
                   Stack(
                     alignment: Alignment.bottomLeft,
                     children: [
-                      Icon(Icons.alarm,size: 30,),
+                      const Icon(Icons.alarm,size: 30,),
                       Padding(
                         padding: const EdgeInsets.only(left: 30),
                         child: Align(
@@ -179,7 +178,7 @@ class _TaskDetailPageState extends State<TaskDetailPage>{
                     height: 80,
                     child: Stack(
                       children: [
-                        Align(
+                        const Align(
                           child: Icon(Icons.color_lens_rounded,size: 30,),
                           alignment: Alignment.centerLeft,
                         ),
@@ -188,7 +187,7 @@ class _TaskDetailPageState extends State<TaskDetailPage>{
                           child: MaterialButton(
                               height: 32,
                               color: pickerColor,
-                              shape: CircleBorder(),
+                              shape: const CircleBorder(),
                               onPressed: (){
                                 showDialog(context: context,
                                     builder: (BuildContext context) =>
@@ -211,25 +210,27 @@ class _TaskDetailPageState extends State<TaskDetailPage>{
                     height: 48,
                   ),
                   Center(
-                    child: IconButton(icon: Icon(Icons.delete_outline), onPressed: () {
+                    child: IconButton(icon: const Icon(Icons.delete_outline), onPressed: () {
+
                       showCupertinoDialog(context: context, builder: (context) {
                         return CupertinoAlertDialog(
-                          title: Text("일정 삭제"),
+                          title: const Text("일정 삭제"),
                           content: Text("\"${_titleController.text}\" 일정을 삭제하시겠습니까?"),
                           actions: [
-                            CupertinoDialogAction(isDefaultAction: true, child: Text("확인"), onPressed: () {
-                              FlutterLocalNotificationsPlugin().cancel(widget.task.id!);
-                              taskList.remove(widget.task);
-                              saveTask();
-                              Get.off(() => IndexScreen());
-                            }),
+                            CupertinoDialogAction(isDefaultAction: false, child: const Text("확인",style: TextStyle(color: Colors.red),),
+                                onPressed: () {
+                                  FlutterLocalNotificationsPlugin().cancel(widget.todo.id!);
+                                  todoList.remove(widget.todo);
+                                  saveTodo();
+                                  Get.offAll(() => IndexScreen());
+                                }
+                            ),
                             CupertinoDialogAction(isDefaultAction: false, child: Text("취소"), onPressed: () {
                               Navigator.pop(context);
                             })
                           ],
                         );
                       });
-
                     },),
                   ),
                   const SizedBox(
@@ -244,17 +245,17 @@ class _TaskDetailPageState extends State<TaskDetailPage>{
     );
   }
 
-  _saveTaskToDB(Task task) {
+  _saveTodo(Todo todo) {
 
-    Task temp = Task(
-      id: task.id,
+    Todo temp = Todo(
+      id: todo.id,
       color: pickerColor.value,
       title: _titleController.text,
       note: _noteController.text,
       startTime: _startDate,
       endTime:  _endDate,
       repeat: dayValues,
-      timeLog: task.timeLog
+      timeLog: todo.timeLog
     );
 
 
@@ -263,7 +264,7 @@ class _TaskDetailPageState extends State<TaskDetailPage>{
           .showSnackBar(
           SnackBar(
               backgroundColor: ThemeData.dark().backgroundColor,
-              content: Text("종료 시각이 시작 시각과 같습니다",
+              content: const Text("종료 시각이 시작 시각과 같습니다",
                 textAlign: TextAlign.center,
                 style: TextStyle(color: Colors.red),)));
 
@@ -272,7 +273,7 @@ class _TaskDetailPageState extends State<TaskDetailPage>{
           .showSnackBar(
           SnackBar(
               backgroundColor: ThemeData.dark().backgroundColor,
-              content: Text("종료 시각이 시작 시각보다 작습니다",
+              content: const Text("종료 시각이 시작 시각보다 작습니다",
                 textAlign: TextAlign.center,
                 style: TextStyle(color: Colors.red),)));
     }else if(!dayValues.contains(true)){
@@ -280,32 +281,30 @@ class _TaskDetailPageState extends State<TaskDetailPage>{
           .showSnackBar(
           SnackBar(
               backgroundColor: ThemeData.dark().backgroundColor,
-              content: Text("요일을 선택해주세요",
+              content: const Text("요일을 선택해주세요",
                 textAlign: TextAlign.center,
                 style: TextStyle(color: Colors.red),)));
     } else{
 
       if(!temp.isTimeNested(schedule: temp)){
-        task.id = temp.id;
-        task.color = temp.color;
-        task.title = temp.title;
-        task.note = temp.note;
-        task.startTime = temp.startTime;
-        task.endTime = temp.endTime;
-        task.repeat = temp.repeat;
-        task.timeLog = temp.timeLog;
+        todo.id = temp.id;
+        todo.color = temp.color;
+        todo.title = temp.title;
+        todo.note = temp.note;
+        todo.startTime = temp.startTime;
+        todo.endTime = temp.endTime;
+        todo.repeat = temp.repeat;
+        todo.timeLog = temp.timeLog;
 
-        saveTask();
-        Get.off(() => IndexScreen());
-        //Navigator.of(context).push(new MaterialPageRoute(builder: (_)=>IndexScreen()),)
-          //  .then((val)=> setState((){}));
+        saveTodo();
+        Get.offAll(() => IndexScreen());
 
       }else{
         ScaffoldMessenger.of(context)
             .showSnackBar(
             SnackBar(
                 backgroundColor: ThemeData.dark().backgroundColor,
-                content: Text("해당 시간에 다른 일정이 존재합니다",
+                content: const Text("해당 시간에 다른 일정이 존재합니다",
                   textAlign: TextAlign.center,
                   style: TextStyle(color: Colors.red),)));
       }

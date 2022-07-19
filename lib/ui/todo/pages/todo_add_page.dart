@@ -4,22 +4,22 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:weekday_selector/weekday_selector.dart';
 import 'dart:math' as math;
-import '../../../data/task.dart';
-import '../../index_screen.dart';
+import '../../../data/todo.dart';
+import '../../index_page.dart';
 import '../widgets/input_field.dart';
 import '../widgets/CustomColorPicker.dart';
 
 
-class AddTaskPage extends StatefulWidget {
-  AddTaskPage({Key? key, required this.taskList}) : super(key: key);
+class TodoAddPage extends StatefulWidget {
 
-  final List<Task> taskList;
-
+  const TodoAddPage({Key? key, required this.taskList}) : super(key: key);
+  final List<Todo> taskList;
   @override
-  State<AddTaskPage> createState() => _AddTaskPageState();
+  State<TodoAddPage> createState() => _TodoAddPageState();
+
 }
 
-class _AddTaskPageState extends State<AddTaskPage> {
+class _TodoAddPageState extends State<TodoAddPage> {
 
 
   final _formKey = GlobalKey<FormState>();
@@ -33,9 +33,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
   String? _startDate;
   String? _endDate;
   late Color pickerColor;
-
   List<bool> dayValues = List.filled(7, false);
-
 
   @override
   void initState() {
@@ -43,19 +41,14 @@ class _AddTaskPageState extends State<AddTaskPage> {
 
     _startDate = DateFormat('hh:mm a').format(DateTime.now());
     _endDate =  DateFormat('hh:mm a').format(DateTime.now().add(Duration(minutes: 30)));
-
     _restTimeController.text = "0";
-
     pickerColor = Color((math.Random().nextDouble() * 0xFFFFFF).toInt()).withOpacity(1.0);
 
     super.initState();
   }
 
-
-
   @override
   Widget build(BuildContext context) {
-
 
     _startTimeController.text = _startDate!;
     _endTimeController.text = _endDate!;
@@ -63,7 +56,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
     return Scaffold(
      appBar: AppBar(
        centerTitle: true,
-       title: Text("Todo Detail"),
+       title: const Text("Todo 추가"),
        actions: [
          Padding(
            padding: const EdgeInsets.only(right: 12, left: 12),
@@ -71,10 +64,10 @@ class _AddTaskPageState extends State<AddTaskPage> {
                onPressed: (){
 
                  if (_formKey.currentState!.validate()) {
-                   _saveTaskToDB();
+                   _saveTodo();
                  }
                },
-               icon: Icon(Icons.check)),
+               icon: const Icon(Icons.check)),
          )
        ],
      ),
@@ -124,7 +117,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
                        dayValues[index] = !dayValues[index];
                      });
                    },
-                   shortWeekdays: ["Mon","Tue","Wed","Thr","Fri","Sat","Sun"],
+                   shortWeekdays: const ["Mon","Tue","Wed","Thr","Fri","Sat","Sun"],
                    values: dayValues,
 
                  ),
@@ -134,7 +127,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
                  Stack(
                    alignment: Alignment.bottomLeft,
                    children: [
-                     Icon(Icons.alarm,size: 30,),
+                     const Icon(Icons.alarm,size: 30,),
                      Padding(
                        padding: const EdgeInsets.only(left: 30),
                        child: Align(
@@ -182,7 +175,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
                    height: 80,
                    child: Stack(
                      children: [
-                       Align(
+                       const Align(
                          child: Icon(Icons.color_lens_rounded,size: 30,),
                          alignment: Alignment.centerLeft,
                        ),
@@ -191,7 +184,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
                          child: MaterialButton(
                              height: 32,
                              color: pickerColor,
-                             shape: CircleBorder(),
+                             shape: const CircleBorder(),
                              onPressed: (){
                                showDialog(context: context,
                                    builder: (BuildContext context) =>
@@ -220,9 +213,9 @@ class _AddTaskPageState extends State<AddTaskPage> {
    );
   }
 
-  _saveTaskToDB() {
+  _saveTodo() {
 
-    Task temp = Task(
+    Todo temp = Todo(
       id: null,
       color: pickerColor.value,
       title: _titleController.text,
@@ -231,14 +224,14 @@ class _AddTaskPageState extends State<AddTaskPage> {
       endTime:  _endDate,
       repeat: dayValues,
     );
-    temp.id = temp.generateID(taskList);
+    temp.id = temp.generateID(todoList);
 
     if(DateFormat('hh:mm a').parse(temp.endTime!).compareTo(DateFormat('hh:mm a').parse(temp.startTime!)) == 0 ){
       ScaffoldMessenger.of(context)
           .showSnackBar(
           SnackBar(
               backgroundColor: ThemeData.dark().backgroundColor,
-              content: Text("종료 시각이 시작 시각과 같습니다",
+              content: const Text("종료 시각이 시작 시각과 같습니다",
                 textAlign: TextAlign.center,
                 style: TextStyle(color: Colors.red),)));
 
@@ -247,7 +240,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
           .showSnackBar(
           SnackBar(
               backgroundColor: ThemeData.dark().backgroundColor,
-              content: Text("종료 시각이 시작 시각보다 작습니다",
+              content: const Text("종료 시각이 시작 시각보다 작습니다",
                 textAlign: TextAlign.center,
                 style: TextStyle(color: Colors.red),)));
     }else if(!dayValues.contains(true)){
@@ -255,7 +248,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
           .showSnackBar(
           SnackBar(
               backgroundColor: ThemeData.dark().backgroundColor,
-              content: Text("요일을 선택해주세요",
+              content: const Text("요일을 선택해주세요",
                 textAlign: TextAlign.center,
                 style: TextStyle(color: Colors.red),)));
     } else{
@@ -263,15 +256,15 @@ class _AddTaskPageState extends State<AddTaskPage> {
         if(!temp.isTimeNested(schedule: temp)){
 
           widget.taskList.add(temp);
-          saveTask();
-          Get.off(() => IndexScreen());
+          saveTodo();
+          Get.offAll(() => IndexScreen());
 
         }else{
           ScaffoldMessenger.of(context)
               .showSnackBar(
               SnackBar(
                   backgroundColor: ThemeData.dark().backgroundColor,
-                  content: Text("해당 시간에 다른 일정이 존재합니다",
+                  content: const Text("해당 시간에 다른 일정이 존재합니다",
                     textAlign: TextAlign.center,
                     style: TextStyle(color: Colors.red),)));
         }

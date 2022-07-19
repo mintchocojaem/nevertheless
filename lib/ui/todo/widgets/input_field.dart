@@ -10,7 +10,7 @@ class InputField extends StatefulWidget {
         this.onTap,
         required this.label,
         this.controller,
-        this.icondata,
+        this.iconData,
         required this.hint,
         this.widget,
         required this.isEditable,
@@ -20,9 +20,10 @@ class InputField extends StatefulWidget {
         this.boldText,
       })
       : super(key: key);
+
   final String label;
   final TextEditingController? controller;
-  final IconData? icondata;
+  final IconData? iconData;
   final String hint;
   final Widget? widget;
   final bool isEditable;
@@ -33,10 +34,10 @@ class InputField extends StatefulWidget {
   final OnTap? onTap;
 
   @override
-  _InputFieldState createState() => _InputFieldState();
+  InputFieldState createState() => InputFieldState();
 }
 
-class _InputFieldState extends State<InputField> {
+class InputFieldState extends State<InputField> {
   @override
   Widget build(BuildContext context) {
     return  TextFormField(
@@ -52,7 +53,7 @@ class _InputFieldState extends State<InputField> {
         }
       },
       decoration: InputDecoration(
-        labelStyle: TextStyle(height:0.1,fontSize: 20),
+        labelStyle: const TextStyle(height:0.1,fontSize: 20),
         labelText: widget.label,
         hintText: widget.hint,
         hintStyle:

@@ -1,20 +1,21 @@
 import 'dart:math';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:intl/intl.dart';
-import '../../../data/task.dart';
-import '../../index_screen.dart';
+import '../../../data/todo.dart';
+import '../../index_page.dart';
 
-class TimeChartPage extends StatefulWidget {
-  TimeChartPage({Key? key, required this.taskList}) : super(key: key);
+class ChartPage extends StatefulWidget {
+
+  const ChartPage({Key? key, required this.todoList}) : super(key: key);
   @override
-  State<TimeChartPage> createState() => _TimeChartPageState();
-  List<Task?> taskList;
+  State<ChartPage> createState() => _ChartPageState();
+  final List<Todo?> todoList;
 
 }
 
-class _TimeChartPageState extends State<TimeChartPage> with TickerProviderStateMixin{
+class _ChartPageState extends State<ChartPage> with TickerProviderStateMixin{
 
   List<Map> durationList = List.empty(growable: true);
   List<double> yList = List.empty(growable: true);
@@ -124,7 +125,7 @@ class _TimeChartPageState extends State<TimeChartPage> with TickerProviderStateM
     DateTime now = DateTime.now();
     bool init = storage.read('init') ?? false;
     if(now.weekday == 7 && !init){
-      for(Task i in taskList){
+      for(Todo i in todoList){
         i.timeLog = [0,0,0,0,0,0,0];
       }
       storage.write('init', true);
@@ -137,7 +138,7 @@ class _TimeChartPageState extends State<TimeChartPage> with TickerProviderStateM
     durationList = List.empty(growable: true);
     legendList = List.empty(growable: true);
 
-    for(Task? i in widget.taskList){
+    for(Todo? i in widget.todoList){
 
       if(i?.timeLog != null){
         Map<String,dynamic> durationMap = {
@@ -173,31 +174,53 @@ class _TimeChartPageState extends State<TimeChartPage> with TickerProviderStateM
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: Text("Time Chart"),
+        title: Text("Chart"),
       ),
       body: Center(
         child: Padding(
-            padding: const EdgeInsets.all(24),
+            padding: const EdgeInsets.all(12),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      '주별 기록 ',
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
+                    Row(
+                      children: [
+                        const Text(
+                          '주별 기록 ',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Text(
+                          '(${now.weekday > 1 ? 8 - now.weekday: 7}일 후 갱신)',
+                          style: const TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
                     ),
-                    Text(
-                      '(${now.weekday > 1 ? 8 - now.weekday: 7}일 후 갱신)',
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
+                    IconButton(onPressed: (){
+                      showCupertinoDialog(context: context, builder: (context) {
+                        return CupertinoAlertDialog(
+                          content: const Text(
+                                  "1. 시간이 기록되려면 반드시 일정의 종료시각을 거쳐야합니다\n "
+                                  "2. 일정 진행 중에 앱을 종료할 경우, 앱을 다시 시작한 시각으로부터 종료 시각까지의 시간을 계산합니다\n "
+                                  "3. 일정 진행 중에 시작 시각을 앞당기더라도 기록에 반영되지 않습니다"
+                          ),
+                          actions: [
+                            CupertinoDialogAction(isDefaultAction: false, child: const Text("확인"), onPressed: () {
+                              Navigator.pop(context);
+                            })
+                          ],
+                        );
+                      });
+                      },
+                        icon: const Icon(Icons.info_outline, size: 24,color: Colors.amber,))
                   ],
                 ),
                 const SizedBox(height: 8),
@@ -318,10 +341,5 @@ class Legend {
   final Color color;
 
   Legend(this.name, this.color);
-}
-
-TimeOfDay stringToTimeOfDay(String tod) {
-  final format = DateFormat.jm(); //"6:00 AM"
-  return TimeOfDay.fromDateTime(format.parse(tod));
 }
 

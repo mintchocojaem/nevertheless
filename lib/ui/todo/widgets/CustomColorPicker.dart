@@ -6,13 +6,15 @@ import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 typedef OnColorSelected = Function(Color color);
 
 class CustomColorPicker extends AlertDialog{
-  final pickerColor;
-  final backgroundColor;
-  final textColor;
-  final List<Color>? colors;
-  final OnColorSelected onColorSelected;
+
   CustomColorPicker({this.backgroundColor, this.textColor, this.colors,
     required this.onColorSelected, required this.pickerColor });
+
+  final Color pickerColor;
+  final Color? backgroundColor;
+  final Color? textColor;
+  final List<Color>? colors;
+  final OnColorSelected onColorSelected;
 
   @override
   Widget build(BuildContext context) {

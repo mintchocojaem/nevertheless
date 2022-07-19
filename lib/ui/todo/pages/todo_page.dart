@@ -1,25 +1,25 @@
 import 'package:date_picker_timeline/date_picker_timeline.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
-import 'package:nevertheless/ui/todo/pages/task_detail.dart';
-import '../../../data/task.dart';
-import '../widgets/task_tile.dart';
-import 'add_task_page.dart';
+import 'package:nevertheless/ui/todo/pages/todo_detail_page.dart';
+import '../../../data/todo.dart';
+import '../widgets/todo_tile.dart';
+import 'todo_add_page.dart';
 
 
-class TaskPage extends StatefulWidget {
+class TodoPage extends StatefulWidget {
 
-  const TaskPage({Key? key, required this.taskList}) : super(key: key);
-  final List<Task> taskList;
+  const TodoPage({Key? key, required this.todoList}) : super(key: key);
+  final List<Todo> todoList;
 
   @override
-  State<TaskPage> createState() => _TaskPageState();
+  State<TodoPage> createState() => _TodoPageState();
 }
 
-class _TaskPageState extends State<TaskPage> {
+class _TodoPageState extends State<TodoPage> {
 
   DateTime selectDate = DateTime.now();
-  List<Task> dateTodoList = [];
+  List<Todo> dateTodoList = [];
   late int day;
   @override
   void initState() {
@@ -33,8 +33,8 @@ class _TaskPageState extends State<TaskPage> {
   Widget build(BuildContext context) {
 
     dateTodoList = List.empty(growable: true);
-    for(var i in widget.taskList){
-      Task task = i;
+    for(var i in widget.todoList){
+      Todo task = i;
       if (task.repeat![selectDate.weekday-1] == true){
         dateTodoList.add(task);
       }
@@ -43,8 +43,7 @@ class _TaskPageState extends State<TaskPage> {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        centerTitle: true,
-        title: Text("Todo"),
+        title: const Text("Todo"),
       ),
       body: Padding(
         padding: const EdgeInsets.only(top: 20),
@@ -64,14 +63,13 @@ class _TaskPageState extends State<TaskPage> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        heroTag: "btn",
         backgroundColor: Colors.deepPurpleAccent,
         child: const Icon(
           Icons.add,
           color: Colors.white,
         ),
         onPressed: () {
-          Navigator.of(context).push(MaterialPageRoute(builder: (context)=> AddTaskPage(taskList: widget.taskList,)))
+          Navigator.of(context).push(MaterialPageRoute(builder: (context)=> TodoAddPage(taskList: widget.todoList,)))
           .then((value) => setState((){}));
         }
       ),
@@ -81,7 +79,7 @@ class _TaskPageState extends State<TaskPage> {
 
   Widget _dateBar() {
     return Container(
-      margin: EdgeInsets.only(top: 10),
+      margin: const EdgeInsets.only(top: 10),
       child: DatePicker(
         DateTime.now(),
         initialSelectedDate: DateTime.now(),
@@ -89,8 +87,8 @@ class _TaskPageState extends State<TaskPage> {
           setState(() {
             selectDate = newDate;
             dateTodoList= [];
-            for(var i in widget.taskList){
-              Task task = i;
+            for(var i in widget.todoList){
+              Todo task = i;
               if (task.repeat![selectDate.weekday-1] == true){
                 dateTodoList.add(task);
               }
@@ -102,13 +100,13 @@ class _TaskPageState extends State<TaskPage> {
         height: 100,
         selectedTextColor: Colors.black,
         dayTextStyle:
-            TextStyle(color: Colors.white ),
-        dateTextStyle: TextStyle(
+            const TextStyle(color: Colors.white ),
+        dateTextStyle: const TextStyle(
             color: Colors.white,
             fontSize: 20,
             fontWeight: FontWeight.bold),
         monthTextStyle:
-            TextStyle(color: Colors.white),
+            const TextStyle(color: Colors.white),
       ),
     );
   }
@@ -133,13 +131,11 @@ class _TaskPageState extends State<TaskPage> {
                       child: GestureDetector(
                         onTap: () =>
                             Navigator.of(context)
-                                .push(MaterialPageRoute(builder: (context)=> TaskDetailPage(task: dateTodoList[index]))
+                                .push(MaterialPageRoute(builder: (context)=> TodoDetailPage(todo: dateTodoList[index]))
                             ).then((value) {
-                              setState(() {
-
-                              });
+                              setState(() {});
                             }),
-                        child: TaskTile(task: dateTodoList[index]),
+                        child: TodoTile(todo: dateTodoList[index]),
                       ),
                     ),
                   ),
@@ -164,11 +160,11 @@ class _TaskPageState extends State<TaskPage> {
                 : const SizedBox(
                     height: 50,
                   ),
-            Icon(Icons.task_alt),
+            const Icon(Icons.task_alt),
             const SizedBox(
               height: 20,
             ),
-            Text("일정을 추가해주세요!"),
+            const Text("일정을 추가해주세요!"),
           ],
         ),
       ),

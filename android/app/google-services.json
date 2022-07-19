@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "923993631701",
+    "project_id": "nevertheless-b643c",
+    "storage_bucket": "nevertheless-b643c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:923993631701:android:55e49c15438f16ec752b5c",
+        "android_client_info": {
+          "package_name": "com.vanillajaem.nevertheless"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "923993631701-1rkg6loo59oca8ggfl4v19kloj7aitpp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAovcs2KUvz7zelnX5NCd3Hp2m9-nGSbdc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "923993631701-1rkg6loo59oca8ggfl4v19kloj7aitpp.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "923993631701-964fga2kg39dchkdupqjrcf4opqbeubc.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.vanillajaem.nevertheless"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
