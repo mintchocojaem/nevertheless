@@ -24,13 +24,8 @@ void main() async{
 
   runApp(
       GetMaterialApp(
-          theme: ThemeData(
-            brightness: Brightness.light,
-            /* light theme setting */
-          ),
           darkTheme: ThemeData(
             brightness: Brightness.dark,
-            /* dark theme setting */
           ),
           debugShowCheckedModeBanner: false,
           initialBinding: InitBinding(),

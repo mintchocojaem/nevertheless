@@ -25,8 +25,8 @@ class CustomColorPicker extends AlertDialog{
       title: Text('Palette',style: TextStyle(color: textColor)),
       content: SingleChildScrollView(
         child: ColorPicker(
+          enableAlpha: false,
           pickerColor: pickedColor,
-          labelTypes: [],
           onColorChanged: (color){
             pickedColor = color;
           },

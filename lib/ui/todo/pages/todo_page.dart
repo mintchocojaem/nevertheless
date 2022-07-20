@@ -35,9 +35,7 @@ class _TodoPageState extends State<TodoPage> {
     dateTodoList = List.empty(growable: true);
     for(var i in widget.todoList){
       Todo task = i;
-      if (task.repeat![selectDate.weekday-1] == true){
-        dateTodoList.add(task);
-      }
+      dateTodoList.add(task);
     }
 
     return Scaffold(
@@ -51,7 +49,6 @@ class _TodoPageState extends State<TodoPage> {
           margin: const EdgeInsets.symmetric(horizontal: 20),
           child: Column(
             children: [
-              _dateBar(),
               dateTodoList.isNotEmpty ? _todo() : Container(),
               dateTodoList.isEmpty ? Expanded(
                 child: Container(
@@ -63,7 +60,7 @@ class _TodoPageState extends State<TodoPage> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.deepPurpleAccent,
+        backgroundColor: Color(0xff505050),
         child: const Icon(
           Icons.add,
           color: Colors.white,
@@ -74,39 +71,6 @@ class _TodoPageState extends State<TodoPage> {
         }
       ),
 
-    );
-  }
-
-  Widget _dateBar() {
-    return Container(
-      margin: const EdgeInsets.only(top: 10),
-      child: DatePicker(
-        DateTime.now(),
-        initialSelectedDate: DateTime.now(),
-        onDateChange: (newDate) {
-          setState(() {
-            dateTodoList= [];
-            for(var i in widget.todoList){
-              Todo todo = i;
-              if (todo.repeat![selectDate.weekday-1] == true){
-                dateTodoList.add(todo);
-              }
-            }
-          });
-        },
-        selectionColor: Colors.deepPurpleAccent,
-        width: 70,
-        height: 100,
-        selectedTextColor: Colors.black,
-        dayTextStyle:
-            const TextStyle(color: Colors.white ),
-        dateTextStyle: const TextStyle(
-            color: Colors.white,
-            fontSize: 20,
-            fontWeight: FontWeight.bold),
-        monthTextStyle:
-            const TextStyle(color: Colors.white),
-      ),
     );
   }
 

@@ -41,6 +41,7 @@ class InputFieldState extends State<InputField> {
   @override
   Widget build(BuildContext context) {
     return  TextFormField(
+      cursorColor: Colors.white70,
       onTap: widget.onTap ?? (){},
       enabled: widget.isEnabled,
       readOnly: !widget.isEditable,
@@ -48,7 +49,7 @@ class InputFieldState extends State<InputField> {
       validator: (value) {
         if(widget.emptyText == false && widget.isEnabled != false){
           if (value.toString().isEmpty) {
-            return 'Please Check ${widget.label}';
+            return '${widget.label}을 입력해주세요';
           }
         }
       },
