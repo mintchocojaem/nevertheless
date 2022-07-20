@@ -1,8 +1,6 @@
 import 'dart:io';
-
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:timezone/data/latest_all.dart' as tz;
-import 'package:timezone/timezone.dart' as tz;
+
 
 Future todoNotification(int id, String notiTitle, String notiDesc) async {
 
@@ -26,20 +24,6 @@ Future todoNotification(int id, String notiTitle, String notiDesc) async {
           ?.deleteNotificationChannelGroup("nevertheless");
     }
 
-    /*await flutterLocalNotificationsPlugin.zonedSchedule(
-      id, // id는 unique해야합니다. int값
-      notiTitle,
-      notiDesc,
-      _setNotiTime(),
-      detail,
-      androidAllowWhileIdle: true,
-      uiLocalNotificationDateInterpretation:
-      UILocalNotificationDateInterpretation.absoluteTime,
-      matchDateTimeComponents: DateTimeComponents.time,
-    );
-
-     */
-
     await flutterLocalNotificationsPlugin.show(
         id,
         notiTitle,
@@ -51,14 +35,3 @@ Future todoNotification(int id, String notiTitle, String notiDesc) async {
 
 }
 
-tz.TZDateTime _setNotiTime() {
-
-  tz.initializeTimeZones();
-  tz.setLocalLocation(tz.getLocation('Asia/Seoul'));
-
-  final now = tz.TZDateTime.now(tz.local);
-  var scheduledDate = tz.TZDateTime(tz.local, now.year, now.month, now.day,
-      now.hour, now.minute, now.second);
-
-  return scheduledDate;
-}
