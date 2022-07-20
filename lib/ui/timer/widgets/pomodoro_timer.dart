@@ -180,7 +180,7 @@ class _PomodoroTimer extends State<PomodoroTimer>{
                         //Notification
                         if (isNotification) {
                           todoNotification(todo!.id!, "Nevertheless",
-                              "\"${todo!.title!}\" 시간 종료");
+                              "\"${todo!.title!}\" 일정 종료");
                         }
                       } else {
                         isItRest = false;

@@ -286,7 +286,7 @@ class _TodoDetailPageState extends State<TodoDetailPage>{
                 style: TextStyle(color: Colors.red),)));
     } else{
 
-      if(!temp.isTimeNested(schedule: temp)){
+      if(!temp.isTimeNested(schedule: temp, todoList: todoList)){
         todo.id = temp.id;
         todo.color = temp.color;
         todo.title = temp.title;

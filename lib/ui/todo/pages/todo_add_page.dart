@@ -253,7 +253,7 @@ class _TodoAddPageState extends State<TodoAddPage> {
                 style: TextStyle(color: Colors.red),)));
     } else{
 
-        if(!temp.isTimeNested(schedule: temp)){
+        if(!temp.isTimeNested(schedule: temp, todoList: todoList)){
 
           widget.taskList.add(temp);
           saveTodo();

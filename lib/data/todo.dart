@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:get_storage/get_storage.dart';
 import 'package:intl/intl.dart';
 import '../ui/index_page.dart';
 
@@ -38,7 +37,7 @@ class Todo{
     };
   }
 
-  bool isTimeNested({required Todo schedule}){
+  bool isTimeNested({required Todo schedule, required List<Todo> todoList}){
 
     TimeOfDay stringToTimeOfDay(String tod) {
       final format = DateFormat.jm(); //"6:00 AM"
@@ -74,12 +73,12 @@ class Todo{
     return false;
   }
 
-  int generateID(List<Todo> taskList){
+  int generateID(List<Todo> todoList){
 
     int id = 0;
     List<int> idList = List.empty(growable: true);
 
-    for(Todo i in taskList){
+    for(Todo i in todoList){
       idList.add(i.id!);
     }
     for(int j = 0; j < 128; j++){
