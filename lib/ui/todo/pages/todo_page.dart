@@ -52,10 +52,10 @@ class _TodoPageState extends State<TodoPage> {
           child: Column(
             children: [
               _dateBar(),
-              dateTodoList.isNotEmpty ? _tasks() : Container(),
+              dateTodoList.isNotEmpty ? _todo() : Container(),
               dateTodoList.isEmpty ? Expanded(
                 child: Container(
-                  child: _noTasksMessage(),
+                  child: _noTodoMessage(),
                 ),
               ) : Container()
             ],
@@ -85,12 +85,11 @@ class _TodoPageState extends State<TodoPage> {
         initialSelectedDate: DateTime.now(),
         onDateChange: (newDate) {
           setState(() {
-            selectDate = newDate;
             dateTodoList= [];
             for(var i in widget.todoList){
-              Todo task = i;
-              if (task.repeat![selectDate.weekday-1] == true){
-                dateTodoList.add(task);
+              Todo todo = i;
+              if (todo.repeat![selectDate.weekday-1] == true){
+                dateTodoList.add(todo);
               }
             }
           });
@@ -111,7 +110,7 @@ class _TodoPageState extends State<TodoPage> {
     );
   }
 
-  Widget _tasks() {
+  Widget _todo() {
     return Expanded(child:
      AnimationLimiter(
         child:  ListView.builder(
@@ -124,7 +123,7 @@ class _TodoPageState extends State<TodoPage> {
 
                 return AnimationConfiguration.staggeredList(
                   position: index,
-                  duration: Duration(milliseconds: 500 + index * 20),
+                  duration: const Duration(milliseconds: 300),
                   child: SlideAnimation(
                     horizontalOffset: 400.0,
                     child: FadeInAnimation(
@@ -147,7 +146,7 @@ class _TodoPageState extends State<TodoPage> {
   }
 
 
-  Widget _noTasksMessage() {
+  Widget _noTodoMessage() {
     return Center(
       child: SingleChildScrollView(
         child: Column(

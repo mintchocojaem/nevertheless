@@ -1,33 +1,32 @@
+import 'dart:io';
 
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:timezone/data/latest.dart' as tz;
+import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 
-Future taskNotification(int id, String notiTitle, String notiDesc) async {
+Future todoNotification(int id, String notiTitle, String notiDesc) async {
 
 
   final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
   final result = await flutterLocalNotificationsPlugin
-      .resolvePlatformSpecificImplementation<
-      IOSFlutterLocalNotificationsPlugin>()
-      ?.requestPermissions(
-    alert: true,
-    badge: true,
-    sound: true,
-  );
+      .resolvePlatformSpecificImplementation<IOSFlutterLocalNotificationsPlugin>()
+      ?.requestPermissions(alert: true, badge: true, sound: true,);
 
-  var android = AndroidNotificationDetails("channel", notiTitle,channelDescription:  notiDesc,
-      importance: Importance.max, priority: Priority.max);
+  var android = AndroidNotificationDetails("nevertheless", notiTitle,channelDescription:  notiDesc,
+      importance: Importance.max, priority: Priority.max, playSound: true);
   var ios = const IOSNotificationDetails();
   var detail = NotificationDetails(android: android, iOS: ios);
 
-  if (result != null && result) {
-    await flutterLocalNotificationsPlugin
-        .resolvePlatformSpecificImplementation<
-        AndroidFlutterLocalNotificationsPlugin>()
-        ?.deleteNotificationChannelGroup("channel");
+  if ((!Platform.isAndroid && result != null && result) || Platform.isAndroid) {
 
-    await flutterLocalNotificationsPlugin.zonedSchedule(
+    if(Platform.isAndroid){
+      await flutterLocalNotificationsPlugin
+          .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin>()
+          ?.deleteNotificationChannelGroup("nevertheless");
+    }
+
+    /*await flutterLocalNotificationsPlugin.zonedSchedule(
       id, // id는 unique해야합니다. int값
       notiTitle,
       notiDesc,
@@ -38,11 +37,22 @@ Future taskNotification(int id, String notiTitle, String notiDesc) async {
       UILocalNotificationDateInterpretation.absoluteTime,
       matchDateTimeComponents: DateTimeComponents.time,
     );
+
+     */
+
+    await flutterLocalNotificationsPlugin.show(
+        id,
+        notiTitle,
+        notiDesc,
+        detail
+    );
+
   }
 
 }
 
 tz.TZDateTime _setNotiTime() {
+
   tz.initializeTimeZones();
   tz.setLocalLocation(tz.getLocation('Asia/Seoul'));
 

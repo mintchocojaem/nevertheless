@@ -106,8 +106,7 @@ class _TimerPageState extends State<TimerPage> {
                 padding: const EdgeInsets.all(8),
                 children: todoWidgetList,
               ),
-            ) : const Text("진행 가능한 일정 없음",
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),),
+            ) : Container()
           ],
         ),
       ),

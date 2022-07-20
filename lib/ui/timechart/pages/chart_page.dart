@@ -208,10 +208,9 @@ class _ChartPageState extends State<ChartPage> with TickerProviderStateMixin{
                       showCupertinoDialog(context: context, builder: (context) {
                         return CupertinoAlertDialog(
                           content: const Text(
-                                  "1. 시간이 기록되려면 반드시 일정의 종료시각을 거쳐야합니다\n "
-                                  "2. 일정 진행 중에 앱을 종료할 경우, 앱을 다시 시작한 시각으로부터 종료 시각까지의 시간을 계산합니다\n "
-                                  "3. 일정 진행 중에 시작 시각을 앞당기더라도 기록에 반영되지 않습니다"
-                          ),
+                                  "1. 시간이 기록되려면 반드시 일정의 종료시각을 거쳐야합니다\n\n"
+                                  "2. 일정 진행 중에 앱을 종료할 경우, 앱을 다시 시작한 시각으로부터 종료 시각까지의 시간을 계산합니다\n\n"
+                                  "3. 일정 진행 중에 시작 시각을 앞당기더라도 기록에 반영되지 않습니다", textAlign: TextAlign.start,),
                           actions: [
                             CupertinoDialogAction(isDefaultAction: false, child: const Text("확인"), onPressed: () {
                               Navigator.pop(context);

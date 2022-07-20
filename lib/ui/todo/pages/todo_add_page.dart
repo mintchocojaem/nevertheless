@@ -189,7 +189,7 @@ class _TodoAddPageState extends State<TodoAddPage> {
                                showDialog(context: context,
                                    builder: (BuildContext context) =>
                                        CustomColorPicker(
-                                           backgroundColor: ThemeData.dark().primaryColor,
+                                           bgColor: ThemeData.dark().primaryColor,
                                            pickerColor: pickerColor,
                                            textColor: ThemeData.dark().textTheme.bodyText1!.color,
                                            onColorSelected: (color) {
@@ -275,6 +275,8 @@ class _TodoAddPageState extends State<TodoAddPage> {
     final TimeOfDay? selected = await showTimePicker(
       context: context,
       initialTime: stringToTimeOfDay(_startDate!),
+      cancelText: "취소",
+      confirmText: "확인"
     );
     if(selected != null){
       String formattedTime = selected.format(context);
@@ -289,6 +291,8 @@ class _TodoAddPageState extends State<TodoAddPage> {
     final TimeOfDay? selected = await showTimePicker(
       context: context,
       initialTime: stringToTimeOfDay(_endDate!),
+      cancelText: "취소",
+      confirmText: "확인"
     );
     if(selected != null){
       String formattedTime = selected.format(context);

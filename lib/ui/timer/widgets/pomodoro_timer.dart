@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:intl/intl.dart';
+import 'package:nevertheless/ui/index_page.dart';
 
 import '../../../data/todo.dart';
 import '../../../notification/notification.dart';
@@ -24,7 +25,7 @@ class PomodoroTimer extends StatefulWidget{
 class _PomodoroTimer extends State<PomodoroTimer>{
   int durationCounter = 0;
   bool isItRest = false;
-  String? text;
+  String text = "진행가능한 일정 없음";
   int initDuration = 0;
   bool isNotification = true;
   late DateTime startTimeLog;
@@ -34,6 +35,7 @@ class _PomodoroTimer extends State<PomodoroTimer>{
     "startTime" : null,
     "endTime" : null,
   }];
+  Color processColor = Colors.red;
 
   final storage = GetStorage();   // instance of getStorage class
 
@@ -115,17 +117,14 @@ class _PomodoroTimer extends State<PomodoroTimer>{
       return Column(
           children: [
             CircularCountDownTimer(
-                duration : initDuration,
+                duration : initDuration < 1 ? 1 : initDuration,
                 initialDuration: 0,
                 controller: widget.controller,
                 width: MediaQuery.of(context).size.width / 3,
                 height: MediaQuery.of(context).size.height / 3,
                 ringColor: Colors.grey,
-                ringGradient: null,
                 fillColor: Colors.black45,
-                fillGradient: null,
                 backgroundColor: Colors.black12,
-                backgroundGradient: null,
                 strokeWidth: 5.0,
                 strokeCap: StrokeCap.round,
                 textStyle: const TextStyle(fontSize: 24.0, color: Colors.white, fontWeight: FontWeight.bold),
@@ -136,34 +135,35 @@ class _PomodoroTimer extends State<PomodoroTimer>{
                 autoStart: true,
                 onStart: () {
 
-                  if(widget.todayTodoList.isNotEmpty){
+                  if(widget.todayTodoList.isNotEmpty && initDuration != 1){
 
                     DateTime now = DateTime.now();
-                    if(initDuration != 1){
+
                       todo = durationList[durationCounter]["todo"];
                       isItRest = durationList[durationCounter]["todo"] != null ? false: true;
-                      text = durationList[durationCounter]["todo"] != null
-                          ? "진행중 : ${durationList[durationCounter]["todo"].title}"
-                          : durationList[durationCounter+1]["todo"] != null ?
-                      "대기중 : ${durationList[durationCounter+1]["todo"].title}" : "모든 일정 종료";
-                    }else{
-                      text = "진행 가능한 일정 없음";
+
+                      if(durationList[durationCounter]["todo"] != null){
+                        text = "${durationList[durationCounter]["todo"].title}";
+                        processColor = Colors.green;
+                      }else if(durationList[durationCounter+1]["todo"] != null){
+                        text =  "${durationList[durationCounter+1]["todo"].title}";
+                        processColor = Colors.orangeAccent;
+                      }
+                      if (!isItRest) {
+                        print("doStudy");
+                        startTimeLog = DateTime(
+                            now.year, now.month, now
+                            .day, now.hour, now.minute, 0
+                        );
+                      } else {
+                        print("doRest");
+                      }
                     }
-                    if (!isItRest) {
-                      print("doStudy");
-                      startTimeLog = DateTime(
-                          now.year, now.month, now
-                          .day, now.hour, now.minute, 0
-                      );
-                    } else {
-                      print("doRest");
-                    }
-                  }
 
                 },
                 onComplete: () {
 
-                  if(widget.todayTodoList.isNotEmpty){
+                  if(widget.todayTodoList.isNotEmpty && initDuration !=1){
 
                     DateTime now = DateTime.now();
 
@@ -176,18 +176,20 @@ class _PomodoroTimer extends State<PomodoroTimer>{
                         }
                         todo!.timeLog![now.weekday-1] = todo!.timeLog![now.weekday-1]!
                             + subtractDateTimeToInt(startTimeLog, now)~/60;
+                        saveTodo();
                         //Notification
                         if (isNotification) {
-                          taskNotification(todo!.id!, "Nevertheless",
-                              "\"${todo!.title!}\" 시간 종료 (타임차트 기록)");
+                          todoNotification(todo!.id!, "Nevertheless",
+                              "\"${todo!.title!}\" 시간 종료");
                         }
                       } else {
                         isItRest = false;
                         print("didRest");
                         //Notification
                         if (isNotification) {
-                          taskNotification(999, "Nevertheless", "휴식시간 종료");
+                          todoNotification(999, "Nevertheless", "휴식시간 종료");
                         }
+
                       }
 
                       if (initDuration!=1 && todo?.id != widget.todayTodoList.last.id) {
@@ -197,6 +199,7 @@ class _PomodoroTimer extends State<PomodoroTimer>{
                                 durationList[durationCounter]["endTime"]));
                       }else if(initDuration!=1 && todo?.id == widget.todayTodoList.last.id){
                         text = "모든 일정 종료";
+                        processColor = Colors.red;
                       }
 
                     });
@@ -204,13 +207,34 @@ class _PomodoroTimer extends State<PomodoroTimer>{
                 }),
             FutureBuilder(
               builder: (BuildContext context, AsyncSnapshot snapshot) {
-                return widget.todayTodoList.isNotEmpty ? Text(
-                    text ?? "",
-                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w400)) : Container();
+                return Padding(
+                  padding: const EdgeInsets.only(left: 32, right: 32),
+                  child: Stack(
+                      alignment: Alignment.center,
+                      children: [
+                         Align(
+                            alignment: Alignment.centerLeft,
+                            child: Container(
+                                width: 16.0,
+                                height: 16.0,
+                                decoration: BoxDecoration(
+                                  color: processColor,
+                                  shape: BoxShape.circle,
+                                )),
+                         ),
+                        Align(
+                          alignment: Alignment.center,
+                          child: Text( text, style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400), maxLines: 1,
+                          overflow: TextOverflow.ellipsis, textAlign: TextAlign.center,),
+                        ),
+                      ],
+                  ),
+                );
               }),
             const SizedBox(
               height: 24,
-            )
+            ),
+            Divider(thickness: 2,),
           ],
     );
   }

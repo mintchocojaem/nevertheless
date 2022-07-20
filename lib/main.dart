@@ -35,20 +35,20 @@ void main() async{
           debugShowCheckedModeBanner: false,
           initialBinding: InitBinding(),
           themeMode: ThemeMode.dark,
-          home: IndexScreen()
+          home: const IndexScreen()
       )
   );
 }
 
 void _initNotiSetting() async {
   final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-  final initSettingsAndroid = AndroidInitializationSettings('@mipmap/ic_launcher');
-  final initSettingsIOS = IOSInitializationSettings(
+  const initSettingsAndroid = AndroidInitializationSettings('@drawable/ic_launcher');
+  const initSettingsIOS = IOSInitializationSettings(
     requestSoundPermission: true,
     requestBadgePermission: true,
     requestAlertPermission: true,
   );
-  final initSettings = InitializationSettings(
+  const initSettings = InitializationSettings(
     android: initSettingsAndroid,
     iOS: initSettingsIOS,
   );
