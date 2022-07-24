@@ -17,25 +17,8 @@ class TodoPage extends StatefulWidget {
 
 class _TodoPageState extends State<TodoPage> {
 
-  DateTime selectDate = DateTime.now();
-  List<Todo> dateTodoList = [];
-  late int day;
-  @override
-  void initState() {
-    // TODO: implement initState
-    day = selectDate.day;
-
-    super.initState();
-  }
-
   @override
   Widget build(BuildContext context) {
-
-    dateTodoList = List.empty(growable: true);
-    for(var i in widget.todoList){
-      Todo task = i;
-      dateTodoList.add(task);
-    }
 
     return Scaffold(
       appBar: AppBar(
@@ -48,12 +31,11 @@ class _TodoPageState extends State<TodoPage> {
           margin: const EdgeInsets.symmetric(horizontal: 20),
           child: Column(
             children: [
-              dateTodoList.isNotEmpty ? _todo() : Container(),
-              dateTodoList.isEmpty ? Expanded(
+              widget.todoList.isNotEmpty ? _todo() :Expanded(
                 child: Container(
                   child: _noTodoMessage(),
                 ),
-              ) : Container()
+              )
             ],
           ),
         ),
@@ -65,7 +47,7 @@ class _TodoPageState extends State<TodoPage> {
           color: Colors.white,
         ),
         onPressed: () {
-          Navigator.of(context).push(MaterialPageRoute(builder: (context)=> TodoAddPage(taskList: widget.todoList,)))
+          Navigator.of(context).push(MaterialPageRoute(builder: (context)=> TodoAddPage(todoList: widget.todoList,)))
           .then((value) => setState((){}));
         }
       ),
@@ -77,13 +59,8 @@ class _TodoPageState extends State<TodoPage> {
     return Expanded(child:
      AnimationLimiter(
         child:  ListView.builder(
-            scrollDirection:
-                MediaQuery.of(context).orientation == Orientation.portrait
-                    ? Axis.vertical
-                    : Axis.horizontal,
-            itemCount: dateTodoList.length,
+            itemCount: widget.todoList.length,
             itemBuilder: (BuildContext context, int index) {
-
                 return AnimationConfiguration.staggeredList(
                   position: index,
                   duration: const Duration(milliseconds: 300),
@@ -93,21 +70,19 @@ class _TodoPageState extends State<TodoPage> {
                       child: GestureDetector(
                         onTap: () =>
                             Navigator.of(context)
-                                .push(MaterialPageRoute(builder: (context)=> TodoDetailPage(todo: dateTodoList[index]))
+                                .push(MaterialPageRoute(builder: (context)=> TodoDetailPage(todo: widget.todoList[index]))
                             ).then((value) {
                               setState(() {});
                             }),
-                        child: TodoTile(todo: dateTodoList[index]),
+                        child: TodoTile(todo: widget.todoList[index]),
                       ),
                     ),
                   ),
                 );
-
             }),
         )
     );
   }
-
 
   Widget _noTodoMessage() {
     return Center(
@@ -115,13 +90,6 @@ class _TodoPageState extends State<TodoPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            MediaQuery.of(context).orientation == Orientation.portrait
-                ? const SizedBox(
-                    height: 0,
-                  )
-                : const SizedBox(
-                    height: 50,
-                  ),
             const Icon(Icons.task_alt),
             const SizedBox(
               height: 20,

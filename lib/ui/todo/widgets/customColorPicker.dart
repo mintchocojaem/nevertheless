@@ -7,13 +7,12 @@ typedef OnColorSelected = Function(Color color);
 
 class CustomColorPicker extends AlertDialog{
 
-  const CustomColorPicker({this.bgColor, this.textColor, this.colors,
+  const CustomColorPicker({this.bgColor, this.textColor,
     required this.onColorSelected, required this.pickerColor });
 
   final Color pickerColor;
   final Color? bgColor;
   final Color? textColor;
-  final List<Color>? colors;
   final OnColorSelected onColorSelected;
 
   @override

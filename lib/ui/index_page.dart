@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:nevertheless/ui/timechart/pages/chart_page.dart';
@@ -17,7 +16,7 @@ class IndexScreen extends GetView<BottomNavController> {
   @override
   Widget build(BuildContext context) {
 
-    return Obx (() =>Scaffold(
+    return Obx (() => Scaffold(
       body: Center(
           child:
           IndexedStack(
@@ -49,7 +48,7 @@ class IndexScreen extends GetView<BottomNavController> {
 
 }
 
-List loadTodoList(){
+loadTodoList(){
   final storage = GetStorage();
   List list = storage.read("todoList") ?? [];
   todoList = [];
@@ -65,7 +64,6 @@ List loadTodoList(){
       timeLog : i['timeLog'],
     ));
   }
-  return list;
 }
 
 void saveTodo() {

@@ -15,32 +15,150 @@ class ChartPage extends StatefulWidget {
 
 }
 
-class _ChartPageState extends State<ChartPage> with TickerProviderStateMixin{
+class _ChartPageState extends State<ChartPage>{
 
-  List<Map> durationList = List.empty(growable: true);
   List<double> yList = List.empty(growable: true);
-  List<Legend> legendList = List.empty(growable: true);
 
-  List<BarChartRodData> addItem(int x, List<Map> list){
+  @override
+  Widget build(BuildContext context) {
 
-    List<BarChartRodData> result = List.empty(growable: true);
+    final storage = GetStorage();
+    DateTime now = DateTime.now();
+
+    bool init = storage.read('init') ?? false;
+
+    if(now.weekday == 1 && !init){
+      for(Todo i in todoList){
+        i.timeLog = null;
+      }
+      saveTodo();
+      storage.write('init', true);
+    }else if (now.weekday != 1){
+      storage.write('init', false);
+    }
+
+    yList = List.empty(growable: true);
+
+    return Scaffold(
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        title: Text("Chart"),
+      ),
+      body: Center(
+        child: Padding(
+            padding: const EdgeInsets.all(12),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        const Text(
+                          '주별 기록 ',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Text(
+                          '(${now.weekday > 1 ? 8 - now.weekday: 7}일 후 갱신)',
+                          style: const TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                    IconButton(onPressed: (){
+                      showCupertinoDialog(context: context, builder: (context) {
+                        return CupertinoAlertDialog(
+                          content: const Text(
+                                  "1. 시간이 기록되려면 반드시 일정의 종료시각을 거쳐야합니다\n\n"
+                                  "2. 일정 진행 중에 앱을 종료할 경우, 앱을 다시 시작한 시각으로부터 종료 시각까지의 시간을 계산합니다\n\n"
+                                  "3. 일정 진행 중에 시작 시각을 앞당기더라도 기록에 반영되지 않습니다", textAlign: TextAlign.start,),
+                          actions: [
+                            CupertinoDialogAction(isDefaultAction: false, child: const Text("확인"), onPressed: () {
+                              Navigator.pop(context);
+                            })
+                          ],
+                        );
+                      });
+                      },
+                        icon: const Icon(Icons.info_outline, size: 24,color: Colors.amber,))
+                  ],
+                ),
+                const SizedBox(height: 8),
+                todoListWidget(widget.todoList),
+                const SizedBox(height: 14),
+               Expanded(
+                 child: BarChart(
+                      BarChartData(
+                        alignment: BarChartAlignment.spaceAround,
+                        titlesData: FlTitlesData(
+                          leftTitles: AxisTitles(),
+                          rightTitles: AxisTitles(
+                            sideTitles: SideTitles(
+                              showTitles: true,
+                              interval: 60,
+                              getTitlesWidget: rightTitles,
+                              reservedSize: 32
+                            )
+                          ),
+                          topTitles: AxisTitles(),
+                          bottomTitles: AxisTitles(
+                            sideTitles: SideTitles(
+                              showTitles: true,
+                              getTitlesWidget: bottomTitles,
+                            ),
+                          ),
+                        ),
+                        barTouchData: BarTouchData(enabled: false),
+                        borderData: FlBorderData(show: false),
+                        gridData: FlGridData(show: false),
+                        barGroups: [
+                          generateGroupData(0, widget.todoList),
+                          generateGroupData(1, widget.todoList),
+                          generateGroupData(2, widget.todoList),
+                          generateGroupData(3, widget.todoList),
+                          generateGroupData(4, widget.todoList),
+                          generateGroupData(5, widget.todoList),
+                          generateGroupData(6, widget.todoList),
+                        ],
+                        maxY: ((yList.reduce(max)~/60 * 60) +60).toDouble(),
+                      ),
+                    ),
+               ),
+              ],
+            ),
+          ),
+      ),
+    );
+  }
+
+  BarChartGroupData generateGroupData(int x, List<Todo?> todoList) {
+
+    List<BarChartRodData> temp = List.empty(growable: true);
     double sumY = 0;
-    if(list.isNotEmpty){
 
-      for(Map i in list){
+    if(todoList.isNotEmpty){
+
+      for(Todo? i in todoList){
 
         for(int j =0; j < 7; j++){
 
-          if(j == x){
-            result.add(
+          if(j == x && i != null && i.timeLog != null){
+            temp.add(
                 BarChartRodData(
                     fromY: sumY,
-                    toY: (i['duration'][j]).toDouble() + sumY,
+                    toY: (i.timeLog![j]).toDouble() + sumY,
                     width: 8,
-                    color: Color(i['color'])
+                    color: Color(i.color!)
                 )
             );
-            sumY += (i['duration'][j]).toDouble();
+            sumY += (i.timeLog![j]).toDouble();
 
           }
         }
@@ -48,17 +166,14 @@ class _ChartPageState extends State<ChartPage> with TickerProviderStateMixin{
     }
     yList.add(sumY);
 
-    return result;
-  }
-
-  BarChartGroupData generateGroupData(
-      int x, List<Map> values) {
     return BarChartGroupData(
         x: x,
         groupVertically: true,
-        barRods: addItem(x,values)
+        barRods: temp
     );
+
   }
+
 
   Widget rightTitles(double value, TitleMeta meta) {
     const style = TextStyle(color: Colors.white, fontSize: 10);
@@ -118,227 +233,37 @@ class _ChartPageState extends State<ChartPage> with TickerProviderStateMixin{
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-
-    final storage = GetStorage();
-    DateTime now = DateTime.now();
-    bool init = storage.read('init') ?? false;
-    if(now.weekday == 7 && !init){
-      for(Todo i in todoList){
-        i.timeLog = [0,0,0,0,0,0,0];
-      }
-      storage.write('init', true);
-    }else if (now.weekday != 7){
-      storage.write('init', false);
-    }
-
-    yList = List.empty(growable: true);
-
-    durationList = List.empty(growable: true);
-    legendList = List.empty(growable: true);
-
-    for(Todo? i in widget.todoList){
-
-      if(i?.timeLog != null){
-        Map<String,dynamic> durationMap = {
-          'title' : "",
-          'color' : 0,
-          'duration' : [],
-        };
-
-        List<int> timeLog = List.empty(growable: true);
-
-        for(int j =0; j < i!.timeLog!.length; j++){
-          timeLog.add(
-              i.timeLog![j]!
-          );
-        }
-
-        durationMap['id'] = i.id;
-        durationMap['title'] = i.title;
-        durationMap['color'] = i.color;
-        durationMap['duration'] = timeLog;
-
-        durationList.add(durationMap);
-
-        legendList.add(
-          Legend(i.title!, Color(i.color!)),
-        );
-
-      }
-
-    }
-
-
-    return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        title: Text("Chart"),
-      ),
-      body: Center(
-        child: Padding(
-            padding: const EdgeInsets.all(12),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      children: [
-                        const Text(
-                          '주별 기록 ',
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        Text(
-                          '(${now.weekday > 1 ? 8 - now.weekday: 7}일 후 갱신)',
-                          style: const TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
-                    ),
-                    IconButton(onPressed: (){
-                      showCupertinoDialog(context: context, builder: (context) {
-                        return CupertinoAlertDialog(
-                          content: const Text(
-                                  "1. 시간이 기록되려면 반드시 일정의 종료시각을 거쳐야합니다\n\n"
-                                  "2. 일정 진행 중에 앱을 종료할 경우, 앱을 다시 시작한 시각으로부터 종료 시각까지의 시간을 계산합니다\n\n"
-                                  "3. 일정 진행 중에 시작 시각을 앞당기더라도 기록에 반영되지 않습니다", textAlign: TextAlign.start,),
-                          actions: [
-                            CupertinoDialogAction(isDefaultAction: false, child: const Text("확인"), onPressed: () {
-                              Navigator.pop(context);
-                            })
-                          ],
-                        );
-                      });
-                      },
-                        icon: const Icon(Icons.info_outline, size: 24,color: Colors.amber,))
-                  ],
-                ),
-                const SizedBox(height: 8),
-                LegendsListWidget(
-                  legends: legendList
-                ),
-                const SizedBox(height: 14),
-               Expanded(
-                 child: BarChart(
-                      BarChartData(
-                        alignment: BarChartAlignment.spaceAround,
-                        titlesData: FlTitlesData(
-                          leftTitles: AxisTitles(
-                          ),
-                          rightTitles: AxisTitles(
-                            sideTitles: SideTitles(
-                              showTitles: true,
-                              interval: 60,
-                              getTitlesWidget: rightTitles,
-                              reservedSize: 32
-                            )
-                          ),
-                          topTitles: AxisTitles(),
-                          bottomTitles: AxisTitles(
-                            sideTitles: SideTitles(
-                              showTitles: true,
-                              getTitlesWidget: bottomTitles,
-                            ),
-                          ),
-                        ),
-                        barTouchData: BarTouchData(enabled: false),
-                        borderData: FlBorderData(show: false),
-                        gridData: FlGridData(show: false),
-                        barGroups: [
-                          generateGroupData(0, durationList),
-                          generateGroupData(1, durationList),
-                          generateGroupData(2, durationList),
-                          generateGroupData(3, durationList),
-                          generateGroupData(4, durationList),
-                          generateGroupData(5, durationList),
-                          generateGroupData(6, durationList),
-                        ],
-                        maxY: ((yList.reduce(max)~/60 * 60) +60).toDouble(),
-                      ),
-                    ),
-               ),
-              ],
+  Widget todoListWidget(List<Todo?>todoList){
+    if(todoList.isNotEmpty){
+      return Wrap(
+        spacing: 16,
+        children: todoList.map((e) => e!.timeLog != null ? Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 10,
+              height: 10,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Color(e.color!),
+              ),
             ),
-          ),
-      ),
-    );
+            const SizedBox(width: 6),
+            Text(
+              e.title!,
+              style: const TextStyle(
+                color: Color(0xffffffff),
+                fontSize: 12,
+              ),
+            ),
+          ],
+        ) : Container()).toList(),
+      );
+    }else {
+      return Container();
+    }
   }
 
 }
 
-class LegendWidget extends StatelessWidget {
-  final String name;
-  final Color color;
-
-  const LegendWidget({
-    Key? key,
-    required this.name,
-    required this.color,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Container(
-          width: 10,
-          height: 10,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: color,
-          ),
-        ),
-        const SizedBox(width: 6),
-        Text(
-          name,
-          style: const TextStyle(
-            color: Color(0xffffffff),
-            fontSize: 12,
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class LegendsListWidget extends StatelessWidget {
-  final List<Legend> legends;
-
-  const LegendsListWidget({
-    Key? key,
-    required this.legends,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Wrap(
-      spacing: 16,
-      children: legends
-          .map(
-            (e) => LegendWidget(
-          name: e.name,
-          color: e.color,
-        ),
-      )
-          .toList(),
-    );
-  }
-}
-
-class Legend {
-  final String name;
-  final Color color;
-
-  Legend(this.name, this.color);
-}
 

@@ -7,7 +7,7 @@ import 'package:weekday_selector/weekday_selector.dart';
 import '../../../data/todo.dart';
 import '../../index_page.dart';
 import '../widgets/input_field.dart';
-import '../widgets/CustomColorPicker.dart';
+import '../widgets/customColorPicker.dart';
 
 class TodoDetailPage extends StatefulWidget {
   const TodoDetailPage({Key? key, required this.todo}) : super(key: key);
@@ -42,7 +42,6 @@ class _TodoDetailPageState extends State<TodoDetailPage>{
     }
     _startDate = widget.todo.startTime;
     _endDate = widget.todo.endTime;
-
     pickerColor = Color(widget.todo.color!);
 
     super.initState();
@@ -53,7 +52,6 @@ class _TodoDetailPageState extends State<TodoDetailPage>{
 
     _titleController.text = widget.todo.title!;
     _noteController.text = widget.todo.note == null ? "" : widget.todo.note!;
-
     _startTimeController.text = _startDate!;
     _endTimeController.text = _endDate!;
 

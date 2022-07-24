@@ -10,10 +10,10 @@ class TodoTile extends StatelessWidget {
   Widget build(BuildContext context) {
 
     return Container(
-      height: MediaQuery.of(context).orientation == Orientation.portrait ? MediaQuery.of(context).size.height *0.16:200,
-      width: MediaQuery.of(context).orientation == Orientation.portrait ? MediaQuery.of(context).size.width :MediaQuery.of(context).size.width *0.7,
+      height: MediaQuery.of(context).size.height *0.16,
+      width: MediaQuery.of(context).size.width *0.7,
       margin: const EdgeInsets.symmetric(vertical: 10,horizontal: 10),
-      padding: EdgeInsets.symmetric(horizontal: 10,vertical: MediaQuery.of(context).orientation == Orientation.portrait ? 10 : 0),
+      padding: const EdgeInsets.symmetric(horizontal: 10,vertical: 10),
       decoration: BoxDecoration(
           color: Color(todo.color!),
           borderRadius: BorderRadius.circular(10)),

@@ -1,17 +1,14 @@
-
-
 import 'package:circular_countdown_timer/circular_countdown_timer.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:intl/intl.dart';
 import 'package:nevertheless/ui/index_page.dart';
-
 import '../../../data/todo.dart';
 import '../../../notification/notification.dart';
 class PomodoroTimer extends StatefulWidget{
 
-  PomodoroTimer({Key? key, required this.controller, required this.todayTodoList}) : super(key: key);
+  const PomodoroTimer({Key? key, required this.controller, required this.todayTodoList}) : super(key: key);
   final List<Todo> todayTodoList;
   final CountDownController controller;
   @override
@@ -23,6 +20,12 @@ class PomodoroTimer extends StatefulWidget{
 }
 
 class _PomodoroTimer extends State<PomodoroTimer>{
+
+  List<Map<String,dynamic>> durationList = [{
+    "todo" : null,
+    "startTime" : null,
+    "endTime" : null,
+  }];
   int durationCounter = 0;
   bool isItRest = false;
   String text = "진행가능한 일정 없음";
@@ -30,11 +33,6 @@ class _PomodoroTimer extends State<PomodoroTimer>{
   bool isNotification = true;
   late DateTime startTimeLog;
   Todo? todo;
-  List<Map<String,dynamic>> durationList = [{
-    "todo" : null,
-    "startTime" : null,
-    "endTime" : null,
-  }];
   Color processColor = Colors.red;
 
   final storage = GetStorage();   // instance of getStorage class
@@ -69,7 +67,6 @@ class _PomodoroTimer extends State<PomodoroTimer>{
                 "endTime" : stringToDateTime(widget.todayTodoList[i].endTime!),
               }
           );
-          //print("12");
 
         }else{
           if(now.compareTo(stringToDateTime(widget.todayTodoList[i].startTime!)) >= 0 &&
@@ -87,7 +84,9 @@ class _PomodoroTimer extends State<PomodoroTimer>{
 
         if((widget.todayTodoList[i] != widget.todayTodoList.last)
             && subtractDateTimeToInt(stringToDateTime(widget.todayTodoList[i].endTime!),
-                stringToDateTime(widget.todayTodoList[i+1].startTime!)) > 0){
+                stringToDateTime(widget.todayTodoList[i+1].startTime!)) > 0
+            && now.compareTo(stringToDateTime(widget.todayTodoList[i+1].startTime!)) == -1){
+
           durationList.add(
               {"todo" : null,
                 "startTime" : now.compareTo(stringToDateTime(widget.todayTodoList[i].endTime!)) == -1
@@ -96,7 +95,6 @@ class _PomodoroTimer extends State<PomodoroTimer>{
                 "endTime" : stringToDateTime(widget.todayTodoList[i+1].startTime!)
               }
           );
-          //print("13");
         }
       }
 
@@ -142,8 +140,8 @@ class _PomodoroTimer extends State<PomodoroTimer>{
                       todo = durationList[durationCounter]["todo"];
                       isItRest = durationList[durationCounter]["todo"] != null ? false: true;
 
-                      if(durationList[durationCounter]["todo"] != null){
-                        text = "${durationList[durationCounter]["todo"].title}";
+                      if(todo != null){
+                        text = "${todo!.title}";
                         processColor = Colors.green;
                       }else if(durationList[durationCounter+1]["todo"] != null){
                         text =  "${durationList[durationCounter+1]["todo"].title}";
@@ -155,8 +153,23 @@ class _PomodoroTimer extends State<PomodoroTimer>{
                             now.year, now.month, now
                             .day, now.hour, now.minute, 0
                         );
+
+                        if (isNotification) {
+                          todoNotification(todo!.id!, "Nevertheless",
+                              "\"${todo!.title!}\" 일정 종료",subtractDateTimeToInt( durationList[durationCounter]["startTime"],
+                          durationList[durationCounter]["endTime"]));
+                        }
+
                       } else {
                         print("doRest");
+
+                        if (isNotification) {
+
+                              todoNotification(999, "Nevertheless", "휴식시간 종료",
+                              subtractDateTimeToInt( durationList[durationCounter]["startTime"],
+                              durationList[durationCounter]["endTime"]));
+                        }
+
                       }
                     }
 
@@ -177,19 +190,10 @@ class _PomodoroTimer extends State<PomodoroTimer>{
                         todo!.timeLog![now.weekday-1] = todo!.timeLog![now.weekday-1]!
                             + subtractDateTimeToInt(startTimeLog, now)~/60;
                         saveTodo();
-                        //Notification
-                        if (isNotification) {
-                          todoNotification(todo!.id!, "Nevertheless",
-                              "\"${todo!.title!}\" 일정 종료");
-                        }
+
                       } else {
                         isItRest = false;
                         print("didRest");
-                        //Notification
-                        if (isNotification) {
-                          todoNotification(999, "Nevertheless", "휴식시간 종료");
-                        }
-
                       }
 
                       if (initDuration!=1 && todo?.id != widget.todayTodoList.last.id) {
@@ -238,11 +242,6 @@ class _PomodoroTimer extends State<PomodoroTimer>{
           ],
     );
   }
-}
-
-int dateTimeToSecond(DateTime startTime, DateTime endTime){
-  return ((endTime.hour - startTime.hour) * 60 * 60) +
-      ((endTime.minute - startTime.minute) * 60) + (endTime.second - startTime.second);
 }
 
 DateTime stringToDateTime(String time){

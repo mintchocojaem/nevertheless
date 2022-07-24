@@ -1,4 +1,3 @@
-
 import 'package:circular_countdown_timer/circular_countdown_timer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -7,8 +6,6 @@ import 'package:intl/intl.dart';
 import '../../../data/todo.dart';
 import '../../todo/pages/todo_detail_page.dart';
 import '../widgets/pomodoro_timer.dart';
-
-typedef Refresh = void Function();
 
 class TimerPage extends StatefulWidget {
 
@@ -22,10 +19,7 @@ class TimerPage extends StatefulWidget {
 class _TimerPageState extends State<TimerPage> {
 
   List<Widget> todoWidgetList = [];
-  List<Todo> todayTaskList = List.empty(growable: true);
-  int durationCounter = 0;
-  int countdownFlag = 0; // 0 start, 1 stop, 2 resume
-  bool floatingVisible =  true;
+  List<Todo> todayTodoList = List.empty(growable: true);
   bool isNotification = true;
 
   final storage = GetStorage();   // instance of getStorage class
@@ -36,7 +30,7 @@ class _TimerPageState extends State<TimerPage> {
   Widget build(BuildContext context) {
 
     todoWidgetList = List.empty(growable: true);
-    todayTaskList = List.empty(growable: true);
+    todayTodoList = List.empty(growable: true);
 
     widget.todoList.sort((a,b) =>
         DateFormat('hh:mm a').parse(a.startTime!)
@@ -63,7 +57,7 @@ class _TimerPageState extends State<TimerPage> {
                   },
                 )
             ));
-        todayTaskList.add(i);
+        todayTodoList.add(i);
       }
     }
 
@@ -80,7 +74,6 @@ class _TimerPageState extends State<TimerPage> {
                 if (isNotification == true) {
                   setState((){
                     storage.write('notification', false);
-                    flutterLocalNotificationsPlugin.cancelAll();
                   });
                 } else {
                   setState((){
@@ -92,29 +85,18 @@ class _TimerPageState extends State<TimerPage> {
           ),
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.only(top: 0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.start,
+      body: Column(
           children: [
-            PomodoroTimer(todayTodoList: todayTaskList,
+            PomodoroTimer(todayTodoList: todayTodoList,
                 controller: countDownController),
             todoWidgetList.isNotEmpty ? Expanded(
               child: ListView(
-                shrinkWrap: true,
                 padding: const EdgeInsets.all(8),
                 children: todoWidgetList,
               ),
             ) : Container()
           ],
-        ),
       ),
     );
   }
 }
-TimeOfDay stringToTimeOfDay(String tod) {
-  final format = DateFormat.jm(); //"6:00 AM"
-  return TimeOfDay.fromDateTime(format.parse(tod));
-}
-

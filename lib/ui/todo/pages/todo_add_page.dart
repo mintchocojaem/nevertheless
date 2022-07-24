@@ -7,13 +7,12 @@ import 'dart:math' as math;
 import '../../../data/todo.dart';
 import '../../index_page.dart';
 import '../widgets/input_field.dart';
-import '../widgets/CustomColorPicker.dart';
-
+import '../widgets/customColorPicker.dart';
 
 class TodoAddPage extends StatefulWidget {
 
-  const TodoAddPage({Key? key, required this.taskList}) : super(key: key);
-  final List<Todo> taskList;
+  const TodoAddPage({Key? key, required this.todoList}) : super(key: key);
+  final List<Todo> todoList;
   @override
   State<TodoAddPage> createState() => _TodoAddPageState();
 
@@ -28,7 +27,6 @@ class _TodoAddPageState extends State<TodoAddPage> {
   final TextEditingController _noteController = TextEditingController();
   final TextEditingController _startTimeController = TextEditingController();
   final TextEditingController _endTimeController = TextEditingController();
-  final TextEditingController _restTimeController = TextEditingController();
 
   String? _startDate;
   String? _endDate;
@@ -41,7 +39,6 @@ class _TodoAddPageState extends State<TodoAddPage> {
 
     _startDate = DateFormat('hh:mm a').format(DateTime.now());
     _endDate =  DateFormat('hh:mm a').format(DateTime.now().add(Duration(minutes: 30)));
-    _restTimeController.text = "0";
     pickerColor = Color((math.Random().nextDouble() * 0xFFFFFF).toInt()).withOpacity(1.0);
 
     super.initState();
@@ -62,7 +59,6 @@ class _TodoAddPageState extends State<TodoAddPage> {
            padding: const EdgeInsets.only(right: 12, left: 12),
            child: IconButton(
                onPressed: (){
-
                  if (_formKey.currentState!.validate()) {
                    _saveTodo();
                  }
@@ -82,7 +78,6 @@ class _TodoAddPageState extends State<TodoAddPage> {
                  InputField(
                    boldText: true,
                    isEditable: true,
-                   hint: "",
                    label: '제목',
                    controller: _titleController,
                    emptyText: false,
@@ -94,7 +89,6 @@ class _TodoAddPageState extends State<TodoAddPage> {
                  InputField(
                    boldText: true,
                    isEditable: true,
-                   hint: "",
                    label: '메모',
                    controller: _noteController,
                    emptyText: true,
@@ -107,13 +101,7 @@ class _TodoAddPageState extends State<TodoAddPage> {
                    firstDayOfWeek: 0,
                    onChanged: (int day) {
                      setState(() {
-                       // Use module % 7 as Sunday's index in the array is 0 and
-                       // DateTime.sunday constant integer value is 7.
                        final index = day % 7;
-                       // We "flip" the value in this example, but you may also
-                       // perform validation, a DB write, an HTTP call or anything
-                       // else before you actually flip the value,
-                       // it's up to your app's needs.
                        dayValues[index] = !dayValues[index];
                      });
                    },
@@ -145,7 +133,6 @@ class _TodoAddPageState extends State<TodoAddPage> {
                                    isEditable: false,
                                    controller: _startTimeController,
                                    label: '시작 시각',
-                                   hint: _startDate.toString(),
                                    emptyText: false,
                                  ),
                                ),
@@ -159,7 +146,6 @@ class _TodoAddPageState extends State<TodoAddPage> {
                                    controller: _endTimeController,
                                    isEditable: false,
                                    label: '종료 시각',
-                                   hint: _endDate.toString(),
                                    emptyText: false,
                                  )),
                            ],
@@ -203,7 +189,6 @@ class _TodoAddPageState extends State<TodoAddPage> {
                      ],
                    ),
                  ),
-
                ],
              ),
            ),
@@ -255,7 +240,7 @@ class _TodoAddPageState extends State<TodoAddPage> {
 
         if(!temp.isTimeNested(schedule: temp, todoList: todoList)){
 
-          widget.taskList.add(temp);
+          widget.todoList.add(temp);
           saveTodo();
           Get.offAll(() => IndexScreen());
 

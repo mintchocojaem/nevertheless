@@ -10,12 +10,9 @@ class InputField extends StatefulWidget {
         this.onTap,
         required this.label,
         this.controller,
-        this.iconData,
-        required this.hint,
-        this.widget,
+        this.hint,
         required this.isEditable,
         required this.emptyText,
-        this.isEnabled,
         this.fontSize,
         this.boldText,
       })
@@ -23,11 +20,8 @@ class InputField extends StatefulWidget {
 
   final String label;
   final TextEditingController? controller;
-  final IconData? iconData;
-  final String hint;
-  final Widget? widget;
+  final String? hint;
   final bool isEditable;
-  final bool? isEnabled;
   final bool emptyText;
   final double? fontSize;
   final bool? boldText;
@@ -43,11 +37,10 @@ class InputFieldState extends State<InputField> {
     return  TextFormField(
       cursorColor: Colors.white70,
       onTap: widget.onTap ?? (){},
-      enabled: widget.isEnabled,
       readOnly: !widget.isEditable,
       controller: widget.controller,
       validator: (value) {
-        if(widget.emptyText == false && widget.isEnabled != false){
+        if(widget.emptyText == false){
           if (value.toString().isEmpty) {
             return '${widget.label}을 입력해주세요';
           }
@@ -58,8 +51,7 @@ class InputFieldState extends State<InputField> {
         labelText: widget.label,
         hintText: widget.hint,
         hintStyle:
-        TextStyle(color: Get.isDarkMode ? Colors.white70 : Colors.grey,
-          fontWeight: widget.boldText == true ? FontWeight.bold : null,),
+        TextStyle(color: Colors.white70, fontWeight: widget.boldText == true ? FontWeight.bold : null,),
       ),
     );
   }
