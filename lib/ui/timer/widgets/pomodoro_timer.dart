@@ -1,6 +1,7 @@
 import 'package:circular_countdown_timer/circular_countdown_timer.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:intl/intl.dart';
 import 'package:nevertheless/ui/index_page.dart';
@@ -164,10 +165,9 @@ class _PomodoroTimer extends State<PomodoroTimer>{
                         print("doRest");
 
                         if (isNotification) {
-
-                              todoNotification(999, "Nevertheless", "휴식시간 종료",
-                              subtractDateTimeToInt( durationList[durationCounter]["startTime"],
-                              durationList[durationCounter]["endTime"]));
+                          todoNotification(999, "Nevertheless", "휴식시간 종료",
+                          subtractDateTimeToInt( durationList[durationCounter]["startTime"],
+                          durationList[durationCounter]["endTime"]));
                         }
 
                       }

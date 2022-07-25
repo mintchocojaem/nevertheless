@@ -10,8 +10,6 @@ class TodoTile extends StatelessWidget {
   Widget build(BuildContext context) {
 
     return Container(
-      height: MediaQuery.of(context).size.height *0.16,
-      width: MediaQuery.of(context).size.width *0.7,
       margin: const EdgeInsets.symmetric(vertical: 10,horizontal: 10),
       padding: const EdgeInsets.symmetric(horizontal: 10,vertical: 10),
       decoration: BoxDecoration(
@@ -43,8 +41,8 @@ class TodoTile extends StatelessWidget {
                 const SizedBox(
                   height: 20,
                 ),
-                Expanded(child: SingleChildScrollView(child: Text('${todo.note}',style: const TextStyle(color: Colors.white),
-                  overflow: TextOverflow.ellipsis,)))
+                Text('${todo.note}',style: const TextStyle(color: Colors.white),
+                  overflow: TextOverflow.ellipsis,)
               ],
             ),
           ),
