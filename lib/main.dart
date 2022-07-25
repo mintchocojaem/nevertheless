@@ -20,7 +20,7 @@ void main() async{
   _initNotiSetting();
 
   // Pass all uncaught errors from the framework to Crashlytics.
-  //FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
+  FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
 
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
 
