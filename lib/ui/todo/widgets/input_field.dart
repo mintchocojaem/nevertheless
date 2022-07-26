@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 typedef OnTap = void Function();
 
@@ -13,7 +12,6 @@ class InputField extends StatefulWidget {
         this.hint,
         required this.isEditable,
         required this.emptyText,
-        this.fontSize,
         this.boldText,
       })
       : super(key: key);
@@ -23,7 +21,6 @@ class InputField extends StatefulWidget {
   final String? hint;
   final bool isEditable;
   final bool emptyText;
-  final double? fontSize;
   final bool? boldText;
   final OnTap? onTap;
 
@@ -47,7 +44,7 @@ class InputFieldState extends State<InputField> {
         }
       },
       decoration: InputDecoration(
-        labelStyle: const TextStyle(height:0.1,fontSize: 20),
+        labelStyle: const TextStyle(height:0.1),
         labelText: widget.label,
         hintText: widget.hint,
         hintStyle:

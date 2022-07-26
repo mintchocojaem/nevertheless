@@ -81,7 +81,6 @@ class _TodoAddPageState extends State<TodoAddPage> {
                    label: '제목',
                    controller: _titleController,
                    emptyText: false,
-                   fontSize: 17,
                  ),
                  const SizedBox(
                    height: 30,
@@ -92,7 +91,6 @@ class _TodoAddPageState extends State<TodoAddPage> {
                    label: '메모',
                    controller: _noteController,
                    emptyText: true,
-                   fontSize: 17,
                  ),
                  const SizedBox(
                    height: 30,

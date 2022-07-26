@@ -88,7 +88,6 @@ class _TodoDetailPageState extends State<TodoDetailPage>{
                     label: '제목',
                     controller: _titleController,
                     emptyText: false,
-                    fontSize: 17,
                   ),
                   const SizedBox(
                     height: 30,
@@ -100,7 +99,6 @@ class _TodoDetailPageState extends State<TodoDetailPage>{
                     label: '메모',
                     controller: _noteController,
                     emptyText: true,
-                    fontSize: 17,
                   ),
                   const SizedBox(
                     height: 30,
