@@ -28,7 +28,8 @@
 플레이 스토어 : [Nevertheless PlayStore](https://play.google.com/store/apps/details?id=com.vanillajaem.nevertheless)  
 코드에 대한 강의 : [chocojaem.github.io](https://chocojaem.github.io/posts/nevertheless-01/)
 
-개발 : 이재민, 김동현, 이대로, 박유진, 유희정, 김연수  
+개발 : 이재민, 김동현, 이대로, 박유진, 유희정, 김연수
+<br>  
 기획 : 이재민, 김지수, 김연수, 소애은  
 <br>
 -Developer Jaem 올림-
