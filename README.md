@@ -26,7 +26,6 @@
 약 6개월간 모두 수고 많으셨고, 도움을 주신 모든분들께 감사합니다.
 
 플레이 스토어 : [Nevertheless PlayStore](https://play.google.com/store/apps/details?id=com.vanillajaem.nevertheless)  
-코드에 대한 강의 : [chocojaem.github.io](https://chocojaem.github.io/posts/nevertheless-01/)
 
 개발 : 이재민, 김동현, 이대로, 박유진, 유희정, 김연수  
 기획 : 이재민, 김지수, 김연수, 소애은  
